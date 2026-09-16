@@ -1,0 +1,36 @@
+{
+  // Cloudflare Workers config for the static site.
+  //
+  // The deploy runs `npx wrangler versions upload`, which reads this file to
+  // learn what to upload. Without it wrangler fails before it does anything:
+  // "Missing entry-point to Worker script or to assets directory". The project
+  // was previously configured in the Cloudflare dashboard, so nothing in the
+  // repo described the deploy.
+  //
+  // Requires the Cloudflare build settings to use `frontend` as the root
+  // directory — this file sits next to the package.json whose `build` script
+  // produces ./dist.
+  //
+  // There is no "main": this is assets-only. Adding a Worker script would mean
+  // every request runs it, and nothing here needs server-side logic.
+  "name": "famlink",
+  "compatibility_date": "2026-09-16",
+
+  "assets": {
+    "directory": "./dist",
+
+    // React Router owns the URL space, so a path that matches no file is a
+    // client route, not a 404: serve index.html with a 200 and let the router
+    // render it. This is what the live deploy already does — it is pinned here
+    // so it survives the move out of the dashboard.
+    "not_found_handling": "single-page-application",
+
+    // Canonical URLs have no trailing slash (see `trailingSlash: false` in
+    // vercel.json, and the canonicals SEOMetaData emits). Cloudflare's default
+    // is "auto-trailing-slash", which does the opposite: the live site 307s
+    // /find-nanny-share to /find-nanny-share/, so every deep link — including
+    // every hit from search — pays a redirect to a URL that disagrees with the
+    // canonical tag on the page it lands on.
+    "html_handling": "drop-trailing-slash"
+  }
+}
