@@ -517,6 +517,15 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
             reject(new Error("Socket emission timeout"));
           }, 5000);
 
+          // The only unguarded socket call in the app. The connection is opened
+          // asynchronously now (socket.io is a dynamic import), so reject with
+          // something readable rather than throwing on a null.
+          if (!socket) {
+            clearTimeout(timeout);
+            reject(new Error("You're offline. Check your connection."));
+            return;
+          }
+
           socket.emit(
             "sendNotificationToAdmin",
             { content: updateContent },
