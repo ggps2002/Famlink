@@ -4,9 +4,16 @@ import additionalServicesSlice from '@features/auth/store/additionalServicesSlic
 import setFamilyExp from '@features/auth/store/familyExperienceSlice'
 import formSlice from '@shared/store/formValueSlice'
 import authSlice from '@features/auth/store/authSlice'
-import storage from "redux-persist/lib/storage";
+// The `es/` build, not `lib/`: `lib/` is CommonJS that sets `exports.__esModule`
+// by plain assignment, which Vite 8's interop does not treat as an ES module.
+// The default import then lands on `{ __esModule, default }` instead of the
+// storage object, and redux-persist throws "getItem is not a function" at
+// rehydrate. `redux-persist` and `redux-persist/integration/react` both
+// resolve to `es/` already via their `module` field; these deep paths have no
+// such redirect, so they have to name it.
+import storage from "redux-persist/es/storage";
 import { persistReducer, persistStore } from "redux-persist";
-import autoMergeLevel2 from "redux-persist/lib/stateReconciler/autoMergeLevel2";
+import autoMergeLevel2 from "redux-persist/es/stateReconciler/autoMergeLevel2";
 import nannyListSlice from '@features/dashboard/store/nannyDataSlice'
 import favouriteSlice from '@features/dashboard/store/favouriteSlice'
 import cardSlice from '@features/subscription/store/cardSlice'
