@@ -34,7 +34,7 @@ function About() {
 
       <div className="w-full rounded-2xl overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.1)]">
         <img
-          src="nanny_share.png"
+          src="nanny_share.webp"
           alt="Two families sharing one nanny"
           className="w-full h-full object-cover"
         />

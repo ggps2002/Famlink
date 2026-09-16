@@ -70,7 +70,7 @@ function About() {
 
       <div className="w-full flex justify-center items-center">
         <img
-          src="nanny_share.png"
+          src="nanny_share.webp"
           alt="A nanny caring for children from two families"
           className="w-full max-w-md object-cover rounded-2xl shadow-[0_0_30px_rgba(0,0,0,0.1)]"
         />

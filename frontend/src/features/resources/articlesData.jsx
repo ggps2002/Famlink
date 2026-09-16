@@ -1,7 +1,7 @@
 import React from "react";
-import nannyResources1 from "@/assets/images/nannyResources1.png";
-import nannyResources2 from "@/assets/images/nannyResources2.png";
-import nannyResources3 from "@/assets/images/nannyResources3.png";
+import nannyResources1 from "@/assets/images/nannyResources1.webp";
+import nannyResources2 from "@/assets/images/nannyResources2.webp";
+import nannyResources3 from "@/assets/images/nannyResources3.webp";
 import { ARTICLES_META } from "@shared/seo/articlesMeta";
 
 // slug/title/excerpt (+ SEO fields) live in articlesMeta.js so the build-time

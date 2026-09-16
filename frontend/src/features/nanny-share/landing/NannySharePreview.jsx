@@ -2,8 +2,8 @@ import React from "react";
 import CustomButton from "@shared/ui/Button";
 import { NavLink } from "react-router-dom";
 import { SectionHeading } from "@shared/ui/Section";
-import seeMatchesImg from "@/assets/images/seeMatches.png";
-import browseFamImg from "@/assets/images/browseFam.png";
+import seeMatchesImg from "@/assets/images/seeMatches.webp";
+import browseFamImg from "@/assets/images/browseFam.webp";
 
 /* The "matches near you" teaser: a CTA over an endlessly scrolling screenshot.
  *

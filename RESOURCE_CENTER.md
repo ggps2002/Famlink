@@ -169,7 +169,7 @@ frontend/src/pageLayout.jsx          # withNothing entries
 
 ## 6a. SEO
 
-- **`SEOMetaData` on every page** — the shared component (`NewComponents/SEOMetaData.jsx`) now emits Open Graph + Twitter Card tags, an explicit `robots` directive, and a default share image (`social-preview-v2.png`). The Resource Center hub and both downloads set unique titles/descriptions/canonicals; the downloads and blog articles are typed `article`.
+- **`SEOMetaData` on every page** — the shared component (`src/shared/seo/SEOMetaData.jsx`) emits Open Graph + Twitter Card tags and an explicit `robots` directive. There is deliberately no site-wide share image: with no `image` prop the card type drops to `summary`, which is the smallest preview every platform offers. The Resource Center hub and both downloads set unique titles/descriptions/canonicals; the downloads and blog articles are typed `article`.
 - **Coverage audit** — added `SEOMetaData` to the pages that were still missing it: `/find-nanny-share` (`NannyShareMatchForm.jsx`), `/waitlist` (`Waitlist.jsx`), `/caregiver/nannyshare` (`ChooseNannyShare.jsx`), each with a keyworded title/description + canonical. The individual profile view (`Search/ViewProfile.jsx`) got `SEOMetaData` with `noIndex` (dynamic + privacy-sensitive). All other public routed pages already had it.
 - **`sitemap.xml`** (`frontend/public/sitemap.xml`) — lists all indexable marketing URLs: core landing pages, the Resource Center hub + both downloads, the blog list + static articles, and the city pages. Referenced from `robots.txt`.
 - **`robots.txt`** (`frontend/public/robots.txt`) — allows crawling, disallows private app/auth paths (`/dashboard`, `/login`, etc.), and points to the sitemap.

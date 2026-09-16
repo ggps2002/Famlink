@@ -27,7 +27,7 @@ function NewHome() {
       <SEOMetaData {...familiesMeta()} />
 
       {/* Hero band. No z-index on the wrapper — see the note in HeroCurve. */}
-      <div className="relative bg-[url('/Hero.jpg')] bg-cover bg-center">
+      <div className="relative bg-[url('/Hero.webp')] bg-cover bg-center">
         <div className="absolute inset-0 bg-ink/60 z-0" />
         <div className="relative z-10">
           <Hero />

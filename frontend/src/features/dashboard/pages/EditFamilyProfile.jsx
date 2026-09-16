@@ -1,4 +1,4 @@
-import cameraIcons from "@/assets/images/cameraIcon.png";
+import cameraIcons from "@/assets/images/cameraIcon.webp";
 import { Form, Input, Select, Spin, Checkbox, TimePicker, DatePicker } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { editUserThunk, updateNannyProfileThunk } from "@features/auth/store/authSlice";

@@ -1,6 +1,6 @@
 
 import { Progress } from "antd"
-import star from '../../../assets/images/star1.png'
+import star from '../../../assets/images/star1.webp'
 
 export default function Prog({ num, pro, color}) {
     return (

@@ -7,7 +7,7 @@ import { api } from "@shared/api/client";
 import Button from "@shared/ui/Button";
 import { useNavigate } from "react-router-dom";
 import { X, Star } from "lucide-react";
-import caregiverHeroImg from "@/assets/images/caregiverHero.png";
+import caregiverHeroImg from "@/assets/images/caregiverHero.webp";
 
 function Hero() {
   const [loading, setLoading] = useState(false);

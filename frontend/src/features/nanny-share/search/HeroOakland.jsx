@@ -158,7 +158,7 @@ function HeroOakland({ city }) {
                 <div className="flex-1 w-full flex justify-center lg:justify-end relative">
                     <div className="relative w-full max-w-[600px]">
                         <img
-                            src="/OaklandHero.png"
+                            src="/OaklandHero.webp"
                             alt="Oakland Nanny Share"
                             className="w-full h-auto object-cover rounded-[24px] shadow-lg aspect-[4/3] sm:aspect-[16/10]"
                         />

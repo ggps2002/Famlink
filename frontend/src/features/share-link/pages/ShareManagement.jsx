@@ -1,6 +1,6 @@
 import React from 'react';
 import { Users, Heart, PiggyBank, Calendar, ShieldCheck, Search, Link as LinkIcon, Handshake } from 'lucide-react';
-import shareNanny3 from '@/assets/images/shareNanny3.png';
+import shareNanny3 from '@/assets/images/shareNanny3.webp';
 const ShareManagement = () => {
   return (
     <div className="w-full overflow-x-hidden">

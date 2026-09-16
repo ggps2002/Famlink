@@ -4,13 +4,13 @@ import { Spin, Input } from "antd";
 import { fireToastMessage } from "@shared/ui/toast";
 import Button from "@shared/ui/Button";
 import { useNavigate } from "react-router-dom";
-import SFImg from "../../../assets/images/SFImage.png";
+import SFImg from "../../../assets/images/SFImage.webp";
 
 // The hero photo is location-appropriate: the San Francisco bridge on the SF
 // page, and a generic nanny-share match photo on every other neighborhood.
 // (Oakland uses its own HeroOakland component and never reaches this one.)
 function Hero({ city }) {
-  const heroImage = city === "San Francisco" ? SFImg : "/nannyshareMatches.jpg";
+  const heroImage = city === "San Francisco" ? SFImg : "/nannyshareMatches.webp";
   const [zipCode, setZipCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isGlowing, setIsGlowing] = useState(false);

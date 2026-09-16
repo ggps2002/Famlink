@@ -1,6 +1,6 @@
 import Swal from "sweetalert2";
-import check from '@/assets/images/Checkmark.png'
-import deleteIcon from '@/assets/images/deleteIcon.png'
+import check from '@/assets/images/Checkmark.webp'
+import deleteIcon from '@/assets/images/deleteIcon.webp'
 import '@/App.css';
 
 const SwalFireSuccess = ({ handleConfirm, title }) => {

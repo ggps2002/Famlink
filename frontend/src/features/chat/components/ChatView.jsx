@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { Suspense, lazy, memo } from "react";
 import { Button, Input } from "antd";
-import line from "@/assets/images/l1.png";
+import line from "@/assets/images/l1.webp";
 import { useDispatch, useSelector } from "react-redux";
 import Avatar from "react-avatar";
 import { useNavigate } from "react-router-dom";

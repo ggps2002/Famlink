@@ -3,7 +3,7 @@ import Header from "@app/layout/Header";
 import { Spin } from "antd";
 import Button from "@shared/ui/Button";
 import { useNavigate } from "react-router-dom";
-import familyHeroImg from "@/assets/images/familyHero.png";
+import familyHeroImg from "@/assets/images/familyHero.webp";
 
 function Hero() {
   const [zipCode, setZipCode] = useState("");

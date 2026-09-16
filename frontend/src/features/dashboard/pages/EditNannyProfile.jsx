@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, useMemo } from "react";
-import cameraIcons from "@/assets/images/cameraIcon.png";
+import cameraIcons from "@/assets/images/cameraIcon.webp";
 import { Form, Input, Checkbox, Select, Button, TimePicker, Spin, DatePicker } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import Avatar from "react-avatar";
