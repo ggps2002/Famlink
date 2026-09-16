@@ -1,0 +1,38 @@
+# Cache policy for the static deploy (Cloudflare reads this from the build output).
+#
+# The default the Worker was serving is `public, max-age=0, must-revalidate` for
+# everything, including the content-hashed bundles. That makes a repeat visit
+# revalidate all ~45 critical-path files before it can paint, which on a slow
+# connection costs a full round trip per file for assets that can never change.
+#
+# Anything under /assets/ carries a content hash in its name, so a change ships
+# under a new URL and the old one is safe to keep forever. `immutable` also stops
+# the revalidation a plain max-age still allows on reload.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Fonts and root-level images are served from stable, unhashed paths, so they
+# cannot be `immutable` — replacing one reuses its URL. A month is long enough to
+# cover repeat visits and short enough that a swap is picked up.
+/fonts/*
+  Cache-Control: public, max-age=2592000
+
+/*.webp
+  Cache-Control: public, max-age=2592000
+
+/*.png
+  Cache-Control: public, max-age=2592000
+
+/*.svg
+  Cache-Control: public, max-age=2592000
+
+/blog/*
+  Cache-Control: public, max-age=2592000
+
+# The HTML is the one file that must stay fresh: it names the current hashed
+# bundles, so a stale copy pins the whole app to an old deploy.
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
