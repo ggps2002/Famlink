@@ -12,6 +12,14 @@
        hand-drawn: scripts/make-imessage-icon.mjs holds the colour.
        Served from public/ so the path stays unhashed and stable. -->
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <!-- The two faces the hero renders in. Without these the browser cannot
+       discover them until it has downloaded and parsed the stylesheet, which on
+       a slow connection is a full round trip after first paint — the text is
+       laid out in the fallback and then reflows. `crossorigin` is required even
+       same-origin: fonts are fetched in CORS mode, and a preload whose mode
+       does not match the real request is fetched twice. -->
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/Livvic/Livvic-Regular.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/Livvic/Livvic-Bold.woff2" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- SEO:BEGIN — everything between these markers is replaced per-route by
        scripts/prerender-meta.mjs at build time. These tags are the homepage /
