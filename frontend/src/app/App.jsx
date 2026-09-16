@@ -17,7 +17,6 @@ import lazyNamed from "@app/lazyNamed";
 // a second round trip before anything paints. Every other screen below is a
 // separate chunk, fetched the first time someone navigates to it.
 import NannyShare from "@features/nanny-share/pages/NannyShareLanding";
-import Screen2 from "@/features/onboarding/family/Screen2";
 
 
 const ForgetPass = lazy(() => import("@features/auth/pages/ForgotPassword"));

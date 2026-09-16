@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Button from "@shared/ui/Button";
-import { Spin, Input } from "antd";
+import Spinner from "@shared/ui/Spinner";
 import { fireToastMessage } from "@shared/ui/toast";
 import { PiggyBank, User, Users } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -218,34 +218,40 @@ function CostEstimation() {
         {/* Input Row */}
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-8 sm:mt-12 justify-center items-center w-full px-4 sm:px-0">
           <div className="relative w-full sm:w-[300px]">
-            <Spin
-              spinning={loading}
-              size="small"
-              className="absolute z-10 left-3 top-1/2 -translate-y-1/2"
-            >
-              <Input
-                name="zipCode"
-                placeholder="Enter zip code"
-                onChange={(e) => setZipCode(e.target.value.replace(/\D/g, ""))}
-                onBlur={(e) => handleZipValidation(e.target.value.trim())}
-                value={zipCode}
-                className="w-full p-3 sm:p-4 rounded-full border-2"
-                maxLength={5}
+            <input
+              name="zipCode"
+              placeholder="Enter zip code"
+              onChange={(e) => setZipCode(e.target.value.replace(/\D/g, ""))}
+              onBlur={(e) => handleZipValidation(e.target.value.trim())}
+              value={zipCode}
+              maxLength={5}
+              className="w-full p-3 sm:p-4 rounded-full border-2 border-[#D6DDEB] bg-white text-ink placeholder:text-subtle focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
+            />
+            {loading && (
+              <Spinner
+                size="small"
+                className="absolute z-10 right-4 top-1/2 -translate-y-1/2 text-accent"
               />
-            </Spin>
+            )}
           </div>
 
-          <Input
-            name="hoursPerWeek"
-            placeholder="Hours needed per week"
-            type="number"
-            min={1}
-            max={168}
-            onChange={(e) => setHours(e.target.value)}
-            value={hours}
-            className="w-full sm:w-[300px] p-3 sm:p-4 rounded-full border-2"
-            suffix="hrs/week"
-          />
+          {/* `suffix` was antd's; a plain input needs the label positioned and
+              the right padding reserved so long values do not run under it. */}
+          <div className="relative w-full sm:w-[300px]">
+            <input
+              name="hoursPerWeek"
+              placeholder="Hours needed per week"
+              type="number"
+              min={1}
+              max={168}
+              onChange={(e) => setHours(e.target.value)}
+              value={hours}
+              className="w-full p-3 sm:p-4 rounded-full border-2 border-[#D6DDEB] bg-white text-ink placeholder:text-subtle focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all pr-20"
+            />
+            <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-subtle text-sm">
+              hrs/week
+            </span>
+          </div>
 
           <Button
             btnText="Estimate Savings"

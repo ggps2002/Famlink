@@ -17,7 +17,12 @@ import browseFamImg from "@/assets/images/browseFam.webp";
  * screenshot, not cards — so they were shipping to every visitor unused.
  */
 function NannySharePreview({ caregiver }) {
-  const image = caregiver ? browseFamImg : seeMatchesImg;
+  // Intrinsic size travels with the screenshot: the two differ in aspect ratio,
+  // so a single hard-coded pair would stretch whichever one it was not measured
+  // from.
+  const preview = caregiver
+    ? { src: browseFamImg, width: 1808, height: 3076 }
+    : { src: seeMatchesImg, width: 1806, height: 3913 };
 
   return (
     <div className="flex flex-col items-center text-center">
@@ -62,7 +67,15 @@ function NannySharePreview({ caregiver }) {
             be in place for the loop to be seamless. */}
         <div className="flex flex-col animate-scrollUp w-full">
           {[0, 1, 2, 3].map((i) => (
-            <img key={i} src={image} alt="" className="w-full block object-cover" />
+            <img
+              key={i}
+              src={preview.src}
+              alt=""
+              width={preview.width}
+              height={preview.height}
+              loading="lazy"
+              className="w-full block object-cover"
+            />
           ))}
         </div>
       </div>

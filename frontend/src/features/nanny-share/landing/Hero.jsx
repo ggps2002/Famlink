@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Header from "@app/layout/Header";
-import { Spin } from "antd";
+import Spinner from "@shared/ui/Spinner";
 import Button from "@shared/ui/Button";
 import { useNavigate } from "react-router-dom";
 import familyHeroImg from "@/assets/images/familyHero.webp";
@@ -113,7 +113,7 @@ function Hero() {
             {/* Call To Action */}
             <div className="mb-8">
               <Button
-                btnText={isLoading ? <Spin size="small" /> : "Find a nanny share"}
+                btnText={isLoading ? <Spinner size="small" /> : "Find a nanny share"}
                 className="bg-[#FFADE1] hover:bg-[#ff94d4] text-[#001243] w-fit px-8 py-4 flex items-center justify-center rounded-full Livvic-Bold text-[16px] transition-colors"
                 action={() => navigate(`/find-nanny-share`)}
                 disabled={isLoading}
@@ -168,6 +168,9 @@ function Hero() {
               {/* Dashboard Image */}
               <img
                 src={familyHeroImg}
+                width={2012}
+                height={1256}
+                fetchPriority="high"
                 alt="Dashboard Preview"
                 className="w-full rounded-t-[16px] sm:rounded-t-[20px] shadow-[0_-8px_48px_rgba(0,18,67,0.12),0_0_0_1px_rgba(0,0,0,0.05)] block object-cover object-top relative z-10 transition-all duration-300"
               />
