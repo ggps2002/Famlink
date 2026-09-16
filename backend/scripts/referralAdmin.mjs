@@ -20,12 +20,12 @@
 
 import "dotenv/config";
 import mongoose from "mongoose";
-import User from "../Schema/user.js";
+import User from "../src/modules/user/user.model.js";
 import {
   creditReferrerForProfileCompletion,
   findReferrerByCode,
   hasActiveReferralMatching,
-} from "../Services/utils/referral.js";
+} from "../src/modules/referral/referral.util.js";
 
 const [, , cmd, ...rest] = process.argv;
 const args = rest.filter((a) => a !== "--yes");

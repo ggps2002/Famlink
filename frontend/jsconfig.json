@@ -1,0 +1,19 @@
+{
+  "//": "Editor-only. Vite and Vitest read aliases.js; this file exists so that go-to-definition and import autocomplete resolve the same names. Keep the paths below in sync with aliases.js — tests/architecture/aliases.test.js fails if they drift.",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "jsx": "react-jsx",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "target": "esnext",
+    "checkJs": false,
+    "paths": {
+      "@/*": ["src/*"],
+      "@app/*": ["src/app/*"],
+      "@features/*": ["src/features/*"],
+      "@shared/*": ["src/shared/*"]
+    }
+  },
+  "include": ["src/**/*", "tests/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

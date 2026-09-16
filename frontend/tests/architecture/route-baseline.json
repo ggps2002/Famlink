@@ -1,0 +1,252 @@
+[
+  {
+    "path": "/",
+    "component": "NannyShare",
+    "group": "always"
+  },
+  {
+    "path": "/find-nanny-share",
+    "component": "NannyShareMatchForm",
+    "group": "always"
+  },
+  {
+    "path": "/jobSeekers",
+    "component": "Caregivers",
+    "group": "always"
+  },
+  {
+    "path": "/nanny-share-resources",
+    "component": "ResourceCenter",
+    "group": "always"
+  },
+  {
+    "path": "/nanny-share-resources/:slug",
+    "component": "ResourceDownloadPage",
+    "group": "always"
+  },
+  {
+    "path": "/nanny-share/:city",
+    "component": "NannyShareCityPage",
+    "group": "always"
+  },
+  {
+    "path": "/resources",
+    "component": "ResourcesPage",
+    "group": "always"
+  },
+  {
+    "path": "/resources/:slug",
+    "component": "ArticlePage",
+    "group": "always"
+  },
+  {
+    "path": "/share/:token",
+    "component": "SharedProfilePage",
+    "group": "always"
+  },
+  {
+    "path": "/terms-and-conditions",
+    "component": "TermsAndConditions",
+    "group": "always"
+  },
+  {
+    "path": "/unsubscribe",
+    "component": "Unsubscribe",
+    "group": "always"
+  },
+  {
+    "path": "/waitlist",
+    "component": "WaitlistForm",
+    "group": "always"
+  },
+  {
+    "path": "/caregiver/nanny-share/looking-for-another-family/:id",
+    "component": "ShareQuestionnaire",
+    "group": "logged-out"
+  },
+  {
+    "path": "/caregiver/nanny-share/looking-for-nanny-share-job/:id",
+    "component": "JobQuestionnaire",
+    "group": "logged-out"
+  },
+  {
+    "path": "/caregiver/nannyshare",
+    "component": "ChooseNannyShare",
+    "group": "logged-out"
+  },
+  {
+    "path": "/events",
+    "component": "Events",
+    "group": "logged-out"
+  },
+  {
+    "path": "/families",
+    "component": "NewHome",
+    "group": "logged-out"
+  },
+  {
+    "path": "/find-nanny-share/family/:id",
+    "component": "FamilyOnboarding",
+    "group": "logged-out"
+  },
+  {
+    "path": "/find-nanny-share/nanny-share-questionnaire/:id",
+    "component": "PostANannyShare",
+    "group": "logged-out"
+  },
+  {
+    "path": "/find-nanny-share/nanny-share-questionnaire/fulltime-care/:id",
+    "component": "FullTime",
+    "group": "logged-out"
+  },
+  {
+    "path": "/find-nanny-share/nanny-share-questionnaire/parttime-care/:id",
+    "component": "PartTime",
+    "group": "logged-out"
+  },
+  {
+    "path": "/forgetPass",
+    "component": "ForgetPass",
+    "group": "logged-out"
+  },
+  {
+    "path": "/hire",
+    "component": "NewHireForm",
+    "group": "logged-out"
+  },
+  {
+    "path": "/joinNow",
+    "component": "JoinNow",
+    "group": "logged-out"
+  },
+  {
+    "path": "/login",
+    "component": "Login",
+    "group": "logged-out"
+  },
+  {
+    "path": "/nanny-share/profile/:id",
+    "component": "ViewProfileDetails",
+    "group": "logged-out"
+  },
+  {
+    "path": "/reset-password",
+    "component": "ResetPassword",
+    "group": "logged-out"
+  },
+  {
+    "path": "/dashboard/*",
+    "component": "Nanny",
+    "group": "member"
+  },
+  {
+    "path": "caregivers",
+    "component": "Family",
+    "group": "member"
+  },
+  {
+    "path": "complete-profile",
+    "component": "OnboardingCompleteProfile",
+    "group": "member"
+  },
+  {
+    "path": "description/:id",
+    "component": "JobDescription",
+    "group": "member"
+  },
+  {
+    "path": "edit",
+    "component": "EditProfileNanny | EditProfile",
+    "group": "member"
+  },
+  {
+    "path": "family-profile-view/:id",
+    "component": "FamilyProfileView",
+    "group": "member"
+  },
+  {
+    "path": "favorites",
+    "component": "Favorites",
+    "group": "member"
+  },
+  {
+    "path": "jobListing",
+    "component": "JobListing",
+    "group": "member"
+  },
+  {
+    "path": "jobListingView/:id",
+    "component": "JobListingView",
+    "group": "member"
+  },
+  {
+    "path": "message",
+    "component": "Message",
+    "group": "member"
+  },
+  {
+    "path": "nanny-profile-view/:id",
+    "component": "NannyProfileView",
+    "group": "member"
+  },
+  {
+    "path": "nannyShareEdit/:id",
+    "component": "EditNannyShare",
+    "group": "member"
+  },
+  {
+    "path": "nannyShareView/:id",
+    "component": "NannyShareDetails",
+    "group": "member"
+  },
+  {
+    "path": "post-a-job",
+    "component": "PostAJob",
+    "group": "member"
+  },
+  {
+    "path": "post-a-nannyShare",
+    "component": "PostANannyShare",
+    "group": "member"
+  },
+  {
+    "path": "post-a-nannyShare/fulltime-care",
+    "component": "FullTime",
+    "group": "member"
+  },
+  {
+    "path": "post-a-nannyShare/parttime-care",
+    "component": "PartTime",
+    "group": "member"
+  },
+  {
+    "path": "profileFamily/:id",
+    "component": "ProfileFamily",
+    "group": "member"
+  },
+  {
+    "path": "profileNanny/:id",
+    "component": "ProfileNanny",
+    "group": "member"
+  },
+  {
+    "path": "requests",
+    "component": "MatchRequests",
+    "group": "member"
+  },
+  {
+    "path": "setting",
+    "component": "Setting",
+    "group": "member"
+  },
+  {
+    "path": "share-management",
+    "component": "ShareManagement",
+    "group": "member"
+  },
+  {
+    "path": "terms-and-conditions",
+    "component": "TermsAndConditions",
+    "group": "member"
+  }
+]

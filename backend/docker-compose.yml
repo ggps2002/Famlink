@@ -1,0 +1,33 @@
+# The local database `npm run dev` expects.
+#
+# Run it with `npm run db:up` (and `npm run db:down` to stop). Data lives in the
+# named volume below, so stopping the container does not lose it; `npm run
+# db:reset` is the deliberate way to start clean.
+#
+# Nothing here needs credentials: the container publishes only to 127.0.0.1, so
+# it is reachable from this machine and nowhere else, and a password on a
+# throwaway local database mostly means one more thing to put in .env.
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: famylink-mongo
+    restart: unless-stopped
+    ports:
+      # Bound to loopback deliberately. "27017:27017" would publish the database
+      # on every interface, which on a laptop means anyone on the café wifi.
+      - "127.0.0.1:27017:27017"
+    volumes:
+      - famylink-mongo-data:/data/db
+    healthcheck:
+      # `depends_on: condition: service_healthy` needs this to mean "accepting
+      # queries", not merely "process started" — mongod listens before it is
+      # ready and a fast dev server would connect into the gap.
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+volumes:
+  famylink-mongo-data:

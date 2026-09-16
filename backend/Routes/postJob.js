@@ -1,14 +1,14 @@
 import express from "express";
-import { authMiddleware } from "../Services/utils/middlewareAuth.js";
-import User from "../Schema/user.js";
-import postJob from "../Schema/postJob.js";
+import { authMiddleware } from "../src/shared/auth/middlewareAuth.js";
+import User from "../src/modules/user/user.model.js";
+import postJob from "../src/modules/job/postJob.model.js";
 import _ from "lodash";
-import Booking from "../Schema/booking.js";
+import Booking from "../src/modules/booking/booking.model.js";
 import {
   PUBLIC_USER_SELECT,
   USER_IDENTITY_SELECT,
   toPublicUser,
-} from "../Services/utils/userPrivacy.js";
+} from "../src/modules/user/user.privacy.js";
 
 const router = express.Router();
 

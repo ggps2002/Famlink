@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { visualizer } from "rollup-plugin-visualizer";
+import { alias } from "./aliases.js";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -12,6 +13,9 @@ export default defineConfig({
     brotliSize: true,
   }),
   ],
+  // Shared with vitest.config.js via aliases.js so a module that resolves in the
+  // build cannot fail to resolve in a test.
+  resolve: { alias },
   build: {
     sourcemap: true, // 👈 add this line
     minify: 'esbuild',

@@ -1,9 +1,9 @@
-import { getShareProfileCopy } from "../../src/Config/shareProfileCopy.js";
+import { getShareProfileCopy } from "../../src/features/share-link/shareProfileCopy.js";
 import {
   buildShareCardModel,
   buildShareDescription,
   SHARE_TOKEN_PATTERN,
-} from "../../src/Config/shareCardModel.js";
+} from "../../src/features/share-link/shareCardModel.js";
 
 // Open Graph rendering for /share/<token>.
 //

@@ -1,6 +1,6 @@
 import "dotenv/config";
 import mongoose from "mongoose";
-import Blogs from "../Schema/blogs.js";
+import Blogs from "../src/modules/blog/blog.model.js";
 
 // Move the three original resource articles into the database.
 //

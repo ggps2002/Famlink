@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build && node scripts/prerender-meta.mjs",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
@@ -23,7 +25,9 @@
     "antd": "^5.20.6",
     "antd-input-otp": "^2.1.0",
     "axios": "^1.7.7",
+    "class-variance-authority": "^0.7.1",
     "classnames": "^2.5.1",
+    "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.19",
     "dotenv": "^16.4.5",
@@ -33,6 +37,7 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
     "flowbite-react": "^0.10.1",
+    "framer-motion": "^11.18.2",
     "globals": "^15.9.0",
     "gsap": "^3.12.7",
     "jwt-decode": "^4.0.0",
@@ -40,6 +45,7 @@
     "lucide-react": "^0.451.0",
     "moment": "^2.30.1",
     "prop-types": "^15.8.1",
+    "radix-ui": "^1.6.7",
     "react": "^18.3.1",
     "react-avatar": "^5.0.3",
     "react-dom": "^18.3.1",
@@ -54,14 +60,21 @@
     "socket.io-client": "^4.8.1",
     "sweetalert2": "^11.14.5",
     "swiper": "^11.1.14",
+    "tailwind-merge": "^3.7.0",
+    "tailwindcss-animate": "^1.0.7",
     "vite": "^5.4.1",
     "wavesurfer.js": "^7.8.9"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.4",
     "autoprefixer": "^10.4.21",
+    "jsdom": "^30.0.1",
     "postcss": "^8.5.6",
     "rollup-plugin-visualizer": "^6.0.5",
     "tailwindcss": "^3.4.15",
-    "vite-plugin-purgecss": "^0.2.13"
+    "vite-plugin-purgecss": "^0.2.13",
+    "vitest": "^4.1.10"
   }
 }

@@ -4,6 +4,170 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Theme variables for components borrowed from shadcn/ui — currently just the
+ * tooltip. The names are shadcn's, the values are ours: `foreground` is the
+ * brand navy (#001243) and `border` the hairline grey (#EEEEEE) that every
+ * card on the site already uses. Kept as space-separated HSL channels, which
+ * is the form `hsl(var(--x))` in tailwind.config.js expects — a hex here would
+ * silently produce no colour at all.
+ *
+ * No .dark block: this app has no dark mode, and Tailwind's default `media`
+ * strategy would otherwise flip these from under a light-only design. */
+:root {
+  --background: 0 0% 100%;   /* #FFFFFF */
+  --foreground: 224 100% 13%; /* #001243 — same as the `ink` token */
+  --border: 0 0% 93.3%;      /* #EEEEEE — same as the `line` token */
+}
+
+/* ══ Design system ══════════════════════════════════════════════════════════
+ *
+ * One type scale and one spacing rhythm for the public marketing surface:
+ * the nanny-share landing (/), /families, /jobSeekers, /nanny-share/:city,
+ * /resources and /nanny-share-resources.
+ *
+ * Before this existed those pages carried 10 different section-heading sizes
+ * (text-[52px], text-[44px], text-4xl lg:text-[60px], …), 12 different section
+ * paddings (py-[80px], my-24, py-8 sm:py-12 lg:py-16, …) and 5 different muted
+ * body colours. The scale below is the one the newest pages had already
+ * converged on (ResourceCenter.jsx, CityHero.jsx); it is now the only one.
+ *
+ * HOW TO USE
+ *   Prefer the primitives in shared/ui/Section.jsx — <Section>, <SectionHeading>
+ *   and <Card> — which compose these classes for you. Reach for the raw `.fl-*`
+ *   classes when a layout does not fit the primitives.
+ *
+ * WHY @layer components
+ *   Tailwind emits utilities AFTER components, so a per-instance utility still
+ *   wins: `<h2 className="fl-h2 text-white">` is white. Note that the older
+ *   unlayered classes further down this file (.container, .text-primary, …) do
+ *   NOT have that property — they beat utilities. Don't copy that pattern.
+ *
+ * Every step is mobile-first and scales through xs → sm → lg. Nothing here
+ * carries a fixed px width, so no rule in this block can overflow a viewport.
+ */
+@layer components {
+
+  /* ── Type scale ─────────────────────────────────────────────────────────
+   * The Livvic faces are separate font files rather than weights, so the face
+   * is baked into each step: a heading is one class, not `Livvic-Bold` plus a
+   * size. Add `.Livvic-SemiBold` etc. to override — those carry !important.
+   */
+
+  /* Hero h1. One per page, inside a hero band. 36 → 48 → 60px */
+  .fl-display {
+    @apply font-livvic-bold text-4xl sm:text-5xl lg:text-6xl leading-[1.1] tracking-tight;
+  }
+
+  /* Page h1 outside a hero band. 30 → 36 → 48px */
+  .fl-h1 {
+    @apply font-livvic-bold text-3xl sm:text-4xl lg:text-5xl leading-[1.15] tracking-tight;
+  }
+
+  /* Section heading — the workhorse. 30 → 36px */
+  .fl-h2 {
+    @apply font-livvic-bold text-3xl sm:text-4xl leading-[1.2] tracking-tight;
+  }
+
+  /* Card and sub-section heading. 18 → 20px */
+  .fl-h3 {
+    @apply font-livvic-semibold text-lg sm:text-xl leading-snug;
+  }
+
+  /* Smallest heading — list-item titles, dense cards. 16 → 18px */
+  .fl-h4 {
+    @apply font-livvic-semibold text-base sm:text-lg leading-snug;
+  }
+
+  /* Headline figures ("89+", "4.8★", "$1,240"). Not a heading — it's a value,
+   * so it gets its own step rather than borrowing `.fl-h1`. MetricCard and the
+   * two estimators each hand-wrote this string; it's one class now. 36 → 48px */
+  .fl-metric {
+    @apply font-livvic-bold text-ink text-4xl sm:text-5xl leading-none tracking-tight;
+  }
+
+  /* The sentence under a heading. Muted by default. 16 → 18px */
+  .fl-lede {
+    @apply font-livvic text-muted text-base sm:text-lg leading-relaxed;
+  }
+
+  /* Body copy. */
+  .fl-body {
+    @apply font-livvic-medium text-muted text-base leading-relaxed;
+  }
+
+  /* Secondary body — captions, card descriptions. */
+  .fl-small {
+    @apply font-livvic-medium text-muted text-sm leading-relaxed;
+  }
+
+  /* Metadata: timestamps, counts, author lines. */
+  .fl-meta {
+    @apply font-livvic-medium text-subtle text-xs leading-normal;
+  }
+
+  /* The pill label above a hero heading. Colour comes from the caller. */
+  .fl-eyebrow {
+    @apply font-livvic-bold text-xs uppercase tracking-wider;
+  }
+
+  /* Simulated product-UI chips floating over the hero screenshots ("12 matches
+   * nearby", "~ Save up to 50%"). Their small scale is deliberate — they mimic
+   * in-app UI rather than page copy — but it's one scale now instead of the same
+   * two class strings hand-copied across four hero files. */
+  .fl-chip-title {
+    @apply font-livvic-semibold text-ink text-xs sm:text-sm leading-tight whitespace-nowrap;
+  }
+  .fl-chip-sub {
+    /* 10px has no step on the scale; micro-UI is the one place that earns it. */
+    @apply font-livvic text-subtle text-[10px] sm:text-xs leading-tight;
+  }
+
+  /* ── Layout ─────────────────────────────────────────────────────────────
+   * Deliberately separate from the legacy `.container` below, which bakes in a
+   * `py-2` that fights every section's own vertical rhythm.
+   */
+
+  /* Horizontal gutter + measure cap. The only gutter on these pages. */
+  .fl-container {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Section vertical rhythm, in three steps. */
+  .fl-section-y {
+    @apply py-14 sm:py-20;
+  }
+  .fl-section-y-tight {
+    @apply py-10 sm:py-14;
+  }
+  .fl-section-y-loose {
+    @apply py-20 sm:py-28;
+  }
+
+  /* Hero band padding. The Header is fixed, so the top step is what keeps a
+   * hero's first line clear of the nav — there is no spacer element. */
+  .fl-hero-y {
+    @apply pt-28 pb-16 sm:pt-32 sm:pb-24;
+  }
+
+  /* Gap between a section's heading block and its content. */
+  .fl-heading-gap {
+    @apply mb-10 sm:mb-12;
+  }
+
+  /* One card treatment, replacing four. */
+  .fl-card {
+    @apply bg-white rounded-2xl p-6 shadow-card;
+  }
+  .fl-card-interactive {
+    @apply fl-card transition-shadow hover:shadow-card-hover;
+  }
+
+  /* Inset white panel on a beige section (calculators, estimators). */
+  .fl-panel {
+    @apply bg-white rounded-3xl overflow-hidden;
+  }
+}
+
 .container {
   @apply mx-auto px-4 max-w-7xl py-2;
 }
@@ -138,7 +302,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 }
 
 .animate-scrollUp {
-  animation: scrollUp 20s linear infinite;
+  animation: scrollUp 80s linear infinite;
 }
 
 .animate-scrollUp:hover {

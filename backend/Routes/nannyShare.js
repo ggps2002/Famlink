@@ -1,15 +1,15 @@
 import express from "express";
-import NannyShare from "../Schema/nannyShare.js";
-import { authMiddleware } from "../Services/utils/middlewareAuth.js";
-import User from "../Schema/user.js";
-import { geocodeZip } from "../Services/GoogleMapsZipCodeLocator.js";
-import { sendAutoEmail } from "../Services/email/email.js";
+import NannyShare from "../src/modules/nannyShare/nannyShare.model.js";
+import { authMiddleware } from "../src/shared/auth/middlewareAuth.js";
+import User from "../src/modules/user/user.model.js";
+import { geocodeZip } from "../src/shared/integrations/googleMaps.js";
+import { sendAutoEmail } from "../src/shared/email/email.js";
 import {
   PUBLIC_USER_SELECT,
   USER_IDENTITY_SELECT,
   withPublicUser,
   withPublicUsers,
-} from "../Services/utils/userPrivacy.js";
+} from "../src/modules/user/user.privacy.js";
 
 const router = express.Router();
 

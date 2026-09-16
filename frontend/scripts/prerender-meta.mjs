@@ -22,8 +22,8 @@ import {
   getPrerenderRoutes,
   SITE_ORIGIN,
   DEFAULT_OG_IMAGE,
-} from "../src/seo/routeMeta.js";
-import { serializeJsonLd } from "../src/seo/jsonLd.js";
+} from "../src/shared/seo/routeMeta.js";
+import { serializeJsonLd } from "../src/shared/seo/jsonLd.js";
 
 const DIST = resolve(dirname(fileURLToPath(import.meta.url)), "../dist");
 const SHELL_PATH = join(DIST, "index.html");

@@ -1,0 +1,1014 @@
+[
+  {
+    "method": "GET",
+    "path": "/admin/activity/overview"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/activity/sessions/:userId"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/activity/suspicious"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/analytics/completeness"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/analytics/growth"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/analytics/overview"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/audit-log"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/audit-log/actions"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/email-log"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/email-log/stats"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/email-log/types"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/email-queue"
+  },
+  {
+    "method": "POST",
+    "path": "/admin/email-queue/:id/retry"
+  },
+  {
+    "method": "POST",
+    "path": "/admin/email-queue/flush"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/email-queue/health"
+  },
+  {
+    "method": "POST",
+    "path": "/admin/email-queue/retry-all"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/email-queue/stats"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/matches"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/matches/insights"
+  },
+  {
+    "method": "DELETE",
+    "path": "/admin/messages/:messageId"
+  },
+  {
+    "method": "POST",
+    "path": "/admin/messages/:messageId/report"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/messages/conversations"
+  },
+  {
+    "method": "DELETE",
+    "path": "/admin/messages/conversations/:chatId"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/messages/conversations/:chatId"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/messages/flagged"
+  },
+  {
+    "method": "POST",
+    "path": "/admin/messages/flagged/:id/escalate"
+  },
+  {
+    "method": "PUT",
+    "path": "/admin/messages/flagged/:id/review"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/messages/flagged/stats"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/referrals"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/referrals/:userId"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/referrals/signups"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/referrals/stats"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/reports"
+  },
+  {
+    "method": "PUT",
+    "path": "/admin/reports/:id/assign"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/reports/:id/context"
+  },
+  {
+    "method": "POST",
+    "path": "/admin/reports/:id/resolve"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/reports/stats"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/reports/user/:userId"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/share-links"
+  },
+  {
+    "method": "POST",
+    "path": "/admin/share-links/:userId/generate"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/share-links/:userId/preview"
+  },
+  {
+    "method": "PUT",
+    "path": "/admin/share-links/:userId/toggle"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/sheets/:key"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/sheets/:key/export"
+  },
+  {
+    "method": "POST",
+    "path": "/admin/sheets/:key/refresh"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/subscriptions"
+  },
+  {
+    "method": "PUT",
+    "path": "/admin/subscriptions/:userId/plan"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/subscriptions/:userId/stripe"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/subscriptions/stats"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/support"
+  },
+  {
+    "method": "PUT",
+    "path": "/admin/support/:id"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/support/categories"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/support/stats"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/terms"
+  },
+  {
+    "method": "POST",
+    "path": "/admin/terms"
+  },
+  {
+    "method": "POST",
+    "path": "/admin/terms/:id/restore"
+  },
+  {
+    "method": "POST",
+    "path": "/admin/terms/preview"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/terms/version/:id"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/traffic/overview"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/traffic/pages"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/traffic/referrers"
+  },
+  {
+    "method": "POST",
+    "path": "/admin/traffic/rollup"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/traffic/trend"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/users"
+  },
+  {
+    "method": "DELETE",
+    "path": "/admin/users/:id"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/users/:id"
+  },
+  {
+    "method": "PUT",
+    "path": "/admin/users/:id/block"
+  },
+  {
+    "method": "PUT",
+    "path": "/admin/users/:id/flag"
+  },
+  {
+    "method": "DELETE",
+    "path": "/admin/users/:id/profile"
+  },
+  {
+    "method": "PUT",
+    "path": "/admin/users/:id/reinstate"
+  },
+  {
+    "method": "PUT",
+    "path": "/admin/users/:id/suspend"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/waitlist"
+  },
+  {
+    "method": "POST",
+    "path": "/admin/waitlist/:id/notify"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/waitlist/answers"
+  },
+  {
+    "method": "POST",
+    "path": "/admin/waitlist/answers-backfill"
+  },
+  {
+    "method": "POST",
+    "path": "/admin/waitlist/awareness"
+  },
+  {
+    "method": "POST",
+    "path": "/admin/waitlist/backfill"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/waitlist/cities"
+  },
+  {
+    "method": "POST",
+    "path": "/admin/waitlist/consent-backfill"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/waitlist/export"
+  },
+  {
+    "method": "DELETE",
+    "path": "/admin/waitlist/launch-email"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/waitlist/launch-email"
+  },
+  {
+    "method": "PUT",
+    "path": "/admin/waitlist/launch-email"
+  },
+  {
+    "method": "POST",
+    "path": "/admin/waitlist/launch-email/preview"
+  },
+  {
+    "method": "POST",
+    "path": "/admin/waitlist/notify"
+  },
+  {
+    "method": "GET",
+    "path": "/adminUser/chats"
+  },
+  {
+    "method": "GET",
+    "path": "/adminUser/complete-bookings"
+  },
+  {
+    "method": "DELETE",
+    "path": "/adminUser/delete-card/:paymentMethodId/:userId"
+  },
+  {
+    "method": "GET",
+    "path": "/adminUser/earningStats"
+  },
+  {
+    "method": "PUT",
+    "path": "/adminUser/edit/:id"
+  },
+  {
+    "method": "GET",
+    "path": "/adminUser/get-save-cards/:userId"
+  },
+  {
+    "method": "GET",
+    "path": "/adminUser/nanny-locations"
+  },
+  {
+    "method": "PUT",
+    "path": "/adminUser/password/:userId"
+  },
+  {
+    "method": "GET",
+    "path": "/adminUser/recentBookings"
+  },
+  {
+    "method": "GET",
+    "path": "/adminUser/stats"
+  },
+  {
+    "method": "GET",
+    "path": "/adminUser/topUsers"
+  },
+  {
+    "method": "PUT",
+    "path": "/adminUser/update-status/:id"
+  },
+  {
+    "method": "GET",
+    "path": "/adminUser/userStats"
+  },
+  {
+    "method": "POST",
+    "path": "/analytics/close"
+  },
+  {
+    "method": "POST",
+    "path": "/analytics/view"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/check-user"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/email-resend-otp"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/login"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/logout"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/refreshToken"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/register"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/request-password-reset"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/resend-otp"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/reset-password-token"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/send-otp"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/verify-otp"
+  },
+  {
+    "method": "GET",
+    "path": "/blogs"
+  },
+  {
+    "method": "DELETE",
+    "path": "/blogs/:id"
+  },
+  {
+    "method": "GET",
+    "path": "/blogs/:id"
+  },
+  {
+    "method": "PUT",
+    "path": "/blogs/:id"
+  },
+  {
+    "method": "GET",
+    "path": "/blogs/category/:category"
+  },
+  {
+    "method": "POST",
+    "path": "/blogs/cover"
+  },
+  {
+    "method": "POST",
+    "path": "/blogs/create"
+  },
+  {
+    "method": "PATCH",
+    "path": "/blogs/edit"
+  },
+  {
+    "method": "GET",
+    "path": "/blogs/get-blogs"
+  },
+  {
+    "method": "PATCH",
+    "path": "/blogs/publish/:id"
+  },
+  {
+    "method": "PUT",
+    "path": "/book-hire/accept-request/:bookingId"
+  },
+  {
+    "method": "GET",
+    "path": "/book-hire/accepted-bookings-request"
+  },
+  {
+    "method": "PUT",
+    "path": "/book-hire/cancel-booking/:bookingId"
+  },
+  {
+    "method": "PUT",
+    "path": "/book-hire/complete-booking/:bookingId"
+  },
+  {
+    "method": "GET",
+    "path": "/book-hire/completed-bookings-request"
+  },
+  {
+    "method": "GET",
+    "path": "/book-hire/get-withdraw-requests"
+  },
+  {
+    "method": "GET",
+    "path": "/book-hire/getPendingRequests"
+  },
+  {
+    "method": "PUT",
+    "path": "/book-hire/reconsider-booking/:bookingId"
+  },
+  {
+    "method": "PUT",
+    "path": "/book-hire/reject-request/:bookingId"
+  },
+  {
+    "method": "GET",
+    "path": "/book-hire/rejected-bookings-request"
+  },
+  {
+    "method": "POST",
+    "path": "/book-hire/request"
+  },
+  {
+    "method": "GET",
+    "path": "/book-hire/requested-data"
+  },
+  {
+    "method": "GET",
+    "path": "/book-hire/status"
+  },
+  {
+    "method": "PUT",
+    "path": "/book-hire/withdraw/:bookingId"
+  },
+  {
+    "method": "GET",
+    "path": "/chats"
+  },
+  {
+    "method": "POST",
+    "path": "/chats"
+  },
+  {
+    "method": "DELETE",
+    "path": "/chats/:id"
+  },
+  {
+    "method": "PUT",
+    "path": "/chats/:id"
+  },
+  {
+    "method": "GET",
+    "path": "/chats/:id/:userId"
+  },
+  {
+    "method": "POST",
+    "path": "/debug/email-test"
+  },
+  {
+    "method": "GET",
+    "path": "/debug/referral"
+  },
+  {
+    "method": "POST",
+    "path": "/debug/referral/recredit"
+  },
+  {
+    "method": "PUT",
+    "path": "/edit/admin/user"
+  },
+  {
+    "method": "PUT",
+    "path": "/edit/user"
+  },
+  {
+    "method": "POST",
+    "path": "/email-verification/resend-otp"
+  },
+  {
+    "method": "POST",
+    "path": "/email-verification/send-otp"
+  },
+  {
+    "method": "POST",
+    "path": "/email-verification/verify-otp"
+  },
+  {
+    "method": "POST",
+    "path": "/favourite/add"
+  },
+  {
+    "method": "GET",
+    "path": "/favourite/getData"
+  },
+  {
+    "method": "GET",
+    "path": "/feedback"
+  },
+  {
+    "method": "POST",
+    "path": "/feedback"
+  },
+  {
+    "method": "POST",
+    "path": "/leads/incoming"
+  },
+  {
+    "method": "GET",
+    "path": "/legal/:slug"
+  },
+  {
+    "method": "GET",
+    "path": "/legal/:slug/version"
+  },
+  {
+    "method": "POST",
+    "path": "/legal/accept"
+  },
+  {
+    "method": "GET",
+    "path": "/legal/status/me"
+  },
+  {
+    "method": "GET",
+    "path": "/location"
+  },
+  {
+    "method": "GET",
+    "path": "/location/map-pins"
+  },
+  {
+    "method": "POST",
+    "path": "/match/accept-incoming-request"
+  },
+  {
+    "method": "POST",
+    "path": "/match/block-match"
+  },
+  {
+    "method": "GET",
+    "path": "/match/get-incoming-requests"
+  },
+  {
+    "method": "GET",
+    "path": "/match/get-match-with-user"
+  },
+  {
+    "method": "GET",
+    "path": "/match/get-outgoing-requests"
+  },
+  {
+    "method": "GET",
+    "path": "/match/pending-incoming-count"
+  },
+  {
+    "method": "POST",
+    "path": "/match/reject-incoming-request"
+  },
+  {
+    "method": "POST",
+    "path": "/match/request"
+  },
+  {
+    "method": "POST",
+    "path": "/match/unblock-match"
+  },
+  {
+    "method": "POST",
+    "path": "/match/undo-reject-incoming-request"
+  },
+  {
+    "method": "POST",
+    "path": "/message"
+  },
+  {
+    "method": "DELETE",
+    "path": "/message/:id"
+  },
+  {
+    "method": "GET",
+    "path": "/message/:id"
+  },
+  {
+    "method": "PUT",
+    "path": "/message/:id"
+  },
+  {
+    "method": "PATCH",
+    "path": "/nanny/nanny-share/profile"
+  },
+  {
+    "method": "POST",
+    "path": "/nanny/nanny-share/profile"
+  },
+  {
+    "method": "GET",
+    "path": "/nannyShare"
+  },
+  {
+    "method": "POST",
+    "path": "/nannyShare"
+  },
+  {
+    "method": "DELETE",
+    "path": "/nannyShare/:id"
+  },
+  {
+    "method": "GET",
+    "path": "/nannyShare/:id"
+  },
+  {
+    "method": "PATCH",
+    "path": "/nannyShare/:id"
+  },
+  {
+    "method": "GET",
+    "path": "/nannyShare/allData"
+  },
+  {
+    "method": "GET",
+    "path": "/nannyShare/nanny-share-opportunities/city/:city"
+  },
+  {
+    "method": "POST",
+    "path": "/nannyShare/send-questionnaire-email"
+  },
+  {
+    "method": "POST",
+    "path": "/onboarding-leads/capture"
+  },
+  {
+    "method": "POST",
+    "path": "/onboarding/save"
+  },
+  {
+    "method": "POST",
+    "path": "/payment/stripe/cancel-subscription"
+  },
+  {
+    "method": "POST",
+    "path": "/payment/stripe/confirm-checkout"
+  },
+  {
+    "method": "POST",
+    "path": "/payment/stripe/create-checkout-session"
+  },
+  {
+    "method": "POST",
+    "path": "/payment/stripe/create-payment"
+  },
+  {
+    "method": "POST",
+    "path": "/payment/stripe/create-subscription"
+  },
+  {
+    "method": "DELETE",
+    "path": "/payment/stripe/delete-card/:paymentMethodId"
+  },
+  {
+    "method": "GET",
+    "path": "/payment/stripe/get-save-cards"
+  },
+  {
+    "method": "POST",
+    "path": "/payment/stripe/save-card"
+  },
+  {
+    "method": "GET",
+    "path": "/payment/stripe/subscription-status"
+  },
+  {
+    "method": "POST",
+    "path": "/phantombuster/webhook"
+  },
+  {
+    "method": "GET",
+    "path": "/postJob"
+  },
+  {
+    "method": "POST",
+    "path": "/postJob"
+  },
+  {
+    "method": "DELETE",
+    "path": "/postJob/:id"
+  },
+  {
+    "method": "GET",
+    "path": "/postJob/:id"
+  },
+  {
+    "method": "PATCH",
+    "path": "/postJob/:id"
+  },
+  {
+    "method": "GET",
+    "path": "/postJob/admin-job"
+  },
+  {
+    "method": "GET",
+    "path": "/postJob/all-jobs"
+  },
+  {
+    "method": "GET",
+    "path": "/postJob/count"
+  },
+  {
+    "method": "GET",
+    "path": "/postJob/job-seeker-opportunities/:zipCode"
+  },
+  {
+    "method": "GET",
+    "path": "/postJob/user-jobs"
+  },
+  {
+    "method": "GET",
+    "path": "/referral/friends"
+  },
+  {
+    "method": "GET",
+    "path": "/referral/me"
+  },
+  {
+    "method": "POST",
+    "path": "/referral/seen-reward"
+  },
+  {
+    "method": "POST",
+    "path": "/reports"
+  },
+  {
+    "method": "GET",
+    "path": "/reports/mine"
+  },
+  {
+    "method": "GET",
+    "path": "/reports/status"
+  },
+  {
+    "method": "POST",
+    "path": "/resource-leads/capture"
+  },
+  {
+    "method": "GET",
+    "path": "/revenue/monthly"
+  },
+  {
+    "method": "GET",
+    "path": "/revenue/monthly-breakdown"
+  },
+  {
+    "method": "POST",
+    "path": "/reviews"
+  },
+  {
+    "method": "GET",
+    "path": "/reviews/:uid"
+  },
+  {
+    "method": "GET",
+    "path": "/share/admin/all-profiles"
+  },
+  {
+    "method": "GET",
+    "path": "/share/admin/profile-filters"
+  },
+  {
+    "method": "GET",
+    "path": "/share/current-user-profile"
+  },
+  {
+    "method": "GET",
+    "path": "/share/my-share-link"
+  },
+  {
+    "method": "GET",
+    "path": "/share/public/:token"
+  },
+  {
+    "method": "POST",
+    "path": "/share/show-profiles"
+  },
+  {
+    "method": "POST",
+    "path": "/sms-verification/resend-otp"
+  },
+  {
+    "method": "POST",
+    "path": "/sms-verification/send-otp"
+  },
+  {
+    "method": "POST",
+    "path": "/sms-verification/verify-otp"
+  },
+  {
+    "method": "POST",
+    "path": "/stripe/webhook"
+  },
+  {
+    "method": "GET",
+    "path": "/subscribe"
+  },
+  {
+    "method": "POST",
+    "path": "/subscribe/news-letter"
+  },
+  {
+    "method": "GET",
+    "path": "/subscribe/verify-email/:token"
+  },
+  {
+    "method": "POST",
+    "path": "/unsubscribe"
+  },
+  {
+    "method": "POST",
+    "path": "/unsubscribe/request"
+  },
+  {
+    "method": "PUT",
+    "path": "/update/email"
+  },
+  {
+    "method": "PUT",
+    "path": "/update/email-notifications"
+  },
+  {
+    "method": "PUT",
+    "path": "/update/password"
+  },
+  {
+    "method": "PUT",
+    "path": "/update/phone"
+  },
+  {
+    "method": "PUT",
+    "path": "/update/text-notifications"
+  },
+  {
+    "method": "GET",
+    "path": "/userData/count/perType"
+  },
+  {
+    "method": "GET",
+    "path": "/userData/families"
+  },
+  {
+    "method": "GET",
+    "path": "/userData/getAllData"
+  },
+  {
+    "method": "GET",
+    "path": "/userData/getAllData/admin"
+  },
+  {
+    "method": "GET",
+    "path": "/userData/getById/:id"
+  },
+  {
+    "method": "GET",
+    "path": "/userData/getById/admin/:id"
+  },
+  {
+    "method": "GET",
+    "path": "/userData/getFiltered"
+  },
+  {
+    "method": "GET",
+    "path": "/userData/getUserById/:id"
+  },
+  {
+    "method": "GET",
+    "path": "/userData/nannies"
+  },
+  {
+    "method": "GET",
+    "path": "/userData/service-providers/:zipCode"
+  },
+  {
+    "method": "GET",
+    "path": "/userData/top-users"
+  },
+  {
+    "method": "DELETE",
+    "path": "/userData/users/:userId"
+  },
+  {
+    "method": "POST",
+    "path": "/verify"
+  },
+  {
+    "method": "GET",
+    "path": "/verify/:id"
+  },
+  {
+    "method": "PUT",
+    "path": "/verify/:id"
+  },
+  {
+    "method": "PUT",
+    "path": "/verify/unverify/:id"
+  },
+  {
+    "method": "POST",
+    "path": "/waitlist/confirmation"
+  }
+]

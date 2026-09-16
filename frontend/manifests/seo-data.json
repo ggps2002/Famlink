@@ -1,0 +1,6 @@
+{
+  "src/data/articlesData.jsx": "src/features/resources/articlesData.jsx",
+  "src/data/articlesMeta.js": "src/shared/seo/articlesMeta.js",
+  "src/seo/routeMeta.js": "src/shared/seo/routeMeta.js",
+  "src/seo/jsonLd.js": "src/shared/seo/jsonLd.js"
+}

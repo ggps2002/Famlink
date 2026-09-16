@@ -1,7 +1,7 @@
 import { ImageResponse } from "@vercel/og";
 import { createElement as h } from "react";
-import { getShareProfileCopy } from "../src/Config/shareProfileCopy.js";
-import { buildShareCardModel, SHARE_TOKEN_PATTERN } from "../src/Config/shareCardModel.js";
+import { getShareProfileCopy } from "../src/features/share-link/shareProfileCopy.js";
+import { buildShareCardModel, SHARE_TOKEN_PATTERN } from "../src/features/share-link/shareCardModel.js";
 
 // The preview image for a shared profile: /api/share-og?token=<token>.
 //

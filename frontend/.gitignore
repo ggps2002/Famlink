@@ -24,3 +24,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Vite writes these when loading a config that has plugins
+vite.config.js.timestamp-*
+vite.config.*.timestamp-*

@@ -1,11 +1,11 @@
 import express from "express";
-import User from "../Schema/user.js";
-import Booking from "../Schema/booking.js";
-import PostJob from "../Schema/postJob.js";
-import { authMiddleware } from "../Services/utils/middlewareAuth.js";
-import { sendEmail } from "../Services/email/email.js";
-import Notification from "../Schema/notificaion.js";
-import { PUBLIC_USER_SELECT, toPublicUser } from "../Services/utils/userPrivacy.js";
+import User from "../src/modules/user/user.model.js";
+import Booking from "../src/modules/booking/booking.model.js";
+import PostJob from "../src/modules/job/postJob.model.js";
+import { authMiddleware } from "../src/shared/auth/middlewareAuth.js";
+import { sendEmail } from "../src/shared/email/email.js";
+import Notification from "../src/modules/notification/notification.model.js";
+import { PUBLIC_USER_SELECT, toPublicUser } from "../src/modules/user/user.privacy.js";
 
 const router = express.Router();
 
