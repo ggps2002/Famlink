@@ -126,6 +126,72 @@ For CI builds to work, the project needs:
 - **Deploy command:** `npx wrangler versions upload` (or `wrangler deploy`)
 - **Environment variables:** every `VITE_*` in §7, with *production* values.
 
+### 3.5 Automatic deploys from GitHub
+
+`.github/workflows/deploy-frontend.yml` builds and deploys on every push to
+`main` that touches `frontend/**`, plus on demand via *Actions > Run workflow*.
+It publishes to the `famlink` Worker, which serves
+<https://famlink.pradiptoshivam5317.workers.dev>.
+
+This exists because **nothing in this repo deployed anything**. The only other
+workflow is the mirror, and it has been skipped on every run since it was added
+(see §3.6), so pushing to `main` never reached any site. Deploys were happening
+by hand from a laptop, which is what §2 warns about.
+
+Required repository configuration, under *Settings > Secrets and variables >
+Actions*:
+
+| Kind | Name | Notes |
+|---|---|---|
+| Variable | the six `VITE_*` in §7 | Public once shipped; plain variables, not secrets |
+| Secret | `CLOUDFLARE_ACCOUNT_ID` | `ee9377757133515eab7ac27f59082e9c` |
+| Secret | `CLOUDFLARE_API_TOKEN` | Create with the **Edit Cloudflare Workers** template |
+
+Three parts of the workflow are load-bearing and should not be trimmed:
+
+- **The preflight.** `frontend/.env` is gitignored, so a CI checkout has *none*
+  of the `VITE_*` values. An unset repository variable expands to an empty
+  string, which Vite bakes in happily. The preflight fails the run instead, and
+  separately rejects a `VITE_API_BASE_URL` pointing at localhost.
+- **The postflight.** The build succeeding proves the bundler ran, not that it
+  was handed the right values — which is exactly how the §2 incident passed
+  every check. It greps the built bundle for a development origin. It scans only
+  `.js`/`.css`: sourcemaps embed their original sources, and socket.io's carry
+  the comment ``// make sure we treat `localhost:80` and `localhost` equally``,
+  so scanning `dist/assets` wholesale fails every build on a third-party
+  comment.
+- **`wrangler deploy`, not `wrangler versions upload`.** The latter stages a
+  version without giving it traffic, which looks like a green deploy whose
+  changes never appear. See §3.3.
+
+The workflow file must exist **on the branch being pushed** — GitHub runs the
+copy on that branch. Adding it to a feature branch does nothing for `main` until
+it is merged.
+
+`VITE_STRIPE_PUBLISABLE_KEY` is intentionally *not* required by the workflow.
+It is declared in `frontend/.env` and listed in §7, but nothing under
+`frontend/src` reads it, so requiring it would block every deploy on a dead
+variable. Add it back when Stripe.js is actually wired up.
+
+### 3.6 The mirror workflow is dead, and dangerous to revive
+
+`.github/workflows/mirror-to-personal.yml` force-pushes every ref to
+`ggps2002/Famylink`. It has never run once:
+
+```yaml
+if: github.repository == 'Famylink/Famylink'   # this repo is ggps2002/Famlink
+```
+
+`Famylink/Famylink` does not resolve, and the `SYNC_SSH_KEY` secret it needs
+does not exist either. **Do not simply correct the guard.** The push is
+`--force --prune`, and the two repos have diverged: `ggps2002/Famylink@main`
+carries ~105 commits that are not in this repo, and 8 branches that exist only
+there. Running it as written would delete all of it.
+
+`ggps2002/Famylink` is what <https://famlink.care> builds from — it is pinned to
+Vite 5 and last changed 2026-08-19. That site is **not** touched by §3.5 and
+will keep serving its own build until its deploy is repointed deliberately.
+
 ---
 
 ## 4. Backend — Fly.io

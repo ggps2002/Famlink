@@ -1,0 +1,147 @@
+name: Deploy frontend to Cloudflare Workers
+
+# Builds the frontend and publishes it to the `famlink` Worker, which serves
+# https://famlink.pradiptoshivam5317.workers.dev.
+#
+# WHY THIS EXISTS
+# Nothing in this repo deployed anything. The only other workflow is the mirror,
+# and its `if:` guard names a repo that does not resolve, so it has been skipped
+# on every run — which is why pushing to main never reached production.
+#
+# WHERE YOU BUILD DECIDES WHAT THE SITE TALKS TO
+# Vite freezes `import.meta.env.VITE_*` into the bundle at build time. Nothing at
+# runtime can correct them: not a Cloudflare setting, not a header, not a
+# redeploy of the same artifact. `frontend/.env` is a *development* file and is
+# gitignored, so a CI checkout has none of these values — they have to come from
+# the repository variables below, or the bundle ships pointing at nothing. A
+# local build once shipped with VITE_API_BASE_URL="http://localhost:3000" and
+# every API call went to the visitor's own machine; the build, the tests and the
+# deploy output all stayed green. The preflight and postflight steps below are
+# there to make that specific failure loud instead of silent.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/deploy-frontend.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-frontend
+  # Never cancel a run that may already be uploading: a half-finished deploy is
+  # worse than a queued one.
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      # `npm ci` rather than `npm install`: it honours the lockfile exactly, so
+      # CI cannot silently build against a different dependency tree than the
+      # one that was tested.
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Preflight — every build-time variable is present
+        env:
+          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+          VITE_GOOGLE_CLIENT_ID: ${{ vars.VITE_GOOGLE_CLIENT_ID }}
+          VITE_GOOGLE_KEY: ${{ vars.VITE_GOOGLE_KEY }}
+          VITE_GOOGLE_SCRIPT_URL: ${{ vars.VITE_GOOGLE_SCRIPT_URL }}
+          VITE_GOOGLE_SCRIPT_WAITLIST_URL: ${{ vars.VITE_GOOGLE_SCRIPT_WAITLIST_URL }}
+          VITE_STRIPE_PLUS_PRICE_ID: ${{ vars.VITE_STRIPE_PLUS_PRICE_ID }}
+        run: |
+          # An unset repository variable expands to an empty string, which Vite
+          # would happily bake in. Fail here instead, while it is still cheap.
+          missing=0
+          # These six are exactly the VITE_* that the frontend actually reads.
+          # VITE_STRIPE_PUBLISABLE_KEY is deliberately absent: it is declared in
+          # frontend/.env and listed in DEPLOYMENT.md §7, but nothing under src/
+          # references it, so requiring it would block every deploy on a dead
+          # variable. Add it back here if Stripe.js is ever wired up.
+          for v in VITE_API_BASE_URL VITE_GOOGLE_CLIENT_ID VITE_GOOGLE_KEY \
+                   VITE_GOOGLE_SCRIPT_URL VITE_GOOGLE_SCRIPT_WAITLIST_URL \
+                   VITE_STRIPE_PLUS_PRICE_ID; do
+            if [ -z "${!v}" ]; then
+              echo "::error::Repository variable $v is not set (Settings > Secrets and variables > Actions > Variables)."
+              missing=1
+            fi
+          done
+          case "$VITE_API_BASE_URL" in
+            *localhost*|*127.0.0.1*)
+              echo "::error::VITE_API_BASE_URL points at $VITE_API_BASE_URL — that is a development value."
+              missing=1 ;;
+          esac
+          [ "$missing" -eq 0 ] || exit 1
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        env:
+          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+          VITE_GOOGLE_CLIENT_ID: ${{ vars.VITE_GOOGLE_CLIENT_ID }}
+          VITE_GOOGLE_KEY: ${{ vars.VITE_GOOGLE_KEY }}
+          VITE_GOOGLE_SCRIPT_URL: ${{ vars.VITE_GOOGLE_SCRIPT_URL }}
+          VITE_GOOGLE_SCRIPT_WAITLIST_URL: ${{ vars.VITE_GOOGLE_SCRIPT_WAITLIST_URL }}
+          VITE_STRIPE_PLUS_PRICE_ID: ${{ vars.VITE_STRIPE_PLUS_PRICE_ID }}
+        run: npm run build
+
+      - name: Postflight — no development origin survived into the bundle
+        run: |
+          # The build succeeding proves the bundler ran, not that it was handed
+          # the right values. This greps the artifact itself, which is the only
+          # thing that actually ships.
+          #
+          # Restricted to .js/.css on purpose. Sourcemaps embed the original
+          # sources, comments included, and socket.io's carry the line
+          # '// make sure we treat `localhost:80` and `localhost` equally' — so
+          # scanning dist/assets wholesale fails every build on a comment in a
+          # third-party dependency.
+          hits=$(grep -rlE 'localhost:[0-9]+|127\.0\.0\.1:[0-9]+' \
+                   --include='*.js' --include='*.css' dist/assets 2>/dev/null || true)
+          if [ -n "$hits" ]; then
+            echo "::error::A development origin is baked into the shipped bundle. Refusing to deploy."
+            echo "$hits"
+            exit 1
+          fi
+          echo "Shipped bundle is clean."
+
+      # `deploy`, not `versions upload`. The latter stages a version without
+      # giving it traffic, which looks like a successful deploy whose changes
+      # never appear on the site.
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: frontend
+          wranglerVersion: '4'
+          command: deploy
+
+      - name: Smoke test the deployed site
+        run: |
+          U=https://famlink.pradiptoshivam5317.workers.dev
+          # Cloudflare takes a moment to route a fresh version.
+          sleep 10
+          code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 "$U/")
+          echo "GET $U/ -> $code"
+          [ "$code" = "200" ] || { echo "::error::Site returned $code after deploy."; exit 1; }
+          # A deep link must render the SPA, not 404. This is what
+          # not_found_handling in wrangler.jsonc is for.
+          deep=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 "$U/find-nanny-share")
+          echo "GET $U/find-nanny-share -> $deep"
+          [ "$deep" = "200" ] || { echo "::error::Deep link returned $deep; SPA routing is broken."; exit 1; }
