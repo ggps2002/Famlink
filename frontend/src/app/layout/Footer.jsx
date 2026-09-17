@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import { fireToastMessage } from "@shared/ui/toast";
 import { api } from "@shared/api/client";
 import { Loader2 } from "lucide-react";
+import { clearConsent } from "@shared/consent/consentStore";
 
 function Footer() {
   const { pathname } = useLocation();
@@ -312,6 +313,19 @@ function Footer() {
               >
                 Terms &amp; Conditions
               </NavLink>
+              {/* Reopens the cookie banner. Consent has to be as easy to
+                  withdraw as it was to give, and the banner hides itself once
+                  answered — so without an entry point here, a visitor who
+                  accepted has no way back to the choice. `clearConsent` forgets
+                  the stored answer and fires the event CookieConsentGate
+                  listens for, on whatever page they happen to be on. */}
+              <button
+                type="button"
+                onClick={clearConsent}
+                className="Livvic-Medium text-[#FFFFFFCC] underline decoration-[#FFFFFF44] hover:text-white hover:decoration-white transition-all"
+              >
+                Cookie Preferences
+              </button>
             </div>
           </div>
         </div>

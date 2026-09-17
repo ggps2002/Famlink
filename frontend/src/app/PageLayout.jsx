@@ -10,6 +10,7 @@ import { refreshTokenThunk, logoutThunk } from "@features/auth/store/authSlice";
 import Feedback from "@features/feedback/components/FeedbackForm";
 import { captureReferralFromUrl } from "@features/referral/referral";
 import { captureSharedProfileFromUrl } from "@features/share-link/sharedProfileRef";
+import CookieConsentGate from "@shared/consent/CookieConsentGate";
 
 // ─── Route Config ────────────────────────────────────────────────────────────
 
@@ -208,7 +209,11 @@ function UserLayout({ pathname }) {
 
 // ─── Main Layout ─────────────────────────────────────────────────────────────
 
-export default function PageLayout() {
+/* Picks the header/footer combination for a path. Split out from PageLayout
+ * below purely so that anything which must appear on EVERY page is written
+ * once: this function has six separate returns, and a component added to them
+ * one at a time is a component that will be missing from the seventh. */
+function PageChrome() {
   const { pathname, search } = useLocation();
 
   useTokenRefresh();
@@ -275,6 +280,24 @@ export default function PageLayout() {
       <Header join={true} />
       <RouteOutlet />
       <Footer />
+    </>
+  );
+}
+
+/**
+ * The layout every route renders inside, plus the site-wide furniture.
+ *
+ * The cookie consent gate sits here rather than in `App.jsx` because the
+ * banner it loads renders a react-router <Link> to the cookie policy, which
+ * needs the router's context — and PageLayout is the parent route element, so
+ * it is the outermost place that context exists. The gate itself is a storage
+ * read and renders nothing for a visitor who has already answered.
+ */
+export default function PageLayout() {
+  return (
+    <>
+      <PageChrome />
+      <CookieConsentGate />
     </>
   );
 }
