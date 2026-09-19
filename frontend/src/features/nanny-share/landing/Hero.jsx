@@ -4,6 +4,8 @@ import Spinner from "@shared/ui/Spinner";
 import Button from "@shared/ui/Button";
 import { useNavigate } from "react-router-dom";
 import familyHeroImg from "@/assets/images/familyHero.webp";
+import familyHero480 from "@/assets/images/familyHero-480w.webp";
+import familyHero800 from "@/assets/images/familyHero-800w.webp";
 
 function Hero() {
   const [zipCode, setZipCode] = useState("");
@@ -166,10 +168,26 @@ function Hero() {
               </div>
 
               {/* Dashboard Image */}
+              {/* The LCP element on every viewport.
+                *
+                * `width`/`height` now match the real file. They still said
+                * 2012x1256 after the source was resized to 1176x734, which was
+                * only harmless because the aspect ratio happened to survive.
+                *
+                * The srcset is for phones: this renders about 358px wide on a
+                * 390px viewport, so the 1176w file was roughly three times the
+                * pixels needed, over the slowest connection the site is
+                * measured on. Keep these widths in step with
+                * scripts/preload-lcp.mjs, which preloads the same set — a
+                * preload that disagrees with the srcset fetches a file the
+                * browser then declines to use, costing a request and saving
+                * nothing. */}
               <img
                 src={familyHeroImg}
-                width={2012}
-                height={1256}
+                srcSet={`${familyHero480} 480w, ${familyHero800} 800w, ${familyHeroImg} 1176w`}
+                sizes="(min-width: 1024px) 45vw, 92vw"
+                width={1176}
+                height={734}
                 fetchPriority="high"
                 alt="Dashboard Preview"
                 className="w-full rounded-t-[16px] sm:rounded-t-[20px] shadow-[0_-8px_48px_rgba(0,18,67,0.12),0_0_0_1px_rgba(0,0,0,0.05)] block object-cover object-top relative z-10 transition-all duration-300"

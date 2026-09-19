@@ -25,7 +25,7 @@ import { CONSENT_EVENT, readConsent } from "@shared/consent/consentStore";
  * stops the one-time UI from competing with the page's LCP.
  */
 
-const loadBanner = () => import("@shared/consent/CookieConsent");
+const loadBanner = () => import("@shared/consent/CookieConsentPanel");
 const CookieConsent = React.lazy(loadBanner);
 
 export default function CookieConsentGate({ onAccept, ...props }) {

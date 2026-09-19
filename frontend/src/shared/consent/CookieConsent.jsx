@@ -1,173 +1,360 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
-import { ChevronRight, CookieIcon } from "lucide-react";
+import { Cookie } from "lucide-react";
 
-import CustomButton from "@shared/ui/Button";
 import { cn } from "@shared/lib/cn";
+import { Switch } from "@shared/ui/switch";
 import { COOKIE_CATEGORIES, allAccepted, essentialOnly } from "@shared/consent/categories";
 import { writeConsent } from "@shared/consent/consentStore";
 
 /**
- * The cookie consent banner.
+ * The cookie consent panel, as a set of composable parts.
  *
- * Only ever rendered by `CookieConsentGate`, and only when the visitor has no
- * answer on file — so this component may assume it is being shown, and does not
- * read storage itself. Everything about when to ask lives in the gate.
+ * Adapted from the Hirael cookie-consent block. The composition is the point:
+ * the panel does not hard-code its own copy or category list, so the same
+ * mechanics can render a different wording or an extra category without this
+ * file growing a prop for each.
  *
- * Two deliberate omissions from the component this was ported from:
+ * WHAT WAS CHANGED ON THE WAY IN, AND WHY
  *
- *   1. NO framer-motion. Upstream animates the banner with `motion.div` and
- *      `AnimatePresence`. Today that would be free — `NannyShareLanding` is
- *      statically imported by App.jsx and reaches framer-motion through
- *      `landing/HowItWorks`, so the library is already in the entry chunk. The
- *      point is that this is the only thing keeping it there. Lazy-loading the
- *      landing page is an obvious future win, and on that day a banner that
- *      mounts site-wide would be the one import dragging the whole library
- *      back onto the critical path, with nothing at the call site to explain
- *      why. The entrance below is `tailwindcss-animate` utilities — plain CSS
- *      the stylesheet already carries — so this component has no opinion about
- *      where framer-motion lives.
+ *   Storage. The original owns a `storageKey` and reads it with
+ *   `useSyncExternalStore`, with a server snapshot for SSR. This app is a Vite
+ *   SPA with no server render, and it already has `consentStore` — which
+ *   versions the record and keys it by category id rather than by position.
+ *   Keeping two ideas of where consent lives would mean two answers to "has
+ *   this person consented"; the parts below commit through the store, and
+ *   `CookieConsentGate` remains the only thing that decides whether to ask.
  *
- *   2. NO `mounted` flag. Upstream needs one because Next.js renders it on the
- *      server, where `localStorage` does not exist and a first client render
- *      that disagreed with the server's HTML would be a hydration error. This
- *      is a Vite SPA with no SSR.
+ *   The `Field` primitives. Those are shadcn's newer form wrappers, which this
+ *   project does not have. A category row is a label, a description and a
+ *   switch — adding three primitives to express that would be more code than
+ *   the thing it expresses.
  *
- * The preferences dialog is `React.lazy`: Radix's dialog, switch, label and
- * tooltip only load if someone clicks "Customize". See the header comment in
- * `CookiePreferencesDialog.jsx` before moving any import across that line.
+ *   `aria-modal={false}` with `role="dialog"` is dropped in favour of
+ *   `role="region"`. A dialog that is not modal and traps nothing is not a
+ *   dialog, and announcing it as one tells a screen reader user they are in
+ *   something they must dismiss before continuing. They are not.
+ *
+ * NO framer-motion, deliberately — see the note in CookieConsentGate about what
+ * mounts site-wide.
  */
 
-const loadPreferencesDialog = () => import("@shared/consent/CookiePreferencesDialog");
-const CookiePreferencesDialog = React.lazy(loadPreferencesDialog);
+const CookieConsentContext = React.createContext(null);
 
-function CookieConsent({
-  className,
-  categories = COOKIE_CATEGORIES,
-  cookiePolicyUrl = "/terms-and-conditions",
-  onAccept,
-  onDecline,
-}) {
+const useCookieConsent = () => {
+  const ctx = React.useContext(CookieConsentContext);
+  if (!ctx) {
+    throw new Error("CookieConsent parts must be used within <CookieConsent>");
+  }
+  return ctx;
+};
+
+/**
+ * The panel shell and the state every part below reads.
+ *
+ * Categories register themselves on mount rather than being passed down, so
+ * "accept all" means every category actually rendered — a category added to the
+ * markup cannot be silently left out of the answer that gets stored.
+ */
+function CookieConsent({ className, children, categories = COOKIE_CATEGORIES, onAccept, onDecline }) {
   const [dismissed, setDismissed] = React.useState(false);
-  const [showDialog, setShowDialog] = React.useState(false);
-  const [preferences, setPreferences] = React.useState(() => essentialOnly(categories));
+  const [expanded, setExpanded] = React.useState(false);
+  const [prefs, setPrefs] = React.useState(() => essentialOnly(categories));
 
-  // Callbacks go through a ref so the commit handlers below can depend on
-  // nothing that changes per render. Upstream listed `onAccept` in an effect's
-  // deps, which re-runs — and re-fires the callback — on every render of any
-  // parent passing an inline arrow function, i.e. the common case.
+  const registered = React.useRef(new Map());
+
   const handlers = React.useRef({ onAccept, onDecline });
   React.useEffect(() => {
     handlers.current = { onAccept, onDecline };
   });
 
-  const commit = React.useCallback((prefs) => {
-    writeConsent(prefs);
-    setPreferences(prefs);
-    setShowDialog(false);
-    setDismissed(true);
-    handlers.current.onAccept?.(prefs);
+  const register = React.useCallback((category) => {
+    registered.current.set(category.id, category);
+    return () => registered.current.delete(category.id);
   }, []);
 
-  const handleAcceptAll = React.useCallback(
-    () => commit(allAccepted(categories)),
-    [categories, commit],
-  );
+  const setPref = React.useCallback((id, checked) => {
+    setPrefs((prev) => ({ ...prev, [id]: checked }));
+  }, []);
 
-  const handleRejectAll = React.useCallback(() => {
-    commit(essentialOnly(categories));
+  const commit = React.useCallback((next) => {
+    writeConsent(next);
+    setPrefs(next);
+    setExpanded(false);
+    setDismissed(true);
+    handlers.current.onAccept?.(next);
+  }, []);
+
+  const acceptAll = React.useCallback(() => {
+    const next = {};
+    for (const { id } of registered.current.values()) next[id] = true;
+    commit(Object.keys(next).length ? next : allAccepted(categories));
+  }, [categories, commit]);
+
+  const rejectAll = React.useCallback(() => {
+    const next = {};
+    for (const { id, required } of registered.current.values()) next[id] = Boolean(required);
+    commit(Object.keys(next).length ? next : essentialOnly(categories));
     handlers.current.onDecline?.();
   }, [categories, commit]);
 
-  const handleSaveCustom = React.useCallback(() => commit(preferences), [commit, preferences]);
+  const save = React.useCallback(() => {
+    const next = {};
+    for (const { id, required } of registered.current.values()) {
+      // A required category is on whatever the switch says, because the switch
+      // is disabled and cannot say otherwise — but this is also the guard that
+      // stops a keyboard or a stale state from turning one off.
+      next[id] = Boolean(required) || Boolean(prefs[id]);
+    }
+    commit(next);
 
-  const handleToggle = React.useCallback(
-    (categoryId, checked) => {
-      // Essential cookies are not a choice, so refuse the write here rather
-      // than relying on the switch being disabled — this is also reachable
-      // from the keyboard and from anything else that calls it.
-      if (categories.find((c) => c.id === categoryId)?.isEssential) return;
-      setPreferences((prev) => ({ ...prev, [categoryId]: checked }));
-    },
-    [categories],
+    const refusedAll = [...registered.current.values()].every(
+      ({ id, required }) => required || !prefs[id]
+    );
+    if (refusedAll) handlers.current.onDecline?.();
+  }, [commit, prefs]);
+
+  const value = React.useMemo(
+    () => ({ prefs, setPref, expanded, setExpanded, register, acceptAll, rejectAll, save }),
+    [prefs, setPref, expanded, register, acceptAll, rejectAll, save]
   );
+
+  // Escape collapses the categories rather than dismissing the panel: the
+  // question is still unanswered, and a key press is not an answer.
+  const onKeyDown = (event) => {
+    if (event.key === "Escape" && expanded) {
+      event.stopPropagation();
+      setExpanded(false);
+    }
+  };
 
   if (dismissed) return null;
 
   return (
-    <>
+    <CookieConsentContext.Provider value={value}>
       <div
         role="region"
         aria-label="Cookie preferences"
+        data-slot="cookie-consent"
+        data-expanded={expanded ? "" : undefined}
+        onKeyDown={onKeyDown}
         className={cn(
-          // Above the sticky header (z-50) and its mobile menu (z-40), below
-          // the preferences dialog (z-100) that opens from it.
-          "fixed inset-x-0 bottom-0 z-[60] w-full sm:inset-x-auto sm:bottom-4 sm:left-4 sm:max-w-md",
-          "animate-in fade-in-0 slide-in-from-bottom-4 duration-500",
-          className,
+          // Above the sticky header (z-50) and its mobile menu (z-40).
+          "fixed bottom-4 start-4 z-[60] flex w-[calc(100%-2rem)] max-w-sm flex-col gap-4",
+          "rounded-2xl border border-line bg-white/95 p-5 text-ink shadow-card backdrop-blur",
+          "animate-in fade-in-0 slide-in-from-bottom-4 duration-300 motion-reduce:animate-none",
+          className
         )}
       >
-        <div className="m-3 rounded-3xl border border-line bg-white/95 shadow-card backdrop-blur-lg">
-          <div className="flex items-center gap-3 p-6 pb-4">
-            <div className="rounded-xl bg-accent-soft p-2">
-              <CookieIcon className="h-5 w-5 text-ink" />
-            </div>
-            <h2 className="font-livvic-semibold text-lg text-ink">Cookie preferences</h2>
-          </div>
-
-          <div className="px-6 pb-4">
-            <p className="fl-small mb-4">
-              We use cookies to keep you signed in, understand how Famlink is used, and show
-              families relevant content.
-            </p>
-            <Link
-              to={cookiePolicyUrl}
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="group inline-flex items-center font-livvic-medium text-xs text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-ink"
-            >
-              Read our cookie policy
-              <ChevronRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-0.5" />
-            </Link>
-          </div>
-
-          <div className="flex flex-col gap-3 rounded-b-3xl border-t border-line bg-canvas/60 p-4 sm:flex-row">
-            <CustomButton
-              btnText="Accept all"
-              action={handleAcceptAll}
-              className="w-full bg-accent text-sm text-ink transition-colors hover:bg-accent-strong sm:flex-1"
-            />
-            <CustomButton
-              btnText="Customize"
-              action={() => setShowDialog(true)}
-              // Start fetching the dialog chunk on intent rather than on the
-              // click, so the panel opens immediately instead of after a round
-              // trip. Repeat calls are free — the import is cached.
-              onMouseEnter={loadPreferencesDialog}
-              onFocus={loadPreferencesDialog}
-              className="w-full border border-line bg-white text-sm text-ink transition-colors hover:bg-canvas sm:flex-1"
-            />
-          </div>
-        </div>
+        {children}
       </div>
-
-      {/* Not rendered until "Customize" is clicked, so the chunk is not
-          requested by simply showing the banner. */}
-      {showDialog && (
-        <React.Suspense fallback={null}>
-          <CookiePreferencesDialog
-            open={showDialog}
-            onOpenChange={setShowDialog}
-            categories={categories}
-            preferences={preferences}
-            onToggle={handleToggle}
-            onSave={handleSaveCustom}
-            onRejectAll={handleRejectAll}
-          />
-        </React.Suspense>
-      )}
-    </>
+    </CookieConsentContext.Provider>
   );
 }
 
-export { CookieConsent };
-export default CookieConsent;
+function CookieConsentTitle({ className, children, ...props }) {
+  return (
+    <h2
+      data-slot="cookie-consent-title"
+      className={cn("flex items-center gap-2 font-livvic-semibold text-sm text-ink", className)}
+      {...props}
+    >
+      <Cookie aria-hidden="true" className="size-4 text-muted" />
+      {children}
+    </h2>
+  );
+}
+
+function CookieConsentDescription({ className, ...props }) {
+  return (
+    <p
+      data-slot="cookie-consent-description"
+      className={cn("font-livvic-medium text-sm leading-relaxed text-muted", className)}
+      {...props}
+    />
+  );
+}
+
+/** Expands the per-category switches. Hidden once they are showing. */
+function CookieConsentManage({ className, children = "Manage", ...props }) {
+  const { expanded, setExpanded } = useCookieConsent();
+  if (expanded) return null;
+
+  return (
+    <button
+      type="button"
+      data-slot="cookie-consent-manage"
+      aria-expanded={expanded}
+      onClick={() => setExpanded(true)}
+      className={cn(
+        "cursor-pointer rounded-full px-3 py-1.5 font-livvic-semibold text-xs text-muted",
+        "transition-colors hover:bg-canvas hover:text-ink",
+        "focus:outline-none focus-visible:ring-2 focus-visible:ring-ink/30",
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+
+/** Renders its categories only while the panel is expanded. */
+function CookieConsentCategories({ className, ...props }) {
+  const { expanded } = useCookieConsent();
+  if (!expanded) return null;
+
+  return (
+    <div
+      data-slot="cookie-consent-categories"
+      className={cn(
+        "flex flex-col divide-y divide-line rounded-xl border border-line bg-white",
+        "animate-in fade-in-0 slide-in-from-top-1 duration-200 motion-reduce:animate-none",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+function CookieConsentCategory({ id, name, description, required = false, className, ...props }) {
+  const { prefs, setPref, register } = useCookieConsent();
+
+  React.useEffect(() => register({ id, required }), [register, id, required]);
+
+  const checked = required || Boolean(prefs[id]);
+  const switchId = `cookie-consent-${id}`;
+
+  return (
+    <div
+      data-slot="cookie-consent-category"
+      data-required={required ? "" : undefined}
+      className={cn("flex items-start justify-between gap-4 p-3", className)}
+      {...props}
+    >
+      <div className="flex min-w-0 flex-col gap-0.5">
+        <label
+          htmlFor={switchId}
+          className="flex items-center gap-2 font-livvic-semibold text-sm text-ink"
+        >
+          {name}
+          {required && (
+            <span className="font-livvic-medium text-[10px] uppercase tracking-[0.08em] text-muted">
+              Always on
+            </span>
+          )}
+        </label>
+        {description && (
+          <p className="font-livvic-medium text-xs leading-5 text-muted">{description}</p>
+        )}
+      </div>
+
+      <Switch
+        id={switchId}
+        checked={checked}
+        disabled={required}
+        onCheckedChange={(next) => setPref(id, next)}
+        aria-label={typeof name === "string" ? name : undefined}
+        className="mt-0.5 shrink-0"
+      />
+    </div>
+  );
+}
+
+function CookieConsentActions({ className, ...props }) {
+  return (
+    <div
+      data-slot="cookie-consent-actions"
+      className={cn("flex flex-wrap items-center gap-2", className)}
+      {...props}
+    />
+  );
+}
+
+/* The three commit buttons. `accent` is the brand fill and carries ink text;
+ * the outline pair sit on white so they read as the quieter choice without
+ * being hard to find — which a consent banner's "reject" must never be. */
+const BASE_BUTTON =
+  "cursor-pointer rounded-full px-3.5 py-1.5 font-livvic-semibold text-xs transition-colors " +
+  "focus:outline-none focus-visible:ring-2 focus-visible:ring-ink/30";
+const FILLED = "bg-accent text-ink hover:bg-accent-strong";
+const OUTLINE = "border border-line bg-white text-ink hover:bg-canvas";
+
+function CookieConsentAcceptAll({ className, children = "Accept all", ...props }) {
+  const { acceptAll } = useCookieConsent();
+  return (
+    <button
+      type="button"
+      data-slot="cookie-consent-accept-all"
+      onClick={acceptAll}
+      className={cn(BASE_BUTTON, FILLED, className)}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+
+function CookieConsentRejectAll({ className, children = "Reject all", ...props }) {
+  const { rejectAll } = useCookieConsent();
+  return (
+    <button
+      type="button"
+      data-slot="cookie-consent-reject-all"
+      onClick={rejectAll}
+      className={cn(BASE_BUTTON, OUTLINE, className)}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+
+/** Saves the current switches. Only shown while the categories are expanded. */
+function CookieConsentSave({ className, children = "Save choices", ...props }) {
+  const { expanded, save } = useCookieConsent();
+  if (!expanded) return null;
+
+  return (
+    <button
+      type="button"
+      data-slot="cookie-consent-save"
+      onClick={save}
+      className={cn(BASE_BUTTON, OUTLINE, className)}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+
+/** A react-router Link, so the policy opens in-app rather than reloading it. */
+function CookieConsentLink({ className, ...props }) {
+  return (
+    <Link
+      data-slot="cookie-consent-link"
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      className={cn(
+        "text-xs text-muted underline underline-offset-4 transition-colors hover:text-ink",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+export {
+  CookieConsent,
+  CookieConsentTitle,
+  CookieConsentDescription,
+  CookieConsentManage,
+  CookieConsentCategories,
+  CookieConsentCategory,
+  CookieConsentActions,
+  CookieConsentAcceptAll,
+  CookieConsentRejectAll,
+  CookieConsentSave,
+  CookieConsentLink,
+  useCookieConsent,
+};

@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginThunk } from "@features/auth/store/authSlice";
 import { fireToastMessage } from "@shared/ui/toast";
 import { GoogleLogin } from "@react-oauth/google";
+import GoogleAuthBoundary from "@shared/auth/GoogleAuthBoundary";
 import { jwtDecode } from "jwt-decode";
 import SEOMetaData from "@shared/seo/SEOMetaData";
 import { nannyshareProfileThunk } from "@features/nanny-share/store/nannyShareSlice";
@@ -208,7 +209,13 @@ export default function Login() {
       console.error("Login Failed");
     };
 
-    return <GoogleLogin onSuccess={onSuccess} onError={onError} />;
+    return (
+      // The boundary, not the root provider stack, is what pulls in
+      // Google's script — so it is fetched on this screen and nowhere else.
+      <GoogleAuthBoundary>
+        <GoogleLogin onSuccess={onSuccess} onError={onError} />
+      </GoogleAuthBoundary>
+    );
   }
   const handleSubmit = async (values) => {
     try {

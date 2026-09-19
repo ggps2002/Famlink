@@ -4,6 +4,7 @@ import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import { InputDa, InputPassword } from "@shared/ui/Input";
 import TermsNotice from "@features/legal/components/TermsNotice";
 import { GoogleLogin } from "@react-oauth/google";
+import GoogleAuthBoundary from "@shared/auth/GoogleAuthBoundary";
 import { fireToastMessage } from "@shared/ui/toast";
 import { useDispatch } from "react-redux";
 import { userCheckThunk } from "@features/auth/store/authSlice";
@@ -158,7 +159,13 @@ const Screen3 = ({ formRef, recordId, location, distance, careType, careExperien
       }
     };
 
-    return <GoogleLogin onSuccess={onSuccess} onError={() => { }} />;
+    return (
+      // The boundary, not the root provider stack, is what pulls in
+      // Google's script — so it is fetched on this screen and nowhere else.
+      <GoogleAuthBoundary>
+        <GoogleLogin onSuccess={onSuccess} onError={() => { }} />
+      </GoogleAuthBoundary>
+    );
   }
 
   useEffect(() => {

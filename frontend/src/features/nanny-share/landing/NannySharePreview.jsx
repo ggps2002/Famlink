@@ -3,6 +3,8 @@ import CustomButton from "@shared/ui/Button";
 import { NavLink } from "react-router-dom";
 import { SectionHeading } from "@shared/ui/Section";
 import seeMatchesImg from "@/assets/images/seeMatches.webp";
+import seeMatches480 from "@/assets/images/seeMatches-480w.webp";
+import seeMatches900 from "@/assets/images/seeMatches-900w.webp";
 import browseFamImg from "@/assets/images/browseFam.webp";
 
 /* The "matches near you" teaser: a CTA over an endlessly scrolling screenshot.
@@ -21,8 +23,17 @@ function NannySharePreview({ caregiver }) {
   // so a single hard-coded pair would stretch whichever one it was not measured
   // from.
   const preview = caregiver
-    ? { src: browseFamImg, width: 1808, height: 3076 }
-    : { src: seeMatchesImg, width: 1806, height: 3913 };
+    ? { src: browseFamImg, width: 1808, height: 3076, srcSet: undefined }
+    : {
+        src: seeMatchesImg,
+        width: 1806,
+        height: 3913,
+        // The tallest asset on the homepage at 274 KB, and on a 390px phone it
+        // renders about 358px wide — roughly a fifth of the pixels it ships.
+        // The full-width file stays as the top candidate for desktop, where it
+        // is genuinely 2x the 896px box.
+        srcSet: `${seeMatches480} 480w, ${seeMatches900} 900w, ${seeMatchesImg} 1806w`,
+      };
 
   return (
     <div className="flex flex-col items-center text-center">
@@ -70,10 +81,13 @@ function NannySharePreview({ caregiver }) {
             <img
               key={i}
               src={preview.src}
+              srcSet={preview.srcSet}
+              sizes="(min-width: 1024px) 66vw, 92vw"
               alt=""
               width={preview.width}
               height={preview.height}
               loading="lazy"
+              decoding="async"
               className="w-full block object-cover"
             />
           ))}

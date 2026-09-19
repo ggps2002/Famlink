@@ -424,7 +424,7 @@ export default function ProfileList({
   };
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full mt-6">
       {isRequestSubmitModal && (
         <MatchRequestFormModal
           setIsRequestSubmitModal={setIsRequestSubmitModal}

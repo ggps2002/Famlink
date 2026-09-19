@@ -8,42 +8,56 @@ import { clearConsent, hasConsent, readConsent, writeConsent } from "@shared/con
 
 /**
  * The gate decides whether anyone is asked at all, so the cases worth pinning
- * are the ones where it gets that wrong: showing the banner to someone who
+ * are the ones where it gets that wrong: showing the panel to someone who has
  * already answered, or failing to show it to someone who has not.
  *
- * The banner and the preferences dialog are both lazy, so every assertion about
- * them goes through `findBy*` — a `getBy*` here would run before the chunk has
- * resolved and fail for the wrong reason.
+ * The panel is lazy, so every assertion about it goes through `findBy*` — a
+ * `getBy*` would run before the chunk resolved and fail for the wrong reason.
+ *
+ * The switches only exist while the panel is expanded; the collapsed panel does
+ * not render them at all. "Not expanded" is therefore asserted as "not in the
+ * document", not as "hidden".
  */
 
 const renderGate = (props = {}) =>
   render(
     <MemoryRouter>
       <CookieConsentGate {...props} />
-    </MemoryRouter>,
+    </MemoryRouter>
   );
+
+const panel = () => screen.findByRole("heading", { name: /we use cookies/i });
+const gone = () =>
+  waitFor(() =>
+    expect(screen.queryByRole("heading", { name: /we use cookies/i })).not.toBeInTheDocument()
+  );
+
+const expand = async (user) => {
+  const manage = screen.getByRole("button", { name: /manage/i });
+  await user.click(manage);
+  // Manage swaps itself out for Save, so the row never offers both.
+  expect(screen.queryByRole("button", { name: /manage/i })).not.toBeInTheDocument();
+  expect(screen.getByRole("button", { name: /save choices/i })).toBeInTheDocument();
+};
 
 beforeEach(() => {
   localStorage.clear();
 });
 
 describe("CookieConsentGate", () => {
-  it("shows the banner when there is no answer on file", async () => {
+  it("shows the panel when there is no answer on file", async () => {
     renderGate();
-    expect(await screen.findByRole("heading", { name: /cookie preferences/i })).toBeInTheDocument();
+    expect(await panel()).toBeInTheDocument();
   });
 
   it("renders nothing at all for a visitor who already answered", async () => {
     writeConsent({ essential: true, analytics: true, marketing: false });
     const { container } = renderGate();
 
-    // Give the lazy chunk a chance to resolve, so this cannot pass just by
-    // asserting before it would have appeared.
     await waitFor(() => expect(container).toBeEmptyDOMElement());
-    expect(screen.queryByRole("heading", { name: /cookie preferences/i })).not.toBeInTheDocument();
   });
 
-  it("re-applies a stored answer on load without showing the banner", async () => {
+  it("re-applies a stored answer on load without showing the panel", async () => {
     const stored = { essential: true, analytics: true, marketing: false };
     writeConsent(stored);
     const onAccept = vi.fn();
@@ -51,60 +65,84 @@ describe("CookieConsentGate", () => {
     renderGate({ onAccept });
 
     await waitFor(() => expect(onAccept).toHaveBeenCalledWith(stored));
-    expect(screen.queryByRole("heading", { name: /cookie preferences/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: /we use cookies/i })).not.toBeInTheDocument();
   });
 
-  it("brings the banner back when consent is cleared from elsewhere", async () => {
+  it("brings the panel back when consent is cleared from elsewhere", async () => {
     writeConsent({ essential: true, analytics: true, marketing: true });
     renderGate();
 
-    // A "Manage cookies" link anywhere on the site does exactly this.
+    // A "Cookie Preferences" link anywhere on the site does exactly this.
     clearConsent();
 
-    expect(await screen.findByRole("heading", { name: /cookie preferences/i })).toBeInTheDocument();
+    expect(await panel()).toBeInTheDocument();
   });
 });
 
-describe("the banner", () => {
-  it("stores every category and closes on Accept all", async () => {
+describe("the collapsed panel", () => {
+  it("stores every category on Accept all", async () => {
     const user = userEvent.setup();
     const onAccept = vi.fn();
     renderGate({ onAccept });
+    await panel();
 
-    await user.click(await screen.findByRole("button", { name: /accept all/i }));
+    await user.click(screen.getByRole("button", { name: /accept all/i }));
 
-    expect(readConsent()).toEqual({ essential: true, analytics: true, marketing: true });
-    expect(onAccept).toHaveBeenCalledWith({ essential: true, analytics: true, marketing: true });
-    await waitFor(() =>
-      expect(screen.queryByRole("heading", { name: /cookie preferences/i })).not.toBeInTheDocument(),
-    );
+    const all = { essential: true, analytics: true, marketing: true };
+    expect(readConsent()).toEqual(all);
+    expect(onAccept).toHaveBeenCalledWith(all);
+    await gone();
+  });
+
+  it("keeps only the essential categories on Reject all", async () => {
+    const user = userEvent.setup();
+    const onDecline = vi.fn();
+    renderGate({ onDecline });
+    await panel();
+
+    await user.click(screen.getByRole("button", { name: /reject all/i }));
+
+    expect(readConsent()).toEqual({ essential: true, analytics: false, marketing: false });
+    expect(hasConsent("analytics")).toBe(false);
+    expect(onDecline).toHaveBeenCalled();
+    await gone();
+  });
+
+  it("does not render the switches until it is expanded", async () => {
+    renderGate();
+    await panel();
+
+    expect(screen.queryByRole("switch")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /save choices/i })).not.toBeInTheDocument();
   });
 
   it("links to the cookie policy", async () => {
     renderGate();
-    const link = await screen.findByRole("link", { name: /cookie policy/i });
-    expect(link).toHaveAttribute("href", "/terms-and-conditions");
+    await panel();
+    expect(screen.getByRole("link", { name: /cookie policy/i })).toHaveAttribute(
+      "href",
+      "/terms-and-conditions"
+    );
   });
 });
 
-describe("the preferences dialog", () => {
-  it("opens from Customize and is not in the document before that", async () => {
+describe("the expanded panel", () => {
+  it("reveals one switch per category", async () => {
     const user = userEvent.setup();
     renderGate();
+    await panel();
+    await expand(user);
 
-    const customize = await screen.findByRole("button", { name: /customize/i });
+    expect(screen.getAllByRole("switch")).toHaveLength(3);
+    // No modal: the panel grows in place.
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-
-    await user.click(customize);
-    expect(await screen.findByRole("dialog")).toBeInTheDocument();
   });
 
   it("refuses to switch off an essential category", async () => {
     const user = userEvent.setup();
     renderGate();
-
-    await user.click(await screen.findByRole("button", { name: /customize/i }));
-    await screen.findByRole("dialog");
+    await panel();
+    await expand(user);
 
     const essential = screen.getByRole("switch", { name: /essential/i });
     expect(essential).toBeDisabled();
@@ -113,35 +151,48 @@ describe("the preferences dialog", () => {
 
   it("saves only the categories left switched on", async () => {
     const user = userEvent.setup();
-    const onAccept = vi.fn();
-    renderGate({ onAccept });
+    renderGate();
+    await panel();
+    await expand(user);
 
-    await user.click(await screen.findByRole("button", { name: /customize/i }));
-    await screen.findByRole("dialog");
-
-    // Everything starts off except essential, so one click is an opt-in to
-    // analytics alone — marketing must stay off.
+    // Everything starts off except essential, so one click opts into analytics
+    // alone — marketing must stay off.
     await user.click(screen.getByRole("switch", { name: /analytics/i }));
-    await user.click(screen.getByRole("button", { name: /save preferences/i }));
+    await user.click(screen.getByRole("button", { name: /save choices/i }));
 
     expect(readConsent()).toEqual({ essential: true, analytics: true, marketing: false });
     expect(hasConsent("marketing")).toBe(false);
+    await gone();
   });
 
-  it("keeps only the essential categories on Reject all", async () => {
+  it("treats saving with nothing enabled as a refusal", async () => {
     const user = userEvent.setup();
     const onDecline = vi.fn();
     renderGate({ onDecline });
+    await panel();
+    await expand(user);
 
-    await user.click(await screen.findByRole("button", { name: /customize/i }));
-    await screen.findByRole("dialog");
-
-    // Switch something on first, so Reject all is proven to discard it rather
-    // than just to agree with the starting state.
-    await user.click(screen.getByRole("switch", { name: /analytics/i }));
-    await user.click(screen.getByRole("button", { name: /reject all/i }));
+    await user.click(screen.getByRole("button", { name: /save choices/i }));
 
     expect(readConsent()).toEqual({ essential: true, analytics: false, marketing: false });
     expect(onDecline).toHaveBeenCalled();
+  });
+
+  it("collapses on Escape without storing an answer", async () => {
+    const user = userEvent.setup();
+    renderGate();
+    await panel();
+    await expand(user);
+
+    // Escape is handled on the panel, not on the document, so it only applies
+    // while focus is inside it — which is the right scope for a region that
+    // traps nothing and must not swallow Escape from the rest of the page.
+    await user.click(screen.getByRole("switch", { name: /analytics/i }));
+    await user.keyboard("{Escape}");
+
+    expect(screen.getByRole("button", { name: /manage/i })).toBeInTheDocument();
+    expect(screen.queryByRole("switch")).not.toBeInTheDocument();
+    // A key press is not an answer.
+    expect(readConsent()).toBeNull();
   });
 });

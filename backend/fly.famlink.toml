@@ -1,0 +1,33 @@
+# Fly config for the `famlink` org's own backend.
+#
+# Separate file rather than an edit to fly.toml: that one describes
+# backend-bitter-shape-3085 in the gabriele-muratori org, which is a different
+# stack with a different database, and both need to stay deployable.
+#
+#   flyctl deploy -c fly.famlink.toml
+#
+# The two stacks share nothing that matters. This one points at its own Atlas
+# cluster, and its JWT_SECRET / REFRESH_TOKEN_SECRET were generated fresh, so a
+# session from one is not valid on the other.
+
+app = 'famlink-backend'
+primary_region = 'ord'
+
+[build]
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  # Matches the other stack, and carries the same caveat: with no machine
+  # running, the email dispatcher and the cron jobs do not run either, so queued
+  # mail sits in Mongo until the next HTTP request wakes a machine. Raise to 1 if
+  # this environment ever needs to send mail on a timer. See DEPLOYMENT.md §4.3.
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1

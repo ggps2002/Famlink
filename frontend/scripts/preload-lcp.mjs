@@ -31,7 +31,11 @@ const MARKER = "<!-- LCP:PRELOAD -->";
 
 const assets = readdirSync(join(DIST, "assets"));
 const hero = assets.find(
-  (file) => file.startsWith(`${LCP_BASENAME}-`) && /\.(webp|avif|png|jpg|jpeg)$/.test(file)
+  (file) =>
+    file.startsWith(`${LCP_BASENAME}-`) &&
+    // Exclude the responsive variants, which share the prefix.
+    !/-\d+w-/.test(file) &&
+    /\.(webp|avif|png|jpg|jpeg)$/.test(file)
 );
 
 if (!hero) {
@@ -52,8 +56,27 @@ if (html.includes(MARKER)) {
   process.exit(0);
 }
 
+// The <img> in Hero.jsx declares a srcset, so the preload has to declare the
+// same one. A preload for the 1176w file alone is a file phones then decline to
+// use: they pick 480w from the srcset and fetch that too, so the "optimisation"
+// costs an extra 40 KB on the connection it was meant to help. `imagesizes`
+// must match the img's `sizes` for the same reason.
+const variant = (width) =>
+  assets.find((file) => file.startsWith(`${LCP_BASENAME}-${width}w-`) && /\.webp$/.test(file));
+
+const srcset = [
+  [variant(480), 480],
+  [variant(800), 800],
+  [hero, 1176],
+]
+  .filter(([file]) => file)
+  .map(([file, width]) => `/assets/${file} ${width}w`)
+  .join(", ");
+
 const tag =
-  `${MARKER}\n  <link rel="preload" as="image" fetchpriority="high" href="/assets/${hero}" />`;
+  `${MARKER}\n  <link rel="preload" as="image" fetchpriority="high" href="/assets/${hero}"` +
+  `\n        imagesrcset="${srcset}"` +
+  `\n        imagesizes="(min-width: 1024px) 45vw, 92vw" />`;
 
 // After the font preloads, which are the other thing the first paint blocks on.
 const anchor = '<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/Livvic/Livvic-Bold.woff2" />';

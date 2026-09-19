@@ -24,10 +24,18 @@ function ResourceArticleCard({ title, exerpt, time, img, slug, hideImage }) {
 
       {!hideImage && (
         <div className="relative w-full h-44 overflow-hidden shrink-0">
+          {/* Lazy and async on purpose. These cards sit well below the fold on
+            * the homepage, and three of them at ~60 KB each were being fetched
+            * during the initial load — competing for bandwidth with the hero,
+            * which is the LCP element. On the Slow 4G profile Lighthouse scores
+            * mobile against, that is the difference between the hero arriving
+            * and the hero queueing. */}
           <img
             src={img}
             alt=""
             aria-hidden="true"
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover object-top"
           />
         </div>
