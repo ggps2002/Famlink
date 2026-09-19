@@ -706,7 +706,6 @@ export const FamilyProfile = ({
                 {/* Rating */}
                 <span className="block md:hidden row-start-2 col-start-1 md:order-2 flex items-center gap-2 flex-shrink-0 whitespace-nowrap">
                   <CardRating
-                    compact
                     averageRating={averageRating}
                     totalRatings={totalRatings}
                   />
@@ -1522,7 +1521,6 @@ export const NannyProfile = ({
                 {/* Rating */}
                 <span className="block md:hidden row-start-2 col-start-1 md:order-2 flex items-center flex-shrink-0 whitespace-nowrap">
                   <CardRating
-                    compact
                     averageRating={averageRating}
                     totalRatings={totalRatings}
                   />
