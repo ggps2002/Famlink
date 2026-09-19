@@ -136,10 +136,15 @@ export default function HowItWorks({
                 onClick={() => setActiveStep(i)}
                 aria-current={isActive}
                 initial={false}
-                animate={{ opacity: isActive ? 1 : 0.62 }}
-                whileHover={{ opacity: 1 }}
-                whileFocus={{ opacity: 1 }}
                 transition={{ duration: reduceMotion ? 0 : 0.5 }}
+                /* No opacity dimming on the inactive steps. It faded the whole
+                 * button, description text included, and 0.62 turns the #666
+                 * body colour into #9D9C9A against `canvas` — 2.5:1, which fails
+                 * WCAG AA. There is no opacity that both reads as "dimmed" and
+                 * passes: even 0.90 only reaches 4.2:1. The active step is
+                 * already the only one with a white background and a card
+                 * shadow, and its number badge is the only filled one, so the
+                 * state was never relying on opacity to be legible. */
                 className={clsx(
                   "group flex items-start gap-4 p-4 sm:p-5 rounded-2xl text-left w-full transition-colors duration-200",
                   isActive ? "bg-white shadow-card" : "bg-transparent hover:bg-white/60"

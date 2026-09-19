@@ -87,7 +87,7 @@ function Hero() {
           <div className="pr-0 lg:pr-8 relative z-10">
             <h1 className="fl-display text-ink mb-6">
               Nanny Share <br />
-              <span className="text-accent Livvic-Bold">Made Simple</span>
+              <span className="text-accent-ink Livvic-Bold">Made Simple</span>
             </h1>
 
             <p className="fl-lede text-[#4a5568] max-w-md mb-9">

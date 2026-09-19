@@ -45,7 +45,14 @@ export default {
         // (#00000099, #666, #8A8E99, #555555, gray-500) — 5.7:1 on white.
         muted: "#666666",
         // Tertiary: metadata, captions, timestamps. Not for body copy.
-        subtle: "#8A8E99",
+        //
+        // Was #8A8E99, which is 3.3:1 on white and 3.0:1 on `canvas` — under the
+        // 4.5:1 WCAG AA needs for text this size, and Lighthouse failed it on the
+        // chip subtitles and section eyebrows. #6B6F79 is 5.0:1 and 4.5:1. It sits
+        // closer to `muted` than the old value did, which is the unavoidable part:
+        // a tertiary grey lighter than roughly this cannot pass AA on either
+        // background, so the tier is as light as it is allowed to be.
+        subtle: "#6B6F79",
         // Beige section background — the de-facto brand backdrop.
         canvas: "#F6F3EE",
         // Cyan section background, used to break up long pages.
@@ -56,6 +63,13 @@ export default {
           DEFAULT: "#AEC4FF", // primary CTA / brand blue
           strong: "#9DB8FF",  // its hover
           soft: "#DCE6FF",    // tinted fills, icon chips
+          // The brand blue AS TEXT. #AEC4FF on white is 1.7:1 — it fails even the
+          // 3:1 large-text threshold, and the homepage h1's second line was set
+          // in it. This is the same hue, darkened until it passes (3.8:1).
+          //
+          // Use `accent` for fills, where contrast is carried by whatever sits on
+          // top; use `accent-ink` whenever the accent IS the text.
+          ink: "#5B7FE0",
         },
         // The two non-blue CTA colours. Same DEFAULT/strong shape as `accent`
         // so every CTA on the site hovers by shifting colour rather than by

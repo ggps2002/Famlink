@@ -1,3 +1,33 @@
+# ── Security headers ────────────────────────────────────────────────────────
+#
+# Applied to every response. These are the four Lighthouse reports under "Trust
+# and Safety", minus one: see the note on CSP at the end.
+#
+# COOP is `same-origin-allow-popups`, NOT `same-origin`. Google Sign-In opens its
+# consent flow in a popup and talks back to the opener; plain `same-origin`
+# severs that reference and the popup completes but the app never learns the
+# result, so sign-in hangs with no error. `allow-popups` keeps the isolation for
+# everything else and keeps that one channel open.
+#
+# HSTS carries no `preload`. Submitting to the preload list is close to
+# irreversible and this host is a workers.dev subdomain — a domain that is not
+# ours to make that commitment for. A year of enforcement is the part worth
+# having.
+#
+# No CSP here yet, deliberately. The app loads Google Identity Services, Stripe
+# and Cloudinary, and antd injects its styles as inline <style> tags at runtime,
+# so a policy tight enough to satisfy the audit is also tight enough to white-
+# screen the site if one source is missed. It wants building behind
+# Content-Security-Policy-Report-Only first, over real traffic, and promoting
+# once the reports are quiet. Worth doing — but as its own change, not as a
+# line added blind to a headers file.
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
 # Cache policy for the static deploy (Cloudflare reads this from the build output).
 #
 # The default the Worker was serving is `public, max-age=0, must-revalidate` for

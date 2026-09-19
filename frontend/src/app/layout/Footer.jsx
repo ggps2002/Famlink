@@ -12,7 +12,7 @@ function Footer() {
   const [isLoading, setIsLoading] = useState(false);
 
   return (
-    <div className="relative">
+    <footer className="relative">
       {/* Top Curve */}
       <div className="w-full h-16 sm:h-20 md:h-24 lg:h-28 xl:h-32 overflow-hidden">
         <svg
@@ -92,9 +92,9 @@ function Footer() {
 
             {/* Column 2: Links */}
             <div className="flex flex-col">
-              <h4 className="uppercase tracking-wider font-[800] text-[13px] text-white mb-6">
+              <h3 className="uppercase tracking-wider font-[800] text-[13px] text-white mb-6">
                 LINKS
-              </h4>
+              </h3>
               <ul className="flex flex-col gap-4">
                 <li>
                   <NavLink
@@ -137,9 +137,9 @@ function Footer() {
 
             {/* Column 3: Find Nanny Shares */}
             <div className="flex flex-col">
-              <h4 className="uppercase tracking-wider font-[800] text-[13px] text-white mb-6">
+              <h3 className="uppercase tracking-wider font-[800] text-[13px] text-white mb-6">
                 FIND NANNY SHARES
-              </h4>
+              </h3>
               <ul className="flex flex-col gap-4">
                 <li>
                   <NavLink
@@ -245,9 +245,9 @@ function Footer() {
 
             {/* Column 4: Stay in the Loop & Contact */}
             <div className="flex flex-col">
-              <h4 className="uppercase tracking-wider font-[800] text-[13px] text-white mb-5">
+              <h3 className="uppercase tracking-wider font-[800] text-[13px] text-white mb-5">
                 STAY IN THE LOOP
-              </h4>
+              </h3>
               <p className="Livvic-Medium text-[13px] text-[#FFFFFFCC] mb-4">
                 Get helpful childcare tips and platform updates.
               </p>
@@ -284,9 +284,9 @@ function Footer() {
                 </button>
               </div>
 
-              <h4 className="uppercase tracking-wider font-[800] text-[13px] text-white mb-4">
+              <h3 className="uppercase tracking-wider font-[800] text-[13px] text-white mb-4">
                 CONTACT
-              </h4>
+              </h3>
               <a
                 href="mailto:info@Famlink.care"
                 className="Livvic-Medium text-[14px] text-[#FFFFFFCC] underline decoration-[#FFFFFF44] hover:text-white hover:decoration-white transition-all w-fit"
@@ -330,7 +330,7 @@ function Footer() {
           </div>
         </div>
       </div>
-    </div>
+    </footer>
   );
 }
 
