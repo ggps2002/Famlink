@@ -550,7 +550,7 @@ export const FamilyProfile = ({ name, isPremium, userId, id, averageRating, tota
             <div className="flex flex-col flex-1 min-w-0">
 
               {/* Top row: Badge + Heart (mobile only) */}
-              <div className="flex items-center justify-between gap-2 mb-2 md:mb-0">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-2 md:mb-0">
                 <span
                   style={{ backgroundColor: getFamilyTheme(hasNanny).bg, color: getFamilyTheme(hasNanny).text }}
                   className="inline-flex items-center gap-1.5 font-bold Livvic-Bold rounded-full px-3 py-1 text-[11px] md:text-xs flex-shrink-0"
@@ -563,7 +563,7 @@ export const FamilyProfile = ({ name, isPremium, userId, id, averageRating, tota
                 {/* Rating + heart — mobile only (top-right of content). The
                     rating stays on your own card, where only the heart is
                     meaningless. */}
-                <span className="flex items-center gap-2 md:hidden flex-shrink-0">
+                <span className="flex items-center gap-2 flex-shrink-0">
                   <CardRating
                     compact
                     averageRating={averageRating}
@@ -572,7 +572,7 @@ export const FamilyProfile = ({ name, isPremium, userId, id, averageRating, tota
                   {user._id !== userId && <button
                     onClick={favourite}
                     aria-label={isFavorited ? "Remove from favourites" : "Add to favourites"}
-                    className="bg-transparent border-none cursor-pointer p-1 flex-shrink-0"
+                    className="bg-transparent border-none cursor-pointer p-1 flex-shrink-0 hidden md:block"
                   >
                     <Heart
                       size={20}
@@ -593,6 +593,16 @@ export const FamilyProfile = ({ name, isPremium, userId, id, averageRating, tota
                     }`}
                 </h2>
                 <PlusBadge active={isPremium} />
+                 {user._id !== userId && <button
+                    onClick={favourite}
+                    aria-label={isFavorited ? "Remove from favourites" : "Add to favourites"}
+                    className="bg-transparent border-none cursor-pointer p-1 flex-shrink-0 md:hidden block"
+                  >
+                    <Heart
+                      size={20}
+                      className={isFavorited ? "text-red-500 fill-red-500" : "text-[#0D134C]"}
+                    />
+                  </button>}
               </div>
               {/* Children info */}
               <p className="text-[13px] text-[#5D5D5D] mb-1.5 md:mb-1 leading-tight md:h-5 overflow-hidden">
