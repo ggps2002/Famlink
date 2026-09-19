@@ -1,13 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import CustomStepper from "@shared/ui/Stepper";
-import HireStep4 from "@features/hire/components/step4";
+import HireStep4 from "@shared/ui/questionnaire/step4";
 import { fireToastMessage } from "@shared/ui/toast";
 import { cleanFormData1 } from "@shared/lib/toCamelCase";
 import { Form, Input } from "antd";
-import HireStep3 from "@features/hire/components/step3";
+import HireStep3 from "@shared/ui/questionnaire/step3";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { X } from "lucide-react";
-import HireStep2 from "@features/hire/components/step2";
+import HireStep2 from "@shared/ui/questionnaire/step2";
 import { step2Data, step3Data, step4Data, step5Data, step6Data, step7Data, step8Data, step9Data, step10Data, step11Data, step12Data, step13Data } from "@features/nanny-share/questionnaire/options";
 import { parseHourlyRate } from "@shared/lib/rates";
 import { useDispatch, useSelector } from "react-redux";

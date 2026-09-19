@@ -99,8 +99,18 @@ import baseline from "./route-baseline.json" with { type: "json" };
  * with its model, Redux slice, and the two screens that rendered it. Recorded
  * here rather than silently dropped so that "these 23 routes are gone" stays a
  * reviewable statement in the test suite.
+ *
+ * /book-hire — the paid booking lifecycle: a caregiver requesting a job, the
+ * family accepting or rejecting it, and either side cancelling or completing
+ * it, priced from the caregiver's per-child rate. Retired 2026-09-20 as no
+ * longer part of the product, along with its socket handler, its seven Redux
+ * slices and the /hire screens. It was live and called when it was removed —
+ * 14 routes and 23 frontend call sites — so this is a deliberate product
+ * removal rather than a cleanup of something already dead. The Booking model
+ * and repository stay: the admin console's revenue and analytics screens read
+ * historical bookings, and /postJob's admin table still joins against them.
  */
-const RETIRED_PREFIXES = ["/community"];
+const RETIRED_PREFIXES = ["/community", "/book-hire"];
 
 /**
  * Prefixes still served by the legacy router, deliberately not migrated.
@@ -120,7 +130,7 @@ const RETIRED_PREFIXES = ["/community"];
  *     restructuring it is still authoring it. Nothing about its behaviour
  *     changed in this refactor.
  */
-const UNMIGRATED_PREFIXES = ["/postJob", "/nannyShare", "/book-hire", "/phantombuster"];
+const UNMIGRATED_PREFIXES = ["/phantombuster"];
 
 const key = ({ method, path }) => `${method} ${path}`;
 const under = (routes, prefix) =>

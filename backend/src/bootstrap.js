@@ -83,12 +83,13 @@ const scheduledJobs = async () => {
 };
 
 const socketHandlers = async () => {
-  const [{ default: bookingSocket }, { default: chatSocket }] = await Promise.all([
-    import("./modules/booking/booking.socket.js"),
+  // Chat only. The booking socket retired with /book-hire on 2026-09-20 — it
+  // served booking status to the hire screens, which no longer exist.
+  const [{ default: chatSocket }] = await Promise.all([
     import("./modules/messaging/chat.socket.js"),
   ]);
 
-  return [bookingSocket, chatSocket];
+  return [chatSocket];
 };
 
 export const startServer = async () => {

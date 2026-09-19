@@ -31,7 +31,6 @@ const EditProfileNanny = lazy(() => import("@features/dashboard/pages/EditNannyP
 const Favorites = lazy(() => import("@features/dashboard/pages/FamilyFavorites"));
 const ProfileNanny = lazy(() => import("@features/dashboard/pages/NannyProfile"));
 const Setting = lazy(() => import("@features/dashboard/pages/Settings"));
-const NewHireForm = lazy(() => import("@features/hire/pages/HireForm"));
 const JobDescription = lazy(() => import("@features/jobs/pages/JobDescription"));
 const JobListing = lazy(() => import("@features/jobs/pages/JobListing"));
 const JobListingView = lazy(() => import("@features/jobs/pages/JobListingView"));
@@ -186,7 +185,6 @@ function App() {
             <Route path="/families" element={<NewHome />} />
             <Route path="/joinNow" element={<JoinNow />} />
             <Route path="/caregiver/nannyshare" element={<ChooseNannyShare />} />
-            <Route path="/hire" element={<NewHireForm />} />
             <Route path="/find-nanny-share/family/:id" element={<FamilyOnboarding />} />
             <Route path="/caregiver/nanny-share/looking-for-nanny-share-job/:id" element={<JobQuestionnaire />} />
             <Route path="/caregiver/nanny-share/looking-for-another-family/:id" element={<ShareQuestionnaire />} />

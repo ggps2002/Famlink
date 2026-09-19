@@ -6,11 +6,9 @@ import { fileURLToPath } from "node:url";
 import { AuthService } from "@features/auth/api/AuthService";
 import { VerificationService } from "@features/auth/api/VerificationService";
 import { PasswordResetService } from "@features/auth/api/PasswordResetService";
-import { BookingListService } from "@features/booking/api/BookingListService";
 import { ChatService } from "@features/chat/api/ChatService";
 import { DashboardService } from "@features/dashboard/api/DashboardService";
 import { AccountSettingsService } from "@features/dashboard/api/AccountSettingsService";
-import { BookHireService } from "@features/hire/api/BookHireService";
 import { JobsService } from "@features/jobs/api/JobsService";
 import { MatchService } from "@features/matching/api/MatchService";
 import { ReportService } from "@features/matching/api/ReportService";
@@ -65,11 +63,9 @@ const SERVICES = {
   AuthService,
   VerificationService,
   PasswordResetService,
-  BookingListService,
   ChatService,
   DashboardService,
   AccountSettingsService,
-  BookHireService,
   JobsService,
   MatchService,
   ReportService,

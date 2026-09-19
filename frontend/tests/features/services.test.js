@@ -1,7 +1,5 @@
 import { describe, it, expect } from "vitest";
 import { MatchService } from "@features/matching/api/MatchService";
-import { BookHireService } from "@features/hire/api/BookHireService";
-import { BookingListService } from "@features/booking/api/BookingListService";
 import { VerificationService } from "@features/auth/api/VerificationService";
 import { DashboardService } from "@features/dashboard/api/DashboardService";
 import { AuthService } from "@features/auth/api/AuthService";
@@ -50,40 +48,6 @@ describe("MatchService", () => {
     await new MatchService(client).outgoingRequests();
 
     expect(client.calls[0].args[0]).toBe("/match/get-outgoing-requests?page=1&limit=10");
-  });
-});
-
-describe("BookHireService", () => {
-  it("sends an empty body on every transition, including the two that did not", async () => {
-    // withdraw and reconsider used to pass their config where the body goes,
-    // posting the access token as payload. All six now agree.
-    const client = spy();
-    const service = new BookHireService(client);
-
-    await service.withdraw("b1");
-    await service.reconsider("b1");
-    await service.accept("b1");
-
-    expect(client.calls.map((c) => c.args)).toEqual([
-      ["/book-hire/withdraw/b1", {}, undefined],
-      ["/book-hire/reconsider-booking/b1", {}, undefined],
-      ["/book-hire/accept-request/b1", {}, undefined],
-    ]);
-  });
-});
-
-describe("BookingListService", () => {
-  it("builds each list URL from the same paging shape", async () => {
-    const client = spy();
-    const service = new BookingListService(client);
-
-    await service.requested({ limit: 5, page: 2 });
-    await service.withdrawn({ limit: 5, page: 2 });
-
-    expect(client.calls.map((c) => c.args[0])).toEqual([
-      "/book-hire/requested-data/?limit=5&page=2",
-      "/book-hire/get-withdraw-requests/?limit=5&page=2",
-    ]);
   });
 });
 

@@ -110,11 +110,6 @@
     "group": "logged-out"
   },
   {
-    "path": "/hire",
-    "component": "NewHireForm",
-    "group": "logged-out"
-  },
-  {
     "path": "/joinNow",
     "component": "JoinNow",
     "group": "logged-out"

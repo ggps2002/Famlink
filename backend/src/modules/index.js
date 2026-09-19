@@ -27,6 +27,7 @@ import { EmailVerificationModule } from "./auth/emailVerification.module.js";
 import { PhoneVerificationModule } from "./auth/phoneVerification.module.js";
 import { FavouriteModule } from "./favourite/favourite.module.js";
 import { FeedbackModule } from "./feedback/feedback.module.js";
+import { JobModule } from "./job/job.module.js";
 import {
   LeadModule,
   ResourceLeadModule,
@@ -40,6 +41,7 @@ import { PaymentModule } from "./billing/payment.module.js";
 import { RevenueModule } from "./billing/revenue.module.js";
 import { StripeWebhookModule } from "./billing/webhook.module.js";
 import { MessageModule } from "./messaging/message.module.js";
+import { NannyShareModule } from "./nannyShare/nannyShare.module.js";
 import { OnboardingModule } from "./onboarding/onboarding.module.js";
 import { ProfileModule } from "./profile/profile.module.js";
 import { ReferralModule } from "./referral/referral.module.js";
@@ -109,6 +111,7 @@ export const MIGRATED_MODULES = [
   PhoneVerificationModule,
   FavouriteModule,
   FeedbackModule,
+  JobModule,
   LeadModule,
   ResourceLeadModule,
   OnboardingLeadModule,
@@ -116,6 +119,7 @@ export const MIGRATED_MODULES = [
   LocationModule,
   MatchModule,
   MessageModule,
+  NannyShareModule,
   NewsletterModule,
   OnboardingModule,
   PaymentModule,

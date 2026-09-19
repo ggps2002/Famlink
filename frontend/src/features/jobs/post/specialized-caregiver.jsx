@@ -1,11 +1,11 @@
 import { useState, useRef } from "react";
 import CustomStepper from "@shared/ui/Stepper";
 import App from "@features/jobs/post/postAJob";
-import HireStep4 from "@features/hire/components/step4"; // Import your form component
+import HireStep4 from "@shared/ui/questionnaire/step4"; // Import your form component
 import { fireToastMessage } from "@shared/ui/toast";
 import { cleanFormData1, toCamelCase } from "@shared/lib/toCamelCase";
 import { Form, Input } from "antd";
-import HireStep3 from "@features/hire/components/step3";
+import HireStep3 from "@shared/ui/questionnaire/step3";
 import { useJobSubmitter } from "@features/jobs/hooks/useJobSubmitter";
 import { parseHourlyRate } from "@shared/lib/rates";
 import Button from "@shared/ui/Button";

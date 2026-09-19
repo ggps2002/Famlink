@@ -25,7 +25,7 @@ const ROUTES = {
     "/resources", "/resources/:slug",
   ],
   withHeaderOnly: [
-    "/joinNow", "/login", "/forgetPass", "/hire", "/waitlist",
+    "/joinNow", "/login", "/forgetPass", "/waitlist",
     "/caregiver/nannyshare",
     "/find-nanny-share",
     "/find-nanny-share/family/:id",

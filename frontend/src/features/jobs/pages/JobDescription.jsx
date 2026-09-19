@@ -14,20 +14,13 @@ import {
 } from "@shared/lib/toCamelCase";
 import { addOrRemoveFavouriteThunk } from "@features/dashboard/store/favouriteSlice";
 import { refreshTokenThunk } from "@features/auth/store/authSlice";
-import {
-  requestThunk,
-  statusThunk,
-  withDrawThunk,
-} from "@features/hire/store/bookHireSlice";
 import { fireToastMessage } from "@shared/ui/toast";
 import { fetchFamilyByIdThunk } from "@features/dashboard/store/familyDataSlice";
-import { fetchOtherReqThunk } from "@features/booking/store/otherRequestsSlice";
 import { createChatThunk } from "@features/chat/store/chatSlice";
 import { fetchPostJobByIdThunk } from "@features/jobs/store/postJobSlice";
 import Loader from "@shared/ui/Loader";
 import { formatCreatedAt, formatTimeRange } from "@shared/lib/dates";
 import { findMatchingRate1 } from "@shared/lib/rates";
-import useSocket from "@shared/realtime/useSocket";
 import { Button } from "antd";
 import { getSubscriptionStatusThunk } from "@features/subscription/store/cardSlice";
 import {
@@ -53,13 +46,10 @@ function formatJobTitle(jobType) {
 export default function ProfileNanny() {
   const { id } = useParams();
   const { pathname } = useLocation();
-  const { socket } = useSocket();
   const nannyShare = pathname.split("/")[1] === "family";
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [status, setStatus] = useState();
   const [loading, setLoading] = useState(false);
-  const [isWaiting, setIsWaiting] = useState(false);
 
   const { data, isLoading } = useSelector((state) => state.jobPost);
   const { user, accessToken } = useSelector((state) => state.auth);
@@ -68,8 +58,6 @@ export default function ProfileNanny() {
     (state) => state.cardData.subscriptionStatus,
   );
   const isSubscribed = subscription?.active;
-
-  const [buttonText, setButtonText] = useState("Apply");
 
   const ratingCount = data?.user?.reviews?.reduce((acc, review) => {
     const rating = Math.floor(review.rating);
@@ -99,70 +87,12 @@ export default function ProfileNanny() {
     dispatch(getSubscriptionStatusThunk());
   }, [dispatch, id]);
 
-  const fetchStatus = async () => {
-    setLoading(true);
-    try {
-      const { data } = await dispatch(statusThunk(id)).unwrap();
-      const fetchedStatus = data?.bookings;
-
-      setStatus(fetchedStatus);
-
-      if (fetchedStatus?.length > 0) {
-        const currentStatus = fetchedStatus[0];
-        let newButtonText = "Apply";
-        if (currentStatus.status === "pending") newButtonText = "With draw";
-        else if (currentStatus.status === "accepted")
-          newButtonText = "Cancel Booking";
-        else if (
-          currentStatus.status === "completed" &&
-          !currentStatus?.booking?.nannyReview
-        )
-          newButtonText = "Give review";
-
-        setButtonText(newButtonText);
-      } else {
-        setButtonText("Apply");
-      }
-    } catch {
-      setButtonText("Apply");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchStatus();
-  }, [dispatch, id]);
-
   const favourite = () => {
     dispatch(addOrRemoveFavouriteThunk({ favouriteUserId: id, accessToken }));
     dispatch(refreshTokenThunk());
     setIsFavorited((prev) => !prev);
   };
 
-  const handleBooking = async () => {
-    setLoading(true);
-    try {
-      const { data: bookingData } = await dispatch(requestThunk(id)).unwrap();
-      const updateContent = {
-        bookingId: bookingData?.booking._id,
-        senderId: user._id,
-        receiverId: data.user._id,
-        content: "Send request",
-        type: "Booking",
-      };
-      await new Promise((resolve) =>
-        socket?.emit("sendNotification", { content: updateContent }, resolve),
-      );
-      fetchStatus();
-      fireToastMessage({ success: true, message: bookingData.message });
-      await dispatch(fetchOtherReqThunk({ limit: 8, page: 1 })).unwrap();
-    } catch (error) {
-      fireToastMessage({ type: "error", message: error.message });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const scrollRef = useRef(null);
   const scrollAmount = 300; // adjust scroll distance as needed
@@ -173,40 +103,6 @@ export default function ProfileNanny() {
 
   const scrollRight = () => {
     scrollRef.current?.scrollBy({ left: scrollAmount, behavior: "smooth" });
-  };
-
-  const handleWithdraw = async () => {
-    const { _id } = status[0]?.booking;
-    setLoading(true);
-    try {
-      const { status, data } = await dispatch(withDrawThunk(_id)).unwrap();
-      if (status === 200) {
-        fireToastMessage({ success: true, message: data.message });
-        fetchStatus();
-        await dispatch(fetchOtherReqThunk({ limit: 8, page: 1 })).unwrap();
-      }
-    } catch (error) {
-      fireToastMessage({ type: "error", message: error.message });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleClick = async () => {
-    try {
-      setIsWaiting(true);
-      if (buttonText === "Apply") await handleBooking();
-      else if (buttonText === "With draw") await handleWithdraw();
-      else if (buttonText === "Accept Request") navigate("/nanny/booking");
-      else if (buttonText === "Cancel Booking")
-        navigate("/nanny/booking", { state: { initialTab: "upcoming" } });
-      else if (buttonText === "Give review")
-        navigate("/nanny/booking", { state: { initialTab: "accepted" } });
-    } catch (error) {
-      fireToastMessage({ type: "error", message: "Server not responding" });
-    } finally {
-      setIsWaiting(false);
-    }
   };
 
   const handleMessage = async () => {
@@ -429,13 +325,6 @@ export default function ProfileNanny() {
           )}
         </div>
         <div className="flex flex-col gap-4 lg:flex-row lg:justify-between">
-          {!nannyShare && !data?.hired && (
-            <CustomButton
-              btnText={isWaiting? "Wait...":buttonText}
-              action={() => handleClick()}
-              className=" bg-[#AEC4FF]"
-            />
-          )}
           <CustomButton
             btnText={"Message"}
             action={() => handleMessage()}

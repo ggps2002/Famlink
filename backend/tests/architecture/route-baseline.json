@@ -484,62 +484,6 @@
     "path": "/blogs/publish/:id"
   },
   {
-    "method": "PUT",
-    "path": "/book-hire/accept-request/:bookingId"
-  },
-  {
-    "method": "GET",
-    "path": "/book-hire/accepted-bookings-request"
-  },
-  {
-    "method": "PUT",
-    "path": "/book-hire/cancel-booking/:bookingId"
-  },
-  {
-    "method": "PUT",
-    "path": "/book-hire/complete-booking/:bookingId"
-  },
-  {
-    "method": "GET",
-    "path": "/book-hire/completed-bookings-request"
-  },
-  {
-    "method": "GET",
-    "path": "/book-hire/get-withdraw-requests"
-  },
-  {
-    "method": "GET",
-    "path": "/book-hire/getPendingRequests"
-  },
-  {
-    "method": "PUT",
-    "path": "/book-hire/reconsider-booking/:bookingId"
-  },
-  {
-    "method": "PUT",
-    "path": "/book-hire/reject-request/:bookingId"
-  },
-  {
-    "method": "GET",
-    "path": "/book-hire/rejected-bookings-request"
-  },
-  {
-    "method": "POST",
-    "path": "/book-hire/request"
-  },
-  {
-    "method": "GET",
-    "path": "/book-hire/requested-data"
-  },
-  {
-    "method": "GET",
-    "path": "/book-hire/status"
-  },
-  {
-    "method": "PUT",
-    "path": "/book-hire/withdraw/:bookingId"
-  },
-  {
     "method": "GET",
     "path": "/chats"
   },

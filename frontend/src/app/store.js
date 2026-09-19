@@ -18,14 +18,7 @@ import nannyListSlice from '@features/dashboard/store/nannyDataSlice'
 import favouriteSlice from '@features/dashboard/store/favouriteSlice'
 import cardSlice from '@features/subscription/store/cardSlice'
 import updateSlice from '@features/dashboard/store/updateSlice'
-import bookHireSlice from '@features/hire/store/bookHireSlice'
 import familyListSlice from '@features/dashboard/store/familyDataSlice'
-import reqDataSlice from '@features/booking/store/requestedDataSlice'
-import fetchOtherReqSlice from '@features/booking/store/otherRequestsSlice'
-import requesterDataSlice from '@features/booking/store/acceptedRequesterSlice'
-import comReqDataSlice from '@features/booking/store/completedRequestSlice'
-import cancelReqDataSlice from '@features/booking/store/cancelledRequestSlice'
-import withdrawDataSlice from '@features/booking/store/withdrawRequestSlice'
 import reviewData from '@features/dashboard/store/reviewSlice'
 import chatSLice from '@features/chat/store/chatSlice'
 import selectedContactSlice from '@features/chat/store/selectedContactSlice'
@@ -80,14 +73,7 @@ export const store = configureStore({
     favouriteData: favouriteSlice,
     cardData: cardSlice,
     update: updateSlice,
-    bookHire: bookHireSlice,
     familyData: familyListSlice,
-    reqData: reqDataSlice,
-    otherReqData: fetchOtherReqSlice,
-    acceptRequesterData: requesterDataSlice,
-    completeRequesterData: comReqDataSlice,
-    cancelReqData: cancelReqDataSlice,
-    withdrawData: withdrawDataSlice,
     reviews: reviewData,
     matchRequest: matchSlice,
     report: reportSlice,
