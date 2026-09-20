@@ -714,7 +714,7 @@ export const FamilyProfile = ({
             {/* Content */}
             <div className="flex flex-col flex-1 min-w-0">
               {/* Top row: Badge + rating (mobile only) */}
-              <div className="grid grid-cols-1 gap-y-1 md:flex md:items-center md:justify-between md:gap-2 mb-2 md:mb-0">
+              <div className="grid grid-cols-1 gap-y-1 md:flex md:items-center md:justify-between md:gap-2">
                 {/* Family */}
                 <span
                   style={{
