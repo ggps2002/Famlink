@@ -12,6 +12,7 @@ import { ReferralRewardModal } from "@features/referral/components/ReferralRewar
 import { ReferAFriendModal } from "@features/referral/components/ReferAFriendModal";
 import SharedProfileReturn from "@features/share-link/SharedProfileReturn";
 import { Gift, CalendarClock, X } from "lucide-react";
+import { useBodyScrollLock } from "@shared/lib/bodyScrollLock";
 
 // ── Nanny Component ───────────────────────────────────────────────
 export default function Nanny() {
@@ -29,6 +30,9 @@ export default function Nanny() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const handleBackdropClick = () => setIsFilterOpen(false);
+
+  // The drawer covers the page; the page behind it must not scroll under it.
+  useBodyScrollLock(isFilterOpen);
   const [maxChildren, setMaxChildren] = useState(null);
 
   const subscription = useSelector(
@@ -196,19 +200,32 @@ export default function Nanny() {
               heading inside ProfileList, mirroring "Share Profile" beside "Your
               Profile". Only the button moved; the drawer below is unchanged. */}
 
-          {/* Mobile Filter Drawer Backdrop */}
+          {/* Mobile Filter Drawer Backdrop. Above the dashboard navbar, which
+              is `sticky top-0 z-50` — at z-30 the navbar stayed lit over the
+              dimmed page and, worse, painted over the drawer itself. */}
           {isFilterOpen && (
             <div
-              className="fixed inset-0 bg-black/40 z-30 lg:hidden"
+              className="fixed inset-0 bg-black/40 z-[60] lg:hidden"
               onClick={handleBackdropClick}
             />
           )}
 
           <div className="flex items-start max-lg:flex-col gap-y-4 lg:gap-x-8">
-            {/* Filter Drawer */}
+            {/* Filter Drawer.
+
+                Full viewport height, top edge to bottom edge, which means it
+                covers the dashboard navbar (`sticky top-0 h-20 z-50`) rather
+                than tucking under it. That is only safe because of the z-[70]
+                above: at the old z-40 the navbar painted over the drawer's
+                first 80px and cut the Distance card in half. Anything that
+                lowers this below 50 brings that back.
+
+                `h-full` is 100% of the initial containing block — the visible
+                viewport, since the element is `fixed` — so it never outgrows
+                the screen, and `overflow-y-auto` scrolls the six cards. */}
             <div
               className={`
-                fixed top-0 left-0 h-full z-40 bg-[#F7F9FA] shadow-xl overflow-y-auto
+                fixed top-0 left-0 h-full z-[70] bg-[#F7F9FA] shadow-xl overflow-y-auto
                 transition-transform duration-300 ease-in-out w-[85vw] max-w-xs p-4
                 lg:static lg:h-auto lg:shadow-none lg:z-auto lg:bg-transparent lg:overflow-visible
                 lg:w-auto lg:max-w-none lg:p-0 lg:translate-x-0
