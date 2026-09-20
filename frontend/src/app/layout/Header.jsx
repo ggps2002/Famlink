@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Button from "@shared/ui/Button";
+import { useBodyScrollLock } from "@shared/lib/bodyScrollLock";
 import { useLocation } from "react-router-dom";
 
 function Header() {
@@ -22,9 +23,10 @@ function Header() {
   const onResources =
     pathname.startsWith("/nanny-share-resources") || pathname.startsWith("/resources");
 
-  useEffect(() => {
-    document.body.style.overflow = isMenuOpen ? "hidden" : "";
-  }, [isMenuOpen]);
+  // Released on unmount as well as on close. Tapping a link inside the open
+  // menu unmounts this header mid-lock, and the hand-written version had no
+  // cleanup — so the body stayed locked on every page the SPA rendered next.
+  useBodyScrollLock(isMenuOpen);
 
   useEffect(() => {
     window.scrollTo(0, 0);

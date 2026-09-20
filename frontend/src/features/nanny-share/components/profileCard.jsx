@@ -669,24 +669,52 @@ export const FamilyProfile = ({
           {/* Avatar + top content row */}
           <div className="flex items-center gap-4 sm:gap-6">
             {/* Avatar */}
-            <div className="relative flex-shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden">
-              {img ? (
-                <img
-                  src={img}
-                  alt={name}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-[#AEC4FF] text-[#0D134C] font-black Livvic-Bold text-2xl md:text-3xl">
-                  {getInitials(name)}
-                </div>
+            <div className="relative flex-shrink-0 w-20 h-20 md:w-24 md:h-24">
+              <div className="relative w-full h-full rounded-2xl overflow-hidden">
+                {img ? (
+                  <img
+                    src={img}
+                    alt={name}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-[#AEC4FF] text-[#0D134C] font-black Livvic-Bold text-2xl md:text-3xl">
+                    {getInitials(name)}
+                  </div>
+                )}
+              </div>
+
+              {/* Heart — below md only. The desktop heart lives in the right
+                  panel, which on mobile becomes a row of action buttons, so the
+                  heart straddles the photo's top-left corner on a card-coloured
+                  disc. The negative offsets keep it half off the photo; both
+                  stay inside the card's own padding, so nothing is clipped. */}
+              {user._id !== userId && (
+                <button
+                  onClick={favourite}
+                  aria-label={
+                    isFavorited
+                      ? "Remove from favourites"
+                      : "Add to favourites"
+                  }
+                  className="md:hidden absolute -top-2 -left-2 z-10 flex items-center justify-center bg-white border-none cursor-pointer p-1.5 rounded-full"
+                >
+                  <Heart
+                    size={16}
+                    className={
+                      isFavorited
+                        ? "text-red-500 fill-red-500"
+                        : "text-[#9CA3AF]"
+                    }
+                  />
+                </button>
               )}
             </div>
 
             {/* Content */}
             <div className="flex flex-col flex-1 min-w-0">
-              {/* Top row: Badge + Heart (mobile only) */}
-              <div className="grid grid-cols-[1fr_auto] gap-x-2 gap-y-1 md:flex md:items-center md:justify-between md:gap-2 mb-2 md:mb-0">
+              {/* Top row: Badge + rating (mobile only) */}
+              <div className="grid grid-cols-1 gap-y-1 md:flex md:items-center md:justify-between md:gap-2 mb-2 md:mb-0">
                 {/* Family */}
                 <span
                   style={{
@@ -710,28 +738,6 @@ export const FamilyProfile = ({
                     totalRatings={totalRatings}
                   />
                 </span>
-
-                {/* Heart */}
-                {user._id !== userId && (
-                  <button
-                    onClick={favourite}
-                    aria-label={
-                      isFavorited
-                        ? "Remove from favourites"
-                        : "Add to favourites"
-                    }
-                    className="block md:hidden row-start-1 col-start-2 md:order-3 md:ml-0 bg-transparent border-none cursor-pointer p-1 flex-shrink-0"
-                  >
-                    <Heart
-                      size={20}
-                      className={
-                        isFavorited
-                          ? "text-red-500 fill-red-500"
-                          : "text-[#0D134C]"
-                      }
-                    />
-                  </button>
-                )}
               </div>
 
               {/* Family name. The row exists so the Plus badge sits beside the
@@ -871,7 +877,7 @@ export const FamilyProfile = ({
                     className={
                       isFavorited
                         ? "text-red-500 fill-red-500"
-                        : "text-[#0D134C]"
+                        : "text-[#9CA3AF]"
                     }
                   />
                 </button>
@@ -1487,24 +1493,52 @@ export const NannyProfile = ({
           {/* Avatar + top content row */}
           <div className="flex items-center gap-4 sm:gap-6">
             {/* Avatar */}
-            <div className="relative flex-shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden">
-              {img ? (
-                <img
-                  src={img}
-                  alt={name}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-[#AEC4FF] text-[#0D134C] font-black Livvic-Bold text-2xl md:text-3xl">
-                  {getInitials(name)}
-                </div>
+            <div className="relative flex-shrink-0 w-20 h-20 md:w-24 md:h-24">
+              <div className="relative w-full h-full rounded-2xl overflow-hidden">
+                {img ? (
+                  <img
+                    src={img}
+                    alt={name}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-[#AEC4FF] text-[#0D134C] font-black Livvic-Bold text-2xl md:text-3xl">
+                    {getInitials(name)}
+                  </div>
+                )}
+              </div>
+
+              {/* Heart — below md only. The desktop heart lives in the right
+                  panel, which on mobile becomes a row of action buttons, so the
+                  heart straddles the photo's top-left corner on a card-coloured
+                  disc. The negative offsets keep it half off the photo; both
+                  stay inside the card's own padding, so nothing is clipped. */}
+              {user._id !== userId && (
+                <button
+                  onClick={favourite}
+                  aria-label={
+                    isFavorited
+                      ? "Remove from favourites"
+                      : "Add to favourites"
+                  }
+                  className="md:hidden absolute -top-2 -left-2 z-10 flex items-center justify-center bg-white border-none cursor-pointer p-1.5 rounded-full"
+                >
+                  <Heart
+                    size={16}
+                    className={
+                      isFavorited
+                        ? "text-red-500 fill-red-500"
+                        : "text-[#9CA3AF]"
+                    }
+                  />
+                </button>
               )}
             </div>
 
             {/* Content */}
             <div className="flex flex-col flex-1 min-w-0">
-              {/* Top row: Badge + Heart (mobile only) */}
-              <div className="grid grid-cols-[1fr_auto] gap-x-2 gap-y-1 md:flex md:items-center md:justify-between md:gap-2 md:mb-0.5">
+              {/* Top row: Badge + rating (mobile only) */}
+              <div className="grid grid-cols-1 gap-y-1 md:flex md:items-center md:justify-between md:gap-2 md:mb-0.5">
                 {/* Nanny */}
                 <span
                   style={{
@@ -1525,28 +1559,6 @@ export const NannyProfile = ({
                     totalRatings={totalRatings}
                   />
                 </span>
-
-                {/* Heart */}
-                {user._id !== userId && (
-                  <button
-                    onClick={favourite}
-                    aria-label={
-                      isFavorited
-                        ? "Remove from favourites"
-                        : "Add to favourites"
-                    }
-                    className="block md:hidden row-start-1 col-start-2 md:order-3 md:ml-0 bg-transparent border-none cursor-pointer p-1 flex-shrink-0"
-                  >
-                    <Heart
-                      size={20}
-                      className={
-                        isFavorited
-                          ? "text-red-500 fill-red-500"
-                          : "text-[#0D134C]"
-                      }
-                    />
-                  </button>
-                )}
               </div>
 
               {/* Name. Wrapped for the same reason as the family card: the
@@ -1696,7 +1708,7 @@ export const NannyProfile = ({
                     className={
                       isFavorited
                         ? "text-red-500 fill-red-500"
-                        : "text-[#0D134C]"
+                        : "text-[#9CA3AF]"
                     }
                   />
                 </button>

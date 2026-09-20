@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import Header from "@app/layout/Header";
+import { useBodyScrollLock } from "@shared/lib/bodyScrollLock";
 import { Spin, Input } from "antd";
 import { fireToastMessage } from "@shared/ui/toast";
 import { api } from "@shared/api/client";
@@ -36,18 +37,7 @@ function Hero() {
     return () => observer.disconnect();
   }, []); // Remove hasGlowed from deps
 
-  useEffect(() => {
-    if (showResults) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-
-    // Clean up on unmount
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [showResults]);
+  useBodyScrollLock(showResults);
 
   const handleZipValidation = async (zip) => {
     if (!zip) return;

@@ -5,6 +5,7 @@ import { createCheckoutThunk } from "@features/subscription/store/cardSlice";
 import { fireToastMessage } from "@shared/ui/toast";
 import { PLAN } from "@features/subscription/subscriptionPlan";
 import { Link } from "react-router-dom";
+import { useBodyScrollLock } from "@shared/lib/bodyScrollLock";
 
 /* Subscription upgrade modal ("FamLink Plus").
    Opens from the navbar "Upgrade" button. The CTA runs the same Stripe
@@ -15,14 +16,11 @@ export default function SubscriptionModal({ onClose }) {
   const [loading, setLoading] = useState(false);
 
   // Lock body scroll + close on Escape while mounted.
+  useBodyScrollLock();
   useEffect(() => {
-    document.body.style.overflow = "hidden";
     const onKey = (e) => e.key === "Escape" && onClose?.();
     document.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = "unset";
-      document.removeEventListener("keydown", onKey);
-    };
+    return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
 
   const handleUpgrade = async () => {

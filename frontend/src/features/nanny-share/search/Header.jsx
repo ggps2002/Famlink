@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import Button from "@shared/ui/Button";
+import { useBodyScrollLock } from "@shared/lib/bodyScrollLock";
 import { useLocation } from "react-router-dom";
 
 function Header() {
@@ -15,13 +16,8 @@ function Header() {
     setIsMenuOpen(false);
   };
 
-  useEffect(() => {
-    if (isMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-  }, [isMenuOpen]);
+  // See the note in @app/layout/Header — same menu, same missing cleanup.
+  useBodyScrollLock(isMenuOpen);
 
   return (
     <header className="relative">

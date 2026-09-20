@@ -8,6 +8,7 @@ import {
 } from "@features/subscription/store/cardSlice";
 import { refreshTokenThunk } from "@features/auth/store/authSlice";
 import { PLAN } from "@features/subscription/subscriptionPlan";
+import { useBodyScrollLock } from "@shared/lib/bodyScrollLock";
 
 /* Post-checkout result dialog.
    After Stripe Checkout the user is sent back to /dashboard?status=success
@@ -31,12 +32,7 @@ export default function PostCheckoutDialog() {
   //   failed     — we could not confirm it; nothing is claimed
   const [outcome, setOutcome] = useState("confirming");
 
-  useEffect(() => {
-    if (status) document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [status]);
+  useBodyScrollLock(Boolean(status));
 
   useEffect(() => {
     if (status !== "success") return;
@@ -77,7 +73,9 @@ export default function PostCheckoutDialog() {
   const pending = status === "success" && (outcome === "pending" || outcome === "failed");
 
   const close = () => {
-    document.body.style.overflow = "unset";
+    // Dropping ?status= unmounts this dialog, and the lock is released with
+    // it. Unlocking here as well would release a lock this dialog no longer
+    // owns — the count in bodyScrollLock is what makes that a real risk.
     const params = new URLSearchParams(searchParams);
     params.delete("status");
     setSearchParams(params, { replace: true });

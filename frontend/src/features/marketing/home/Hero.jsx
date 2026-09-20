@@ -1,11 +1,12 @@
 import Button from "@shared/ui/Button";
 import { NavLink } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Spin, Input } from "antd";
 import { fireToastMessage } from "@shared/ui/toast";
 import { api } from "@shared/api/client";
 import { Star, X } from "lucide-react";
 import Header from "@app/layout/Header";
+import { useBodyScrollLock } from "@shared/lib/bodyScrollLock";
 
 function Hero() {
   const [loading, setLoading] = useState(false);
@@ -14,18 +15,7 @@ function Hero() {
   const [isLoading, setIsLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
 
-  useEffect(() => {
-    if (showResults) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-
-    // Clean up on unmount
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [showResults]);
+  useBodyScrollLock(showResults);
 
   const handleZipValidation = async (zip) => {
     if (!zip) return;
