@@ -95,14 +95,18 @@ export default function HowItWorks({
   useEffect(() => {
     const timer = setTimeout(
       () => setActiveStep((prev) => (prev + 1) % STEPS.length),
-      AUTOPLAY_MS
+      AUTOPLAY_MS,
     );
     return () => clearTimeout(timer);
   }, [activeStep]);
 
   return (
     <>
-      <SectionHeading eyebrow={eyebrow} eyebrowClass="text-subtle" title={title} />
+      <SectionHeading
+        eyebrow={eyebrow}
+        eyebrowClass="text-subtle"
+        title={title}
+      />
 
       {/* Three placed cells, not two columns: the steps and the preview share
           row 1 so the preview can stretch to exactly the steps' height, and the
@@ -119,7 +123,7 @@ export default function HowItWorks({
           point where widening stops paying: past ~1.2fr they become
           height-bound and the extra column width turns into side margin.
           minmax(0,…) on both tracks so a wide frame can't blow the grid out. */}
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] gap-x-10 lg:gap-x-12 gap-y-0 items-start">
+      <div className="flex flex-col-reverse lg:grid lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] gap-x-10 lg:gap-x-12 gap-y-0 items-start">
         {/* Steps. Buttons rather than click-handled divs so the walkthrough is
             reachable by keyboard and announces its selected state. */}
         <div className="flex flex-col gap-1.5 lg:col-start-1 lg:row-start-1">
@@ -147,7 +151,9 @@ export default function HowItWorks({
                  * state was never relying on opacity to be legible. */
                 className={clsx(
                   "group flex items-start gap-4 p-4 sm:p-5 rounded-2xl text-left w-full transition-colors duration-200",
-                  isActive ? "bg-white shadow-card" : "bg-transparent hover:bg-white/60"
+                  isActive
+                    ? "bg-white shadow-card"
+                    : "bg-transparent hover:bg-white/60",
                 )}
               >
                 <motion.span
@@ -159,14 +165,16 @@ export default function HowItWorks({
                     "font-livvic-bold text-sm border-2",
                     isActive
                       ? "bg-accent border-accent text-ink"
-                      : "bg-transparent border-line text-subtle"
+                      : "bg-transparent border-line text-subtle",
                   )}
                 >
                   {i + 1}
                 </motion.span>
 
                 <span className="block flex-1">
-                  <span className="fl-h4 text-ink block mb-1">{step.title}</span>
+                  <span className="fl-h4 text-ink block mb-1">
+                    {step.title}
+                  </span>
                   <span className="fl-small block">{step.description}</span>
                 </span>
               </motion.button>
@@ -176,7 +184,7 @@ export default function HowItWorks({
 
         {/* Row 2 under the steps. Out of the steps' flex column so it doesn't
             count toward the height the preview stretches to. */}
-        <div className="mt-6 sm:pl-[52px] lg:col-start-1 lg:row-start-2">
+        <div className="my-6 w-full lg:col-start-1 lg:row-start-2">
           <NavLink
             to={ctaTo}
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -198,7 +206,7 @@ export default function HowItWorks({
 
             Below lg the column is stacked and there's nothing to match, so the
             old fixed ratio stays. */}
-        <div className="w-full mt-10 lg:mt-0 lg:col-start-2 lg:row-start-1 lg:self-stretch">
+        <div className="w-full mt-0 lg:col-start-2 lg:row-start-1 lg:self-stretch">
           {/* The panel swap, from the source component: the outgoing frame
               leaves and the incoming one arrives from below. The box needs a
               resolved height either way — without one it collapses to zero
@@ -217,18 +225,11 @@ export default function HowItWorks({
               browser window floating on transparency with a soft shadow, so the
               blue shows through the margins and around the window's own rounded
               corners. Rounded to match the step rows. */}
-          <div className="relative w-full aspect-[905/490] lg:aspect-auto lg:h-full overflow-hidden rounded-2xl bg-accent-soft">
+          <motion.div className="relative aspect-[905/600] overflow-hidden rounded-2xl bg-accent-soft">
             <AnimatePresence initial={false}>
               <motion.img
                 key={activeStep}
-                src={STEPS[activeStep].img}
-                alt={STEPS[activeStep].title}
-                /* Contain, never cover: nothing in these screenshots may be
-                   clipped. Scaling comes from the box, which is why it
-                   stretches to the steps — the art grows to the tallest it fits
-                   at, uncropped, and the leftover is side margin. */
-                className="absolute inset-0 w-full h-full block object-contain object-center"
-                initial={reduceMotion ? false : { y: 56, opacity: 0 }}
+                initial={reduceMotion ? false : { y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{
@@ -241,9 +242,16 @@ export default function HowItWorks({
                   ease: "easeOut",
                   exit: { duration: reduceMotion ? 0.1 : 0.22, ease: "easeIn" },
                 }}
+                src={STEPS[activeStep].img}
+                alt={STEPS[activeStep].title}
+                /* Contain, never cover: nothing in these screenshots may be
+                   clipped. Scaling comes from the box, which is why it
+                   stretches to the steps — the art grows to the tallest it fits
+                   at, uncropped, and the leftover is side margin. */
+                className="absolute inset-0 w-full h-full block object-contain object-center"
               />
             </AnimatePresence>
-          </div>
+          </motion.div>
         </div>
       </div>
     </>
