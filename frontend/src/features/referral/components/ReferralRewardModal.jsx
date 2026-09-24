@@ -1,5 +1,6 @@
 import { PartyPopper, CalendarCheck } from "lucide-react";
 
+import CustomButton from "@shared/ui/Button";
 // One-time celebration shown on the dashboard when a referred friend completes
 // their profile and the referrer earns a free month. Mounted by the dashboard,
 // which fires the ack (marking it seen server-side) as it opens, so it shows
@@ -66,13 +67,13 @@ export const ReferralRewardModal = ({ onClose, matchingUntil, rewardsCount = 1 }
           </div>
         )}
 
-        <button
+        <CustomButton
           type="button"
           onClick={onClose}
-          className="w-full text-center bg-[#D6FB9A] transition-colors rounded-full py-3 text-base Livvic-Bold text-[#075B49]"
+          className="w-full text-center bg-[#D6FB9A] transition-colors rounded-full py-3 text-base Livvic-Bold text-[#075B49] px-0"
         >
           Start matching
-        </button>
+        </CustomButton>
       </div>
 
       <style>{`

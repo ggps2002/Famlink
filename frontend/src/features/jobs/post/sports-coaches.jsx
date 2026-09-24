@@ -8,7 +8,7 @@ import { Form, Input } from "antd";
 import HireStep3 from "@shared/ui/questionnaire/step3";
 import { useJobSubmitter } from "@features/jobs/hooks/useJobSubmitter";
 import { parseHourlyRate } from "@shared/lib/rates";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 
 export const SportsCoachesJob = () => {
   const stepRef = useRef(null);
@@ -714,6 +714,9 @@ export const SportsCoachesJob = () => {
               <div>
                 <p className="mt-10 mb-6 onboarding-head">Job Description</p>
                 <div className="relative w-full">
+                  <label
+                    htmlFor={name} className="fl-label"
+                  >Job Description</label>
                   <Form.Item
                     style={{ margin: 0, padding: 0 }}
                     name="jobDescription" // ✅ always use explicit `name`
@@ -730,15 +733,9 @@ export const SportsCoachesJob = () => {
                       onChange={handleChange} // Handle input changes
                       placeholder="Write your job description.."
                       rows={6}
-                      className={`border text-primary border-[#EEEEEE] rounded-[10px] px-4 pt-8 pb-2 placeholder-transparent  no-resize w-[40vw] !min-h-56`}
+                      className={`no-resize w-[40vw]`}
                     />
                   </Form.Item>
-                  <label
-                    htmlFor={name}
-                    className="absolute left-4 top-2 text-sm text-[#666666] px-1 z-10"
-                  >
-                    Job Description
-                  </label>
                 </div>
               </div>
             </Form>
@@ -763,7 +760,7 @@ export const SportsCoachesJob = () => {
           <div className="flex flex-col items-center">
             {renderStepContent()}
             <div className="mt-4 flex gap-2">
-              <Button
+              <CustomButton
                 action={() => {
                   if (currentStep > 1) {
                     stepRef.current?.prev();
@@ -774,7 +771,7 @@ export const SportsCoachesJob = () => {
                 btnText={"Back"}
                 className="border border-[#FFFFFF] text-[#555555]"
               />
-              <Button
+              <CustomButton
                 btnText={
                   totalStep - 1 == currentStep ? "Post a Job" : "Continue"
                 }

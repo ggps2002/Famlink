@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Input, Select } from "antd";
 import { X, Download, CheckCircle2 } from "lucide-react";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import { fireToastMessage } from "@shared/ui/toast";
 import { captureResourceLead } from "@features/resources/resourceLead";
 import { CARE_TIMELINE_OPTIONS } from "@features/resources/resourcesData";
@@ -90,7 +90,7 @@ export default function LeadMagnetModal({ resource, onClose }) {
               you can find it later.
             </p>
             <a href={downloadUrl} target="_blank" rel="noopener noreferrer" onClick={onClose}>
-              <Button
+              <CustomButton
                 btnText={
                   <span className="flex items-center justify-center gap-2">
                     <Download size={18} /> Open {resource.title}
@@ -99,13 +99,13 @@ export default function LeadMagnetModal({ resource, onClose }) {
                 className="bg-[#AEC4FF] w-full py-3.5 text-gray-900"
               />
             </a>
-            <button
+            <CustomButton
               type="button"
               onClick={onClose}
-              className="mt-3 text-sm text-gray-400 hover:text-gray-600 transition-colors"
+              className="mt-3 text-sm text-gray-400 hover:text-gray-600 transition-colors px-0 py-0 rounded-none Livvic"
             >
               Close
-            </button>
+            </CustomButton>
           </div>
         ) : (
           /* ── Capture form ── */
@@ -153,7 +153,7 @@ export default function LeadMagnetModal({ resource, onClose }) {
               />
             </div>
 
-            <Button
+            <CustomButton
               btnText="Get my free download"
               className="bg-[#AEC4FF] w-full py-3.5 mt-5 text-gray-900"
               action={handleSubmit}

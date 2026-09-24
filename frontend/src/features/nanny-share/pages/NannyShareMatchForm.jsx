@@ -6,7 +6,7 @@ import { useNavigate, NavLink } from "react-router-dom";
 import { InputDa } from "@shared/ui/Input";
 import OnboardingOptionSelector from "@features/onboarding/components/OnboardingOptionSelector";
 import FormItem from "antd/es/form/FormItem";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import { Input, Select } from "antd";
 import { fireToastMessage } from "@shared/ui/toast";
 import { House, Plus, User2, X } from "lucide-react";
@@ -32,6 +32,7 @@ import {
 import { fullNameFrom } from "@shared/lib/formName";
 import { SHARE_SCHEDULES } from "@shared/lib/scheduleFormat";
 
+import { saveOnboardingRecord } from "@features/onboarding/onboardingRecord";
 /* ─────────────────────────────────────────
    Loading Modal
 ───────────────────────────────────────── */
@@ -108,13 +109,13 @@ const MaybeLaterModal = ({ onClose }) => (
       >
         Create account to see families now
       </NavLink>
-      <button
+      <CustomButton
         type="button"
         onClick={onClose}
-        className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+        className="text-sm text-gray-500 hover:text-gray-700 transition-colors px-0 py-0 rounded-none Livvic"
       >
         No thanks
-      </button>
+      </CustomButton>
     </div>
     <style>{`@keyframes popIn{0%{opacity:0;transform:scale(0.85)}100%{opacity:1;transform:scale(1)}}`}</style>
   </div>
@@ -163,20 +164,20 @@ const SuccessModal = ({
             questions now.
           </span>
         </p>
-        <button
+        <CustomButton
           type="button"
           onClick={() => navigate(`/hire?recordId=${recordId || ""}`)}
-          className="w-full block text-center bg-[#FFADE1] hover:bg-[#f99dd5] transition-colors rounded-full py-3 text-base Livvic-Bold text-black mb-3"
+          className="w-full block text-center bg-[#FFADE1] hover:bg-[#f99dd5] transition-colors rounded-full py-3 text-base Livvic-Bold text-black mb-3 px-0"
         >
           Continue – unlock my match
-        </button>
-        <button
+        </CustomButton>
+        <CustomButton
           type="button"
           onClick={() => setShowMaybeLater(true)}
-          className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+          className="text-sm text-gray-500 hover:text-gray-700 transition-colors px-0 py-0 rounded-none Livvic"
         >
           Maybe later
-        </button>
+        </CustomButton>
       </div>
       <style>{`
         @keyframes popIn{0%{opacity:0;transform:scale(0.85)}100%{opacity:1;transform:scale(1)}}
@@ -423,11 +424,11 @@ const WaitlistModal = ({
           </span>
         </p>
 
-        <button
+        <CustomButton
           type="button"
           onClick={handleWaitlistAdd}
           disabled={submitState === "loading"}
-          className="w-full flex items-center justify-center gap-2 text-center bg-[#AEC4FF] disabled:opacity-70 disabled:cursor-not-allowed hover:bg-[#9db3f0] transition-colors rounded-full py-3 text-base Livvic-Bold text-black mb-3"
+          className="w-full flex items-center justify-center gap-2 text-center bg-[#AEC4FF] disabled:opacity-70 disabled:cursor-not-allowed hover:bg-[#9db3f0] transition-colors rounded-full py-3 text-base Livvic-Bold text-black mb-3 px-0"
         >
           {submitState === "loading" ? (
             <>
@@ -457,16 +458,16 @@ const WaitlistModal = ({
           ) : (
             "Notify me when you're here"
           )}
-        </button>
+        </CustomButton>
 
         {submitState !== "loading" && (
-          <button
+          <CustomButton
             type="button"
             onClick={() => setModalState("idle")}
-            className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-sm text-gray-400 hover:text-gray-600 transition-colors px-0 py-0 rounded-none Livvic"
           >
             Maybe later
-          </button>
+          </CustomButton>
         )}
       </div>
       <style>{`
@@ -592,25 +593,28 @@ const NannyShareMatchForm = () => {
       Details: "",
     };
 
-    const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
+    // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+    // const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
 
-    if (!scriptUrl) {
-      console.warn("VITE_GOOGLE_SCRIPT_URL is not set. Data:", data);
-      await new Promise((r) => setTimeout(r, 1400));
-      setRecordId(newRecordId);
-      setEmail(values.email);
-      setName(values.name || "");
-      resetForm();
-      setModalState("success");
-      return;
-    }
+    // if (!scriptUrl) {
+    //   console.warn("VITE_GOOGLE_SCRIPT_URL is not set. Data:", data);
+    //   await new Promise((r) => setTimeout(r, 1400));
+    //   setRecordId(newRecordId);
+    //   setEmail(values.email);
+    //   setName(values.name || "");
+    //   resetForm();
+    //   setModalState("success");
+    //   return;
+    // }
 
     try {
-      await fetch(scriptUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(data).toString(),
-      });
+      // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+      // await fetch(scriptUrl, {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      //   body: new URLSearchParams(data).toString(),
+      // });
+      await saveOnboardingRecord(data);
 
       // Record the half-finished signup server-side. From here they go to the
       // questionnaire and then the account step, and a good share of people
@@ -862,16 +866,16 @@ const NannyShareMatchForm = () => {
                     Please enter an age for each child.
                   </p>
                 )}
-                <button
+                <CustomButton
                   type="button"
                   onClick={addChild}
-                  className="mt-4 flex items-center gap-2 text-primary Livvic-SemiBold text-sm hover:opacity-70 transition-opacity group"
+                  className="mt-4 flex items-center gap-2 text-primary Livvic-SemiBold text-sm hover:opacity-70 transition-opacity group px-0 py-0 rounded-none"
                 >
                   <span className="flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 transition-colors">
                     <Plus className="w-3.5 h-3.5 text-[#AEC4FF]" />
                   </span>
                   Add another child
-                </button>
+                </CustomButton>
               </div>
 
               {/* Already have a nanny */}
@@ -945,7 +949,7 @@ const NannyShareMatchForm = () => {
                     <Autocomplete
                       id="location-input-nanny"
                       apiKey={import.meta.env.VITE_GOOGLE_KEY}
-                      className="w-full sm:w-3/4 md:w-2/3 rounded-xl px-4 py-3 border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-gray-400"
+                      className="fl-field w-full sm:w-3/4 md:w-2/3"
                       value={location}
                       onPlaceSelected={async (place) => {
                         if (!place || !place.geometry) return;
@@ -1045,13 +1049,13 @@ const NannyShareMatchForm = () => {
 
               {/* Action buttons */}
               <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-center gap-3 pt-4">
-                <Button
+                <CustomButton
                   btnText="Go Back"
                   action={() => navigate("/")}
                   className="w-full sm:w-40 py-3 flex items-center justify-center rounded-full text-base Livvic-Bold text-primary border border-gray-200 hover:bg-gray-50 transition-all"
                 />
                 <FormItem className="mb-0 w-full sm:w-auto">
-                  <Button
+                  <CustomButton
                     btnText="Get Matched"
                     htmlType="submit"
                     className="w-full sm:w-44 bg-[#AEC4FF] py-3 flex items-center justify-center rounded-full text-base Livvic-Bold text-black transition-colors disabled:opacity-60 disabled:cursor-not-allowed"

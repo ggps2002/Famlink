@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Header from "@app/layout/Header";
 import { Spin, Input } from "antd";
 import { fireToastMessage } from "@shared/ui/toast";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import { useNavigate } from "react-router-dom";
 import SFImg from "../../../assets/images/SFImage.webp";
 
@@ -124,14 +124,14 @@ function Hero({ city }) {
               ref={buttonRef}
               className={`w-full sm:w-auto inline-block ${isGlowing ? "glow-once rounded-full" : ""}`}
             >
-              <Button
+              <CustomButton
                 btnText={isLoading ? <Spin size="small" /> : "Join Waitlist"}
                 className="bg-[#AEC4FF] hover:bg-[#92b0ff] text-[#001243] Livvic-Bold w-full sm:w-auto px-8 py-3.5 text-[15px] flex items-center justify-center rounded-full transition-colors"
                 action={() => navigate(`/waitlist`)}
                 disabled={isLoading}
               />
             </div>
-            <Button
+            <CustomButton
               btnText="Learn More ➔"
               className="bg-white hover:bg-gray-50 border border-gray-200 text-[#001243] Livvic-Bold w-full sm:w-auto px-8 py-3.5 text-[15px] flex items-center justify-center rounded-full transition-colors"
               action={() => navigate("/")}

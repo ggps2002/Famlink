@@ -5,6 +5,7 @@ import { MapPin, Lock, Users, Baby } from "lucide-react";
 import { api } from "@shared/api/client";
 import { loadGoogleMaps } from "@shared/lib/googleMaps";
 
+import CustomButton from "@shared/ui/Button";
 // Colors by dominant role. "parent" = families looking to share (leads);
 // "nanny" = caregivers. Kept in sync with the legend below.
 const AREA_STYLE = {
@@ -508,27 +509,27 @@ export default function NannyShareMap({ center, areaLabel, coverage, waitlist = 
         <div className="flex gap-2 w-full sm:w-auto sm:shrink-0">
           {waitlist ? (
             <NavLink to={waitlistHref} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="w-full sm:w-auto">
-              <button className="w-full sm:w-auto bg-[#AEC4FF] hover:bg-[#9BB8FF] text-[#001243] Livvic-SemiBold text-sm py-2.5 px-5 rounded-full transition-colors whitespace-nowrap">
+              <CustomButton className="w-full sm:w-auto bg-[#AEC4FF] hover:bg-[#9BB8FF] text-[#001243] Livvic-SemiBold text-sm py-2.5 px-5 rounded-full transition-colors whitespace-nowrap">
                 Join the waitlist
-              </button>
+              </CustomButton>
             </NavLink>
           ) : isAuthed ? (
             <NavLink to="/dashboard" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="w-full sm:w-auto">
-              <button className="w-full sm:w-auto bg-[#AEC4FF] hover:bg-[#9BB8FF] text-[#001243] Livvic-SemiBold text-sm py-2.5 px-5 rounded-full transition-colors whitespace-nowrap">
+              <CustomButton className="w-full sm:w-auto bg-[#AEC4FF] hover:bg-[#9BB8FF] text-[#001243] Livvic-SemiBold text-sm py-2.5 px-5 rounded-full transition-colors whitespace-nowrap">
                 Browse matches
-              </button>
+              </CustomButton>
             </NavLink>
           ) : (
             <>
               <NavLink to="/find-nanny-share" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="flex-1 sm:flex-none">
-                <button className="w-full sm:w-auto bg-white border border-gray-200 hover:border-gray-300 text-[#001243] Livvic-SemiBold text-sm py-2.5 px-4 sm:px-5 rounded-full transition-colors whitespace-nowrap">
+                <CustomButton className="w-full sm:w-auto bg-white border border-gray-200 hover:border-gray-300 text-[#001243] Livvic-SemiBold text-sm py-2.5 px-4 sm:px-5 rounded-full transition-colors whitespace-nowrap">
                   Add your pin
-                </button>
+                </CustomButton>
               </NavLink>
               <NavLink to="/joinNow" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="flex-1 sm:flex-none">
-                <button className="w-full sm:w-auto bg-[#AEC4FF] hover:bg-[#9BB8FF] text-[#001243] Livvic-SemiBold text-sm py-2.5 px-4 sm:px-5 rounded-full transition-colors whitespace-nowrap">
+                <CustomButton className="w-full sm:w-auto bg-[#AEC4FF] hover:bg-[#9BB8FF] text-[#001243] Livvic-SemiBold text-sm py-2.5 px-4 sm:px-5 rounded-full transition-colors whitespace-nowrap">
                   Sign up free
-                </button>
+                </CustomButton>
               </NavLink>
             </>
           )}

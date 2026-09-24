@@ -543,3 +543,242 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 .legal-document em {
   font-style: italic;
 }
+
+/* ══ Form fields ════════════════════════════════════════════════════════════
+ *
+ * One look for every text field and dropdown in the app: antd Input, Password,
+ * TextArea, Select, DatePicker and TimePicker pick it up automatically, and raw
+ * <input>/<select>/<textarea> (and the Google Places box) opt in with
+ * `className="fl-field"`. Change a value here, not at a call site.
+ *
+ * Why CSS and not an antd ConfigProvider theme: a provider at the root would
+ * pull antd's runtime onto the marketing pages' critical path (see
+ * shared/ui/Spinner.jsx). antd injects its own styles at the top of <head>
+ * behind `:where()`, so plain selectors here win on source order. Its focus
+ * and hover selectors chain five or six classes, though, so the state colours
+ * below carry !important — the one place this block needs it.
+ *
+ * Deliberately NOT styled: borderless/filled antd variants (chat composer,
+ * inline editors), the OTP digit boxes (.input-otp__field) and pagination's
+ * page-size select. Raw inputs without `.fl-field` (search pills, the chat
+ * box, OTP digits) keep their own look on purpose. */
+:root {
+  --field-h: 48px;
+  --field-radius: 12px;
+  --field-px: 14px;
+  --field-font-size: 15px;
+  --field-text: #001243;
+  --field-placeholder: #9ca3af;
+  --field-bg: #ffffff;
+  --field-bg-disabled: #f7f9fa;
+  --field-border: #d6ddeb;
+  --field-border-hover: #aec4ff;
+  --field-border-focus: #7f9cf5;
+  --field-ring: 0 0 0 3px rgba(174, 196, 255, 0.35);
+  --field-error: #ef4444;
+  --field-error-ring: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+/* The box. */
+input.ant-input-outlined:not(.input-otp__field),
+textarea.ant-input-outlined,
+.ant-input-affix-wrapper.ant-input-outlined,
+.ant-picker-outlined,
+.ant-input-number-outlined,
+.ant-select-outlined:not(.ant-select-customize-input):not(.ant-pagination-options-size-changer) .ant-select-selector,
+.fl-field {
+  border: 1px solid var(--field-border) !important;
+  border-radius: var(--field-radius) !important;
+  background-color: var(--field-bg);
+  color: var(--field-text);
+  font-family: Livvic-Medium, sans-serif !important;
+  font-size: var(--field-font-size) !important;
+  box-shadow: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Single-line height. min-height, so a caller's taller one-off still grows. */
+input.ant-input-outlined:not(.input-otp__field),
+.ant-input-affix-wrapper.ant-input-outlined,
+.ant-picker-outlined,
+input.fl-field,
+select.fl-field {
+  height: var(--field-h) !important;
+  padding: 0 var(--field-px) !important;
+}
+/* Inside a prefix/suffix wrapper the wrapper is the box; the input is bare. */
+.ant-input-affix-wrapper > input.ant-input {
+  height: auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  font-size: var(--field-font-size);
+}
+.ant-picker .ant-picker-input > input {
+  font-family: Livvic-Medium, sans-serif;
+  font-size: var(--field-font-size);
+  color: var(--field-text);
+}
+
+textarea.ant-input-outlined,
+textarea.fl-field {
+  min-height: calc(var(--field-h) * 2);
+  padding: 12px var(--field-px) !important;
+  line-height: 1.5;
+}
+
+/* Select: the root carries antd's fixed 32px, the selector draws the box. */
+.ant-select-single:not(.ant-pagination-options-size-changer) {
+  height: var(--field-h) !important;
+}
+.ant-select-single.ant-select-outlined:not(.ant-pagination-options-size-changer) .ant-select-selector {
+  height: var(--field-h) !important;
+  padding: 0 var(--field-px) !important;
+}
+.ant-select-single:not(.ant-pagination-options-size-changer) .ant-select-selection-item,
+.ant-select-single:not(.ant-pagination-options-size-changer) .ant-select-selection-placeholder {
+  line-height: calc(var(--field-h) - 2px) !important;
+}
+.ant-select-single:not(.ant-pagination-options-size-changer) .ant-select-selection-search {
+  inset-inline-start: var(--field-px) !important;
+  inset-inline-end: calc(var(--field-px) + 18px) !important;
+}
+.ant-select-single:not(.ant-pagination-options-size-changer) .ant-select-selection-search-input {
+  height: calc(var(--field-h) - 2px) !important;
+}
+.ant-select-multiple.ant-select-outlined .ant-select-selector {
+  min-height: var(--field-h);
+  padding: 5px 10px !important;
+}
+.ant-select-multiple .ant-select-selection-item {
+  background: #eef3ff;
+  border-radius: 8px;
+  color: var(--field-text);
+  font-family: Livvic-Medium, sans-serif;
+}
+.ant-select-selection-placeholder,
+.ant-picker-input > input::placeholder,
+.ant-input::placeholder,
+.fl-field::placeholder {
+  color: var(--field-placeholder) !important;
+  font-family: Livvic-Medium, sans-serif !important;
+}
+
+/* Hover. */
+input.ant-input-outlined:not(.input-otp__field):not(:disabled):hover,
+textarea.ant-input-outlined:not(:disabled):hover,
+.ant-input-affix-wrapper.ant-input-outlined:not(.ant-input-affix-wrapper-disabled):hover,
+.ant-picker-outlined:not(.ant-picker-disabled):hover,
+.ant-select-outlined:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-options-size-changer):hover .ant-select-selector,
+.fl-field:not(:disabled):hover {
+  border-color: var(--field-border-hover) !important;
+}
+
+/* Focus. */
+input.ant-input-outlined:not(.input-otp__field):focus,
+textarea.ant-input-outlined:focus,
+.ant-input-affix-wrapper.ant-input-outlined.ant-input-affix-wrapper-focused,
+.ant-picker-outlined.ant-picker-focused,
+.ant-select-outlined.ant-select-focused:not(.ant-select-customize-input):not(.ant-pagination-options-size-changer) .ant-select-selector,
+.fl-field:focus {
+  border-color: var(--field-border-focus) !important;
+  box-shadow: var(--field-ring) !important;
+  outline: none;
+}
+
+/* Error (antd Form validation, or aria-invalid on a raw field). */
+.ant-input-status-error.ant-input-outlined,
+.ant-input-affix-wrapper-status-error.ant-input-outlined,
+.ant-picker-status-error.ant-picker-outlined,
+.ant-select-status-error.ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector,
+.fl-field[aria-invalid="true"] {
+  border-color: var(--field-error) !important;
+}
+.ant-input-status-error.ant-input-outlined:focus,
+.ant-input-affix-wrapper-status-error.ant-input-affix-wrapper-focused,
+.ant-picker-status-error.ant-picker-focused,
+.ant-select-status-error.ant-select-focused .ant-select-selector,
+.fl-field[aria-invalid="true"]:focus {
+  box-shadow: var(--field-error-ring) !important;
+}
+
+/* Disabled / read-only. */
+input.ant-input-outlined:disabled,
+.ant-input-affix-wrapper-disabled,
+.ant-picker-disabled,
+.ant-select-disabled .ant-select-selector,
+.fl-field:disabled,
+.fl-field[readonly] {
+  background-color: var(--field-bg-disabled) !important;
+  color: #6b7280 !important;
+}
+
+/* Raw <select>: native control, our box, our chevron. */
+select.fl-field {
+  appearance: none;
+  padding-right: calc(var(--field-px) + 22px) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--field-px) center;
+}
+
+/* Dropdown menus (Select, and antd's AutoComplete if it ever appears). */
+.ant-select-dropdown {
+  padding: 6px !important;
+  border-radius: var(--field-radius) !important;
+}
+.ant-select-dropdown .ant-select-item-option {
+  padding: 9px 12px !important;
+  border-radius: 8px !important;
+  font-family: Livvic-Medium, sans-serif;
+  font-size: 14px;
+  color: var(--field-text);
+}
+.ant-select-dropdown .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+  background-color: #f3f6ff !important;
+}
+.ant-select-dropdown .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  background-color: #eef3ff !important;
+  font-family: Livvic-SemiBold, sans-serif;
+  color: var(--field-text);
+}
+
+/* Labels above antd fields. */
+.ant-form-vertical .ant-form-item-label > label,
+.ant-form-item-label > label {
+  font-family: Livvic-SemiBold, sans-serif;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+/* Label above a field that isn't an antd Form.Item label (shared/ui/Input.jsx
+ * and any raw form). Same face, size and colour as the antd rule above. */
+.fl-label {
+  display: block;
+  margin-bottom: 6px;
+  font-family: Livvic-SemiBold, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  color: #4b5563;
+}
+
+/* A composite field — e.g. country code + phone number — is a `div.fl-field`
+ * holding bare controls. The div draws the box; focus shows on the whole. */
+div.fl-field {
+  display: flex;
+  align-items: stretch;
+  min-height: var(--field-h);
+  overflow: hidden;
+}
+div.fl-field > input,
+div.fl-field > select {
+  border: 0;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+}
+div.fl-field:focus-within {
+  border-color: var(--field-border-focus) !important;
+  box-shadow: var(--field-ring) !important;
+}

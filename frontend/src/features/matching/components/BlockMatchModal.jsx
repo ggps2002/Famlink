@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { fireToastMessage } from "@shared/ui/toast";
 import { blockMatchThunk } from "@features/matching/store/matchSlice";
 
+import CustomButton from "@shared/ui/Button";
 // Rendered from ChatView, which sits under three stacked `overflow-hidden`
 // ancestors (PageLayout's h-screen shell, ChatInterface, then ChatView). A
 // fixed overlay escapes those clip boxes only while its containing block is
@@ -79,11 +80,11 @@ const BlockMatchModal = ({ matchId, name, setIsBlockModal, onBlocked }) => {
 
                     {/* Buttons */}
                     <div className="flex flex-col gap-2.5 w-full">
-                        <button
+                        <CustomButton
                             type="button"
                             onClick={handleBlock}
                             disabled={loading}
-                            className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-full py-3 text-sm Livvic-Bold text-white"
+                            className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-full py-3 text-sm Livvic-Bold text-white px-0"
                         >
                             {loading ? (
                                 <>
@@ -96,15 +97,15 @@ const BlockMatchModal = ({ matchId, name, setIsBlockModal, onBlocked }) => {
                                     Yes, block
                                 </>
                             )}
-                        </button>
+                        </CustomButton>
 
-                        <button
+                        <CustomButton
                             type="button"
                             onClick={() => setIsBlockModal(false)}
-                            className="w-full py-3 rounded-full border-2 border-gray-200 hover:border-gray-300 text-sm Livvic-Bold text-gray-700 transition-colors"
+                            className="w-full py-3 rounded-full border-2 border-gray-200 hover:border-gray-300 text-sm Livvic-Bold text-gray-700 transition-colors px-0"
                         >
                             Cancel
-                        </button>
+                        </CustomButton>
                     </div>
                 </div>
             </div>

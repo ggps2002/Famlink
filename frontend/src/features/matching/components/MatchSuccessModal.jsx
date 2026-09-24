@@ -7,6 +7,7 @@ import { sentMatchRequestThunk } from "@features/matching/store/matchSlice";
 import { increaseMatchRequestSent } from "@features/auth/store/authSlice";
 import { createChatThunk } from "@features/chat/store/chatSlice";
 
+import CustomButton from "@shared/ui/Button";
 export const MatchRequestSuccessModal = ({ setIsRequestMatchSuccessModal, chatUserId }) => {
     const { user, accessToken } = useSelector((state) => state.auth);
     const navigate = useNavigate()
@@ -79,13 +80,13 @@ export const MatchRequestSuccessModal = ({ setIsRequestMatchSuccessModal, chatUs
                         </div> */}
 
                 {/* Send button */}
-                <button
+                <CustomButton
                     type="button"
                     onClick={handleMessage}
-                    className="w-full flex items-center justify-center gap-2 bg-[#AEC4FF] hover:bg-[#2e9fd4] disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-full py-3 text-sm Livvic-Bold text-white"
+                    className="w-full flex items-center justify-center gap-2 bg-[#AEC4FF] hover:bg-[#2e9fd4] disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-full py-3 text-sm Livvic-Bold text-white px-0"
                 >
                     Open chat
-                </button>
+                </CustomButton>
             </div>
 
             <style>{`

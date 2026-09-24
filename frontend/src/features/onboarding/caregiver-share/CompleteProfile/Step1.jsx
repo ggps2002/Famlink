@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import OnboardingOptionSelector from "@features/onboarding/components/OnboardingOptionSelector";
 import SelectChildrenAge from "@features/nanny-share/post/SelectChildrenAge";
 
+import { FLEXIBILITY } from "@shared/lib/profileOptions";
 // remove "second" from step1Data since we no longer need those options
 const step1Data = {
     first: [
@@ -13,11 +14,7 @@ const step1Data = {
         "Rotating between homes",
         "Neutral location"
     ],
-    third: [
-        "Very flexible",
-        "Somewhat flexible",
-        "Fixed"
-    ]
+    third: FLEXIBILITY
 };
 
 function Step1({ formRef, selectedValue, setSelectedValue, numberOfChildren = null, childrenAges = [], initialValues }) {

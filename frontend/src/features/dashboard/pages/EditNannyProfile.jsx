@@ -1,13 +1,23 @@
 import { useCallback, useEffect, useState, useMemo } from "react";
-import cameraIcons from "@/assets/images/cameraIcon.webp";
-import { Form, Input, Checkbox, Select, Button, TimePicker, Spin, DatePicker } from "antd";
+import { Form, Input, Select, DatePicker } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import Avatar from "react-avatar";
 import { fireToastMessage } from "@shared/ui/toast";
 import { editUserThunk, updateNannyProfileThunk } from "@features/auth/store/authSlice";
 import { fetchNannyByIdThunk } from "@features/dashboard/store/nannyDataSlice";
-import Autocomplete from "react-google-autocomplete";
+import AutocompleteModule from "react-google-autocomplete";
 import OptionSelector from "@shared/ui/LanguageSelector";
+import {
+  AGE_GROUPS,
+  CARE_EXPERIENCE,
+  CERTIFICATIONS,
+  CHILD_HELP,
+  HOUSEHOLD_TASKS,
+  LANGUAGES,
+  NOT_APPLICABLE,
+  normalizeAnswer,
+  readList,
+  toSelectOptions,
+} from "@shared/lib/profileOptions";
 import dayjs from "dayjs";
 const getValidDate = (dateString) => {
   if (!dateString) return null;
@@ -16,33 +26,21 @@ const getValidDate = (dateString) => {
   return d.isValid() ? d : null;
 };
 import { NannyProfile } from "@features/nanny-share/components/profileCard";
+import { childAgesFromCaregiverForm } from "@features/dashboard/lib/profilePreview";
 import SelectChildrenAge from "@features/nanny-share/post/SelectChildrenAge";
 import { resolveChildrenAges } from "@shared/lib/children";
 import { deparseHourlyRate, parseHourlyRate } from "@shared/lib/rates";
 import { zipFromPlace } from "@shared/lib/serviceArea";
+import { User, Users, MapPin, Circle, CheckCircle2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
-  ChevronLeft,
-  User,
-  MapPin,
-  Calendar,
-  Clock,
-  DollarSign,
-  Languages,
-  Briefcase,
-  Baby,
-  FileText,
-  Camera,
-  Save,
-  X,
-  Users,
-  Sparkles,
-  Eye,
-  EyeOff,
-  Info,
-  Circle,
-  CheckCircle2
-} from "lucide-react";
-import { NavLink, useNavigate } from "react-router-dom";
+  EditProfileLayout,
+  EditSection,
+  FieldLabel,
+  PreviewToggle,
+  ProfileIdentity,
+  WeeklySchedule,
+} from "@features/dashboard/components/EditProfileLayout";
 import { SHARE_SCHEDULES, normalizeShareSchedule } from "@shared/lib/scheduleFormat";
 
 const parseTime = (time) => {
@@ -50,6 +48,7 @@ const parseTime = (time) => {
 };
 
 export default function EditProfileNanny() {
+  const Autocomplete = AutocompleteModule.default;
   const { TextArea } = Input;
   const { user } = useSelector((s) => s.auth);
   const dispatch = useDispatch();
@@ -118,7 +117,6 @@ export default function EditProfileNanny() {
     },
   };
 
-  const options = ["English", "Spanish", "French", "Mandarin", "Cantonese", "Arabic"];
   const languageSkills = user?.additionalInfo?.find((info) => info.key === "language")?.value;
   const defaultCheckedValues = languageSkills?.option;
   // let parsedLanguages = nannyProfile?.languages;
@@ -180,20 +178,20 @@ export default function EditProfileNanny() {
         age: user.age,
         location: user.location?.format_location,
         zipCode: user.zipCode,
-        language: defaultCheckedValues,
+        language: normalizeAnswer(readList(nannyProfile?.languages).length ? readList(nannyProfile.languages) : readList(defaultCheckedValues)),
         firstChild: salaryExp?.firstChild,
         secChild: salaryExp?.secChild,
         thirdChild: salaryExp?.thirdChild,
         fourthChild: salaryExp?.fourthChild,
         fiveOrMoreChild: salaryExp?.fiveOrMoreChild,
 
-        avaiForWorking: getInfo("avaiForWorking", "careType"),
+        avaiForWorking: normalizeShareSchedule(getInfo("avaiForWorking", "careType")),
         availability: getValidDate(getInfo("availability", "startAvailability")),
-        experience: getInfo("experience", "careExperience"),
-        ageGroupsExp: getInfo("ageGroupsExp", "ageGroupsExp") || (nannyProfile?.preferredAges ? nannyProfile.preferredAges.map(a => a.label) : undefined),
+        experience: normalizeAnswer(getInfo("experience", "careExperience")),
+        ageGroupsExp: normalizeAnswer(readList(getInfo("ageGroupsExp", "ageGroupsExp"))),
         additionalDetails: getInfo("additionalDetails", "additionalDetails"),
         jobDescription: nannyProfile?.bio || jobDescription,
-        certifications: getInfo("certifications", "certifications"),
+        certifications: normalizeAnswer(readList(getInfo("certifications", "certifications"))),
         customCertifications: getInfo("customCertifications", "customCertifications"),
         skills: getInfo("skills", "skills"),
 
@@ -201,10 +199,10 @@ export default function EditProfileNanny() {
         shareExperience: getInfo("shareExperience", "shareExperience"),
         multiFamilyComfort: getInfo("multiFamilyComfort", "multiFamilyComfort"),
         childrenCapacity: getInfo("childrenCapacity", "childrenCapacity"),
-        preferredAges: getInfo("preferredAges", "preferredAges")?.map(a => typeof a === 'object' ? a.label : a) || undefined,
+        preferredAges: normalizeAnswer(readList(getInfo("preferredAges", "preferredAges"))),
         workSetup: getInfo("workSetup", "workSetup"),
-        responsibilities: getInfo("responsibilities", "responsibilities"),
-        householdHelp: getInfo("householdHelp", "householdHelp"),
+        responsibilities: normalizeAnswer(readList(getInfo("responsibilities", "responsibilities"))),
+        householdHelp: normalizeAnswer(readList(getInfo("householdHelp", "householdHelp"))),
         hasTransport: getInfo("hasTransport", "hasTransport"),
         backgroundCheck: getInfo("backgroundCheck", "backgroundCheck"),
         rateType: initialRateType,
@@ -289,14 +287,6 @@ export default function EditProfileNanny() {
     }
   };
 
-  const options2 = [
-    { value: "Full-time", label: "Full-time" },
-    { value: "Part-time", label: "Part-time" },
-    { value: "Occasional", label: "Occasional" },
-    { value: "Weekends only", label: "Weekends only" },
-    { value: "Nights only", label: "Nights only" },
-    { value: "Flexible", label: "Flexible" },
-  ];
 
   const defaultCheckedValues2 = user?.additionalInfo.find((info) => info.key === "avaiForWorking")?.value.option;
 
@@ -308,29 +298,10 @@ export default function EditProfileNanny() {
 
   const defaultCheckedValues3 = user?.additionalInfo.find((info) => info.key === "availability")?.value.option;
 
-  const options4 = [
-    { value: "Less than 1 year", label: "Less than 1 year" },
-    { value: "1-3 years", label: "1-3 years" },
-    { value: "3-5 years", label: "3-5 years" },
-    { value: "Over 5 years", label: "Over 5 years" },
-  ];
 
   const defaultCheckedValues4 = user?.additionalInfo.find((info) => info.key === "experience")?.value.option;
 
-  const options5 = [
-    "Infants (0-1)",
-    "Toddlers (1-3)",
-    "Preschoolers (3-5)",
-    "School-aged (5+)",
-  ];
 
-  const options6 = [
-    "CPR",
-    "First Aid",
-    "Water Safety",
-    "Early Childhood Education",
-    "Special Needs",
-  ];
 
   const defaultCheckedValues5 = user?.additionalInfo?.find((info) => info.key === "ageGroupsExp")?.value?.option;
   const defaultCheckedValues6 = user?.additionalInfo?.find((info) => info.key === "additionalDetails")?.value?.option;
@@ -574,7 +545,7 @@ export default function EditProfileNanny() {
         setNannyProfile(freshData?.nannyProfile || {});
 
         fireToastMessage({ success: true, message: "User updated successfully" });
-        navigate("/nanny");
+        navigate("/dashboard");
       }
     } catch (error) {
       fireToastMessage({ success: false, message: "Failed to update user." });
@@ -588,654 +559,455 @@ export default function EditProfileNanny() {
     setZipCode(user?.zipCode || "");
   }, [user]);
 
+  const cardRate = (v) =>
+    v ? deparseHourlyRate(typeof v === "string" ? JSON.parse(v) : v) : undefined;
+
+  const sections = [
+    { id: "preview", label: "Card preview" },
+    { id: "role", label: "Your role" },
+    { id: "basics", label: "Basic information" },
+    { id: "about", label: "About you" },
+    { id: "schedule", label: "Weekly availability" },
+    { id: "rates", label: "Rates" },
+    { id: "share", label: userType === "Job" ? "Nanny share fit" : "Current setup" },
+    { id: "experience", label: "Experience" },
+    { id: "expectations", label: "Expectations & safety" },
+  ];
+
+  const roleOptions = [
+    {
+      value: "Job",
+      icon: Users,
+      title: "I'm looking for a nanny share position",
+      body: "Get matched with two compatible families.",
+    },
+    {
+      value: "Family",
+      icon: User,
+      title: "I already work with a family and want to add a share",
+      body: "Add a second family to your current role.",
+    },
+  ];
+
   return (
-    <div className="min-h-screen pb-24">
-      {/* Sticky Header */}
-      <div className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-gray-100 px-4 md:px-12 py-4">
-        <div className="max-w-5xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <NavLink to="/nanny" className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-              <ChevronLeft className="w-6 h-6 text-primary" />
-            </NavLink>
-            <h1 className="Livvic-Bold text-xl md:text-2xl text-primary">Edit Profile</h1>
+    <EditProfileLayout
+      title="Edit profile"
+      subtitle="Families see this when they browse caregivers."
+      backTo="/dashboard"
+      onDiscard={() => navigate("/dashboard")}
+      onSave={() => form.submit()}
+      saving={loading}
+      viewProfileHref={`/dashboard/nanny-profile-view/${user?._id}`}
+      sections={sections}
+      identity={
+        <ProfileIdentity
+          image={image}
+          name={formValues?.fullName || user?.name}
+          location={location || user?.location?.format_location}
+          onImageChange={handleImageChange}
+          hint="A clear, friendly photo helps families trust you."
+        />
+      }
+    >
+      <Form onFinish={onFinish} form={form} layout="vertical" autoComplete="off" requiredMark={false}>
+        <EditSection
+          id="preview"
+          stacked
+          title="Card preview"
+          description="How your card looks in search results. It updates as you type."
+          action={<PreviewToggle shown={showPreview} onToggle={() => setShowPreview((v) => !v)} />}
+        >
+          {showPreview && (
+            <div className="pointer-events-none rounded-2xl bg-[#F7F9FA] p-3 md:p-4" aria-hidden="true">
+              <NannyProfile
+                name={formValues?.fullName || user?.name}
+                img={image || user?.image}
+                location={{ format_location: location || user?.location?.format_location }}
+                experience={formValues?.experience || nannyProfile?.careExperience}
+                goal={userType === "Job" ? "Looking for a Nanny Share Position" : "Already work with a family"}
+                rateType={rateType}
+                sharedRate={userType === "Family" ? (formValues?.hourlyBudget || cardRate(nannyProfile?.hourlyBudget) || null) : (formValues?.sharedRate || nannyProfile?.sharedRate)}
+                soloRate={userType === "Family" ? "N/A" : (formValues?.soloRate || nannyProfile?.soloRate)}
+                ages={userType === "Job" ? (formValues?.preferredAges?.map(age => typeof age === "object" ? age.label : age) || nannyProfile?.preferredAges?.map(age => typeof age === "object" ? age.label : age)) : (childAgesFromCaregiverForm(formValues).length > 0 ? childAgesFromCaregiverForm(formValues) : nannyProfile?.childrenAges)}
+                careType={userType === "Job" ? (formValues?.avaiForWorking || nannyProfile?.careType || "Nanny Share") : (formValues?.currentSchedule || nannyProfile?.currentSchedule)}
+                schedule={daysState}
+                distance={nannyProfile?.careDistance}
+                start={formValues?.availability || nannyProfile?.startAvailability}
+                hasFamily={userType === "Family"}
+                childrenCount={formValues?.numberOfChildren || nannyProfile?.numberOfChildren}
+                whereCare={formValues?.whereCare || nannyProfile?.whereCare}
+                status={undefined}
+                handleMatchRequest={() => { }}
+              />
+            </div>
+          )}
+        </EditSection>
+
+        <EditSection
+          id="role"
+          title="Your role"
+          description="This decides which questions appear below. You can switch any time."
+        >
+          <div role="radiogroup" aria-label="Your role" className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {roleOptions.map(({ value, icon: Icon, title, body }) => {
+              const selected = userType === value;
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  role="radio"
+                  aria-checked={selected}
+                  onClick={() => setUserType(value)}
+                  className={`text-left flex items-start gap-3 p-4 rounded-2xl border cursor-pointer transition-colors ${selected ? "border-[#AEC4FF] bg-[#EEF3FF]" : "border-[#E3E7EF] bg-white hover:border-[#AEC4FF]"}`}
+                >
+                  <span className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${selected ? "bg-white" : "bg-[#F3F5F9]"}`}>
+                    <Icon className="w-4 h-4 text-[#001243]" />
+                  </span>
+                  <span className="flex-1 min-w-0">
+                    <span className="block Livvic-SemiBold text-sm text-[#001243] leading-5">{title}</span>
+                    <span className="block Livvic-Medium text-xs text-gray-500 mt-1">{body}</span>
+                  </span>
+                  {selected ? <CheckCircle2 className="w-5 h-5 text-[#001243] shrink-0" /> : <Circle className="w-5 h-5 text-gray-300 shrink-0" />}
+                </button>
+              );
+            })}
           </div>
-          <div className="flex items-center gap-3">
-            <NavLink to="/nanny">
-              <button className="hidden md:flex items-center gap-2 px-6 py-2 rounded-full border border-gray-200 text-secondary Livvic-SemiBold hover:bg-gray-50 transition-all">
-                <X className="w-4 h-4" /> Discard
-              </button>
-            </NavLink>
-            <button
-              onClick={() => form.submit()}
-              disabled={loading}
-              className="flex items-center gap-2 px-8 py-2 rounded-full bg-primary text-primary Livvic-SemiBold shadow-sm hover:shadow-md transition-all disabled:opacity-50"
-            >
-              {loading ? <Spin size="small" /> : <Save className="w-4 h-4" />}
-              Save Changes
-            </button>
-          </div>
-        </div>
-      </div>
+        </EditSection>
 
-      <div className="max-w-7xl mx-auto px-4 md:px-8 mt-4 md:mt-8 mb-12">
-        <Form onFinish={onFinish} form={form} layout="vertical" autoComplete="off" className="space-y-6 md:space-y-8">
+        <EditSection id="basics" title="Basic information" description="Your email stays private. Families see your name and area.">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5">
+            <Form.Item name="fullName" initialValue={user?.name} label="Full name">
+              <Input />
+            </Form.Item>
 
-          {/* Profile Photo & Live Preview Grid */}
-          <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
-            {/* Profile Photo Section */}
-            <section className="bg-white rounded-[24px] p-6 md:p-8 shadow-sm border border-gray-100 lg:w-[320px] shrink-0">
-              <h2 className="Livvic-Bold text-lg text-primary mb-6">
-                Profile Photo
-              </h2>
-              <div className="flex flex-col items-center text-center gap-6">
-                <div className="relative group">
-                  {image ? (
-                    <img src={image} className="w-32 h-32 rounded-3xl object-cover shadow-sm transition-transform group-hover:scale-105" alt="profile" />
-                  ) : (
-                    <div className="w-32 h-32 rounded-3xl bg-[#AEC4FF] flex items-center justify-center text-[#0D134C] text-4xl Livvic-Bold shadow-sm">
-                      {user?.name?.charAt(0)?.toUpperCase()}
-                    </div>
-                  )}
-                  <label className="absolute -bottom-2 -right-2 bg-white text-primary w-10 h-10 rounded-full border border-gray-200 shadow-md cursor-pointer hover:scale-110 transition-transform flex items-center justify-center">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      style={{ display: 'none' }}
-                      onChange={handleImageChange}
-                    />
-                    <Camera className="w-4 h-4 text-primary" />
-                  </label>
-                </div>
+            <Form.Item name="email" initialValue={user?.email} label="Email address">
+              <Input type="email" />
+            </Form.Item>
 
-                <label className="w-full">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    style={{ display: 'none' }}
-                    onChange={handleImageChange}
-                  />
-                  <div className="w-full py-2.5 border border-gray-200 rounded-xl flex items-center justify-center gap-2 text-primary Livvic-SemiBold cursor-pointer hover:bg-gray-50 transition-colors">
-                    <Camera className="w-4 h-4" /> Change Photo
-                  </div>
-                </label>
+            <Form.Item name="location" label="Address" rules={[{ required: true, message: "Add your address so families nearby can find you." }]}>
+              <div className="relative">
+                <Autocomplete
+                  apiKey={import.meta.env.VITE_GOOGLE_KEY}
+                  className="fl-field w-full"
+                  value={location || ""}
+                  onPlaceSelected={async (place) => {
+                    const address = place.formatted_address;
+                    const components = place?.address_components || [];
 
-                <p className="Livvic text-secondary text-sm">Clear, friendly photos help families trust you more.</p>
-              </div>
-            </section>
+                    const get = (type) =>
+                      components.find((c) => c.types.includes(type))?.long_name || "";
 
-            {/* Live Preview Section */}
-            <section className="bg-white rounded-[24px] p-6 md:p-8 shadow-sm border border-gray-100 flex-1 flex flex-col min-w-0">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h2 className="Livvic-Bold text-lg text-primary flex items-center gap-2">
-                    {showPreview ? (
-                      <Eye className="w-5 h-5 text-primary cursor-pointer hover:text-[#AEC4FF] transition-colors" onClick={() => setShowPreview(false)} />
-                    ) : (
-                      <EyeOff className="w-5 h-5 text-gray-400 cursor-pointer hover:text-gray-600 transition-colors" onClick={() => setShowPreview(true)} />
-                    )}
-                    Live Preview
-                  </h2>
-                  <p className="text-secondary text-sm Livvic mt-1">This is how families will see your profile.</p>
-                </div>
-              </div>
+                    const extractedCity =
+                      get("locality") || get("administrative_area_level_2");
 
-              {showPreview ? (
-                <div className="w-full mt-2 pointer-events-none">
-                  <NannyProfile
-                    name={formValues?.fullName || user?.name}
-                    img={image || user?.image}
-                    location={{ format_location: location || user?.location?.format_location }}
-                    experience={formValues?.experience || nannyProfile?.careExperience}
-                    goal={userType === 'Job' ? "Looking for a Nanny Share Position" : "Already work with a family"}
-                    rateType={rateType}
-                    sharedRate={userType === 'Family' ? (formValues?.hourlyBudget || (nannyProfile?.hourlyBudget ? deparseHourlyRate(typeof nannyProfile.hourlyBudget === 'string' ? JSON.parse(nannyProfile.hourlyBudget) : nannyProfile.hourlyBudget) : null)) : (formValues?.sharedRate || nannyProfile?.sharedRate)}
-                    soloRate={userType === 'Family' ? "N/A" : (formValues?.soloRate || nannyProfile?.soloRate)}
-                    ages={userType === 'Job' ? (formValues?.preferredAges?.map(age => typeof age === 'object' ? age.label : age) || nannyProfile?.preferredAges?.map(age => typeof age === 'object' ? age.label : age)) : ((formValues && resolveChildrenAges(formValues)?.length > 0) ? resolveChildrenAges(formValues) : nannyProfile?.childrenAges)}
-                    careType={userType === 'Job' ? (formValues?.avaiForWorking || nannyProfile?.careType || "Nanny Share") : (formValues?.currentSchedule || nannyProfile?.currentSchedule)}
-                    schedule={daysState}
-                    distance={nannyProfile?.careDistance}
-                    start={formValues?.availability || nannyProfile?.startAvailability}
-                    hasFamily={userType === 'Family'}
-                    childrenCount={formValues?.numberOfChildren || nannyProfile?.numberOfChildren}
-                    whereCare={formValues?.whereCare || nannyProfile?.whereCare}
-                    status={undefined}
-                    handleMatchRequest={() => { }}
-                  />
-                </div>
-              ) : (
-                <div className="flex-1 w-full bg-[#f8f9fb] rounded-xl flex items-center justify-center border border-gray-100 p-4 text-gray-400 Livvic-Medium">
-                  Preview is hidden. Click the eye icon to view.
-                </div>
-              )}
-            </section>
-          </div>
+                    const extractedNeighborhood =
+                      get("neighborhood") ||
+                      get("sublocality_level_1") ||
+                      get("sublocality");
 
-          {/* User Type Section */}
-          <section className="bg-white rounded-[24px] p-6 md:p-8 shadow-sm border border-gray-100">
-            <h2 className="Livvic-Bold text-lg text-primary mb-2">User Type</h2>
-            <p className="text-secondary text-sm mb-6 Livvic">This determines the type of questions we show in your profile.</p>
-            <p className="Livvic-SemiBold text-primary mb-4">Which best describes you?</p>
+                    const lat = place?.geometry?.location?.lat();
+                    const lng = place?.geometry?.location?.lng();
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div
-                onClick={() => setUserType('Job')}
-                className={`p-6 border rounded-xl cursor-pointer transition-all ${userType === 'Job' ? 'border-[#AEC4FF] bg-blue-50/30' : 'border-gray-200 hover:border-gray-300'}`}
-              >
-                <div className="flex flex-col h-full relative">
-                  <div className="absolute top-0 left-0">
-                    {userType === 'Job' ? <CheckCircle2 className="w-6 h-6 text-primary" fill="white" /> : <Circle className="w-6 h-6 text-gray-300" />}
-                  </div>
-                  <div className="flex flex-col items-center text-center mt-2">
-                    <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center mb-4">
-                      <Users className="w-6 h-6 text-[#AEC4FF]" />
-                    </div>
-                    <h3 className="Livvic-SemiBold text-primary mb-2">I'm looking for a nanny share position</h3>
-                    <p className="text-sm text-gray-500 Livvic">Get matched with two compatible families and explore nanny share roles.</p>
-                  </div>
-                </div>
-              </div>
+                    const locationObj = {
+                      type: "Point",
+                      coordinates: [lng, lat],
+                      format_location: address,
+                      city: extractedCity,
+                      neighborhood: extractedNeighborhood,
+                    };
+                    const displayValue = extractedNeighborhood !== extractedCity ? `${extractedCity}, ${extractedNeighborhood}` : extractedCity;
+                    setLocation(displayValue)
+                    setCoordinates(locationObj);
+                    form.setFieldsValue({
+                      location: displayValue,
+                    });
 
-              <div
-                onClick={() => setUserType('Family')}
-                className={`p-6 border rounded-xl cursor-pointer transition-all ${userType === 'Family' ? 'border-[#AEC4FF] bg-blue-50/30' : 'border-gray-200 hover:border-gray-300'}`}
-              >
-                <div className="flex flex-col h-full relative">
-                  <div className="absolute top-0 left-0">
-                    {userType === 'Family' ? <CheckCircle2 className="w-6 h-6 text-green-600" fill="white" /> : <Circle className="w-6 h-6 text-gray-300" />}
-                  </div>
-                  <div className="flex flex-col items-center text-center mt-2">
-                    <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center mb-4">
-                      <User className="w-6 h-6 text-green-600" />
-                    </div>
-                    <h3 className="Livvic-SemiBold text-primary mb-2">I already work with a family and want to add a share</h3>
-                    <p className="text-sm text-gray-500 Livvic">Add a second family to your current role and earn more through nanny share.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-4 flex gap-3 text-sm text-primary Livvic-Medium h-fit self-center lg:self-center mt-4 lg:mt-0">
-                <Info className="w-5 h-5 shrink-0 text-[#AEC4FF]" />
-                <p>Tip: You can update your user type anytime. Your profile and matches will update automatically.</p>
-              </div>
-            </div>
-          </section>
-
-          {/* Basic Information Section */}
-          <section className="bg-white rounded-[24px] p-6 md:p-8 shadow-sm border border-gray-100">
-            <h2 className="Livvic-Bold text-lg text-primary mb-6 flex items-center gap-2">
-              <FileText className="w-5 h-5" /> Basic Information
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Form.Item name="fullName" initialValue={user?.name} label="Full Name">
-                <Input className="Livvic-Medium rounded-xl border-gray-200 py-3 focus:border-primary" />
-              </Form.Item>
-
-              <Form.Item name="email" initialValue={user?.email} label="Email Address">
-                <Input type="email" className="Livvic-Medium rounded-xl border-gray-200 py-3 focus:border-primary" />
-              </Form.Item>
-
-              <Form.Item name="location" label="Address" rules={[{ required: true }]}>
-                <div className="relative">
-                  <Spin spinning={loading} size="small">
-                    <Autocomplete
-                      apiKey={import.meta.env.VITE_GOOGLE_KEY}
-                      style={{
-                        width: "100%",
-                        borderRadius: "10px",
-                        padding: "0.75rem",
-                        border: "1px solid #D6DDEB",
-                      }}
-                      value={location || ""}
-                      onPlaceSelected={async (place) => {
-                        const address = place.formatted_address;
-                        const components = place?.address_components || [];
-
-                        const get = (type) =>
-                          components.find((c) => c.types.includes(type))?.long_name || "";
-
-                        const extractedCity =
-                          get("locality") || get("administrative_area_level_2");
-
-                        const extractedNeighborhood =
-                          get("neighborhood") ||
-                          get("sublocality_level_1") ||
-                          get("sublocality");
-
-                        const lat = place?.geometry?.location?.lat();
-                        const lng = place?.geometry?.location?.lng();
-
-                        const locationObj = {
-                          type: "Point",
-                          coordinates: [lng, lat],
-                          format_location: address,
-                          city: extractedCity,
-                          neighborhood: extractedNeighborhood,
-                        };
-                        const displayValue = extractedNeighborhood !== extractedCity ? `${extractedCity}, ${extractedNeighborhood}` : extractedCity;
-                        setLocation(displayValue)
-                        setCoordinates(locationObj);
-                        form.setFieldsValue({
-                          location: displayValue,
-                        });
-
-                        // Move the zip with the address, or it keeps pointing at where the
-                        // user used to live. Google omits postal_code from city-level picks.
-                        const placeZip = await zipFromPlace(place);
-                        if (placeZip) {
-                          setZipCode(placeZip);
-                          form.setFieldsValue({ zipCode: placeZip });
-                        }
-                        setLoading(false);
-                      }}
-                      onChange={(e) => {
-                        setLocation(e.target.value);
-                      }}
-                      options={{
-                        types: ["geocode"],
-                        componentRestrictions: { country: "us" },
-                      }}
-                    />
-                  </Spin>
-                  <MapPin className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
-                </div>
-              </Form.Item>
-
-              <Form.Item name="zipCode" label="Zip Code">
-                <Input
-                  className="Livvic-Medium rounded-xl border-gray-200 py-3"
-                  onChange={(e) => setZipCode(e.target.value)}
-                />
-              </Form.Item>
-
-              <Form.Item name="gender" initialValue={user?.gender} label="Gender">
-                <Select className="h-12 w-full rounded-xl border-gray-200" placeholder="Select gender">
-                  <Select.Option value="Male">Male</Select.Option>
-                  <Select.Option value="Female">Female</Select.Option>
-                  <Select.Option value="Other">Other</Select.Option>
-                </Select>
-              </Form.Item>
-
-              <Form.Item name="age" initialValue={user?.age} label="Age">
-                <Input type="number" className="Livvic-Medium rounded-xl border-gray-200 py-3" />
-              </Form.Item>
-            </div>
-          </section>
-
-          {/* Languages Section */}
-          <section className="bg-white rounded-[24px] p-6 md:p-8 shadow-sm border border-gray-100">
-            <h2 className="Livvic-Bold text-lg text-primary mb-6 flex items-center gap-2">
-              <Languages className="w-5 h-5" /> Languages
-            </h2>
-            <OptionSelector options={options} form={form} defaultCheckedValues={defaultCheckedValues} name="language" />
-          </section>
-
-          {/* Weekly Schedule Section */}
-          <section className="bg-white rounded-[24px] p-6 md:p-8 shadow-sm border border-gray-100">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="Livvic-Bold text-lg text-primary flex items-center gap-2">
-                <Calendar className="w-5 h-5" /> Weekly Availability
-              </h2>
-              <p className="text-secondary text-sm Livvic">Select your working days and hours.</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {daysOfWeek.map((day) => (
-                <div key={day} className={`p-4 rounded-2xl border transition-all ${daysState[day].checked ? 'bg-primary/5 border-primary shadow-sm' : 'bg-gray-50 border-gray-100'}`}>
-                  <div className="flex items-center justify-between mb-4">
-                    <Checkbox checked={daysState[day].checked} onChange={() => handleCheckboxChange(day)}>
-                      <span className="Livvic-SemiBold text-primary">{day}</span>
-                    </Checkbox>
-                  </div>
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-3.5 h-3.5 text-gray-400" />
-                      <TimePicker
-                        value={daysState[day].start ? parseTime(daysState[day].start) : null}
-                        placeholder="Start"
-                        onChange={(time) => handleTimeChange(day, "start", time)}
-                        disabled={!daysState[day].checked}
-                        format="h:mm A"
-                        className="rounded-lg border-gray-200 w-full"
-                      />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-3.5 h-3.5 text-gray-400" />
-                      <TimePicker
-                        value={daysState[day].end ? parseTime(daysState[day].end) : null}
-                        placeholder="End"
-                        onChange={(time) => handleTimeChange(day, "end", time)}
-                        disabled={!daysState[day].checked}
-                        format="h:mm A"
-                        className="rounded-lg border-gray-200 w-full"
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-
-
-          {/* Nanny Share Pricing Section */}
-          <section className="bg-white rounded-[24px] p-6 md:p-8 shadow-sm border border-gray-100">
-            <h2 className="Livvic-Bold text-lg text-primary mb-6 flex items-center gap-2">
-              <DollarSign className="w-5 h-5" /> Nanny Share Rates
-            </h2>
-            <p className="text-secondary text-sm mb-6 Livvic">Set your nanny share specific rates for shared care vs solo care.</p>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Form.Item name="rateType" label="Rate Billing Type">
-                <Select
-                  className="h-12 w-full rounded-xl"
-                  value={rateType}
-                  onChange={(val) => {
-                    setRateType(val);
-                    form.setFieldsValue({ rateType: val, sharedRate: undefined, soloRate: undefined });
-                  }}
-                  options={[
-                    { value: "hourly", label: "Hourly Rate" },
-                    { value: "weekly", label: "Weekly Rate" }
-                  ]}
-                />
-              </Form.Item>
-
-              <Form.Item name="sharedRate" label="Shared Care Rate (Both Families)">
-                <Select
-                  className="h-12 w-full rounded-xl"
-                  placeholder="Select shared rate range"
-                  options={RANGES[rateType]?.shared || []}
-                />
-              </Form.Item>
-
-              <Form.Item name="soloRate" label="Solo Care Rate (One Family)">
-                <Select
-                  className="h-12 w-full rounded-xl"
-                  placeholder="Select solo rate range"
-                  options={RANGES[rateType]?.solo || []}
-                />
-              </Form.Item>
-            </div>
-
-            <div className="mt-8 border-t border-gray-100 pt-6">
-              <h3 className="Livvic-SemiBold text-primary mb-4 text-[16px]">Salary Expectations (Rate Per Child)</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
-                <Form.Item name="firstChild" label="1st Child ($)">
-                  <Input type="number" className="h-12 w-full rounded-xl border-gray-200" placeholder="e.g. 20" />
-                </Form.Item>
-                <Form.Item name="secChild" label="2nd Child ($)">
-                  <Input type="number" className="h-12 w-full rounded-xl border-gray-200" placeholder="e.g. 25" />
-                </Form.Item>
-                <Form.Item name="thirdChild" label="3rd Child ($)">
-                  <Input type="number" className="h-12 w-full rounded-xl border-gray-200" placeholder="e.g. 30" />
-                </Form.Item>
-                <Form.Item name="fourthChild" label="4th Child ($)">
-                  <Input type="number" className="h-12 w-full rounded-xl border-gray-200" placeholder="e.g. 35" />
-                </Form.Item>
-                <Form.Item name="fiveOrMoreChild" label="5+ Children ($)">
-                  <Input type="number" className="h-12 w-full rounded-xl border-gray-200" placeholder="e.g. 40" />
-                </Form.Item>
-              </div>
-            </div>
-          </section>
-
-          {/* Share Compatibility / Current Setup Section */}
-          <section className="bg-white rounded-[24px] p-6 md:p-8 shadow-sm border border-gray-100">
-            {userType === 'Job' ? (
-              <>
-                <h2 className="Livvic-Bold text-lg text-primary mb-6 flex items-center gap-2">
-                  <Users className="w-5 h-5" /> Nanny Share Compatibility
-                </h2>
-                <p className="text-secondary text-sm mb-6 Livvic">Configure your preferences and experiences with nanny sharing.</p>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Form.Item name="shareExperience" label="Have you worked in a nanny share before?">
-                    <Select className="h-12 w-full rounded-xl" placeholder="Select answer">
-                      <Select.Option value="Yes">Yes</Select.Option>
-                      <Select.Option value="No">No</Select.Option>
-                    </Select>
-                  </Form.Item>
-
-                  <Form.Item name="multiFamilyComfort" label="Are you comfortable caring for children from multiple families?">
-                    <Select className="h-12 w-full rounded-xl" placeholder="Select answer">
-                      <Select.Option value="Yes">Yes</Select.Option>
-                      <Select.Option value="No">No</Select.Option>
-                    </Select>
-                  </Form.Item>
-
-                  <Form.Item name="childrenCapacity" label="What number of children are you most comfortable caring for?">
-                    <Select className="h-12 w-full rounded-xl" placeholder="Select capacity">
-                      <Select.Option value="1-2">1-2 children</Select.Option>
-                      <Select.Option value="2-3">2-3 children</Select.Option>
-                      <Select.Option value="3-4">3-4 children</Select.Option>
-                      <Select.Option value="Flexible">Flexible</Select.Option>
-                    </Select>
-                  </Form.Item>
-
-                  <Form.Item name="workSetup" label="Are you okay working in:">
-                    <Select className="h-12 w-full rounded-xl" placeholder="Select work setup">
-                      <Select.Option value="One home">One home</Select.Option>
-                      <Select.Option value="Rotating homes">Rotating homes</Select.Option>
-                      <Select.Option value="Either">Either</Select.Option>
-                    </Select>
-                  </Form.Item>
-
-                  <Form.Item name="preferredAges" className="col-span-1 md:col-span-2" label="What ages do you prefer to work with?">
-                    <Select
-                      mode="multiple"
-                      className="w-full rounded-xl"
-                      placeholder="Select preferred ages"
-                      options={[
-                        { value: "Infants (0–1)", label: "Infants (0–1)" },
-                        { value: "Toddlers (1–3)", label: "Toddlers (1–3)" },
-                        { value: "Preschool (3–5)", label: "Preschool (3–5)" },
-                        { value: "School-age (5+)", label: "School-age (5+)" }
-                      ]}
-                    />
-                  </Form.Item>
-                </div>
-              </>
-            ) : (
-              <>
-                <h2 className="Livvic-Bold text-lg text-primary mb-6 flex items-center gap-2">
-                  <Users className="w-5 h-5" /> Current Setup
-                </h2>
-                <p className="text-secondary text-sm mb-6 Livvic">Tell us about the family you currently work with.</p>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Form.Item name="forWho" label="Who is this nanny share for?">
-                    <Select className="h-12 w-full rounded-xl" placeholder="Select answer">
-                      <Select.Option value="A family I currently work with">A family I currently work with</Select.Option>
-                      <Select.Option value="Myself (bringing my own child)">Myself (bringing my own child)</Select.Option>
-                    </Select>
-                  </Form.Item>
-
-                  <SelectChildrenAge
-                    form={form}
-                    opt={[1, 2, 3, 4, 5]}
-                    selectedValue={form.getFieldValue("numberOfChildren")}
-                    handleSelectChange={(val) => form.setFieldsValue({ numberOfChildren: val })}
-                    numberOfChildren={nannyProfile?.numberOfChildren}
-                    childrenAges={
-                      nannyProfile?.childrenAges?.length
-                        ? nannyProfile.childrenAges.map((age) => age.label).join(", ")
-                        : ""
+                    // Move the zip with the address, or it keeps pointing at where the
+                    // user used to live. Google omits postal_code from city-level picks.
+                    const placeZip = await zipFromPlace(place);
+                    if (placeZip) {
+                      setZipCode(placeZip);
+                      form.setFieldsValue({ zipCode: placeZip });
                     }
-                  />
-                  <Form.Item name="numberOfChildren" hidden><Input /></Form.Item>
+                    setLoading(false);
+                  }}
+                  onChange={(e) => {
+                    setLocation(e.target.value);
+                  }}
+                  options={{
+                    types: ["geocode"],
+                    componentRestrictions: { country: "us" },
+                  }}
+                />
+                <MapPin className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 pointer-events-none" />
+              </div>
+            </Form.Item>
 
-                  <Form.Item name="whereCare" label="Where would care take place?">
-                    <Select className="h-12 w-full rounded-xl" placeholder="Select answer">
-                      <Select.Option value="Current family's home">Current family's home</Select.Option>
-                      <Select.Option value="Other family's home">Other family's home</Select.Option>
-                      <Select.Option value="Rotating between homes">Rotating between homes</Select.Option>
-                      <Select.Option value="Neutral location">Neutral location</Select.Option>
-                    </Select>
-                  </Form.Item>
+            <Form.Item name="zipCode" label="Zip code">
+              <Input onChange={(e) => setZipCode(e.target.value)} />
+            </Form.Item>
 
-                  <Form.Item name="currentSchedule" label="What schedule are you currently working?">
-                    <Select className="h-12 w-full rounded-xl" placeholder="Select schedule">
-                      {SHARE_SCHEDULES.map((schedule) => (
-                        <Select.Option key={schedule} value={schedule}>{schedule}</Select.Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
+            <Form.Item name="gender" initialValue={user?.gender} label="Gender">
+              <Select placeholder="Select gender">
+                <Select.Option value="Male">Male</Select.Option>
+                <Select.Option value="Female">Female</Select.Option>
+                <Select.Option value="Other">Other</Select.Option>
+              </Select>
+            </Form.Item>
 
-                  <Form.Item name="joinTiming" label="When would a second family join?">
-                    <Select className="h-12 w-full rounded-xl" placeholder="Select timing">
-                      <Select.Option value="Same schedule">Same schedule</Select.Option>
-                      <Select.Option value="Partially overlapping">Partially overlapping</Select.Option>
-                      <Select.Option value="Filling gaps">Filling gaps</Select.Option>
-                      <Select.Option value="Flexible">Flexible</Select.Option>
-                    </Select>
-                  </Form.Item>
+            <Form.Item name="age" initialValue={user?.age} label="Age">
+              <Input type="number" />
+            </Form.Item>
+          </div>
+        </EditSection>
 
-                  <Form.Item name="together" label="Would the children be together at the same time?">
-                    <Select className="h-12 w-full rounded-xl" placeholder="Select answer">
-                      <Select.Option value="Yes">Yes</Select.Option>
-                      <Select.Option value="Sometimes">Sometimes</Select.Option>
-                      <Select.Option value="No">No</Select.Option>
-                    </Select>
-                  </Form.Item>
+        <EditSection id="about" title="About you" description="Your approach to care, in your own words. This is the first thing families read.">
+          <Form.Item name="jobDescription" label="Bio" initialValue={user?.additionalInfo.find((i) => i.key === "jobDescription")?.value}>
+            <TextArea
+              rows={6}
+              showCount
+              placeholder="Tell families about your approach, skills, and background…"
+              className="Livvic-Medium"
+            />
+          </Form.Item>
 
-                  <Form.Item name="hourlyBudget" initialValue={nannyProfile?.hourlyBudget ? deparseHourlyRate(typeof nannyProfile.hourlyBudget === 'string' ? JSON.parse(nannyProfile.hourlyBudget) : nannyProfile.hourlyBudget) : undefined} label="Hourly Budget Split">
-                    <Select className="h-12 w-full rounded-xl" placeholder="Select budget">
-                      <Select.Option value="$10 - $15 per hour (Each family pays $5 - $7.50)">$10 - $15 per hour (Each family pays $5 - $7.50)</Select.Option>
-                      <Select.Option value="$15 - $20 per hour (Each family pays $7.50 - $10)">$15 - $20 per hour (Each family pays $7.50 - $10)</Select.Option>
-                      <Select.Option value="$20 - $25 per hour (Each family pays $10 - $12.50)">$20 - $25 per hour (Each family pays $10 - $12.50)</Select.Option>
-                      <Select.Option value="$25 - $30 per hour (Each family pays $12.50 - $15)">$25 - $30 per hour (Each family pays $12.50 - $15)</Select.Option>
-                      <Select.Option value="$30 - $35 per hour (Each family pays $15 - $17.50)">$30 - $35 per hour (Each family pays $15 - $17.50)</Select.Option>
-                      <Select.Option value="$35 - $40 per hour (Each family pays $17.50 - $20)">$35 - $40 per hour (Each family pays $17.50 - $20)</Select.Option>
-                      <Select.Option value="$40+ per hour (Each family pays $20+)">$40+ per hour (Each family pays $20+)</Select.Option>
-                    </Select>
-                  </Form.Item>
-                </div>
-              </>
-            )}
-          </section>
+          <FieldLabel>Languages you speak</FieldLabel>
+          <OptionSelector key={nannyProfile ? "loaded" : "initial"} options={LANGUAGES} form={form} defaultCheckedValues={normalizeAnswer(readList(nannyProfile?.languages).length ? readList(nannyProfile.languages) : readList(defaultCheckedValues))} name="language" />
+        </EditSection>
 
-          {/* Expectations, Roles & Transport Section */}
-          <section className="bg-white rounded-[24px] p-6 md:p-8 shadow-sm border border-gray-100">
-            <h2 className="Livvic-Bold text-lg text-primary mb-6 flex items-center gap-2">
-              <Sparkles className="w-5 h-5" /> Expectations & Safety
-            </h2>
-            <p className="text-secondary text-sm mb-6 Livvic">Add trust signals and clarify what chores or responsibilities you support.</p>
+        <EditSection id="schedule" title="Weekly availability" description="Tick the days you can work and set your hours. At least one day is needed.">
+          <WeeklySchedule
+            days={daysOfWeek}
+            state={daysState}
+            onToggle={handleCheckboxChange}
+            onTimeChange={handleTimeChange}
+          />
+        </EditSection>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Form.Item name="hasTransport" label="Do you have your own reliable transportation?">
-                <Select className="h-12 w-full rounded-xl" placeholder="Select answer">
+        <EditSection id="rates" title="Rates" description="Shared care is when both families' children are with you. Solo is one family.">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-x-5">
+            <Form.Item name="rateType" label="Billed">
+              <Select
+                value={rateType}
+                onChange={(val) => {
+                  setRateType(val);
+                  form.setFieldsValue({ rateType: val, sharedRate: undefined, soloRate: undefined });
+                }}
+                options={[
+                  { value: "hourly", label: "Hourly" },
+                  { value: "weekly", label: "Weekly" }
+                ]}
+              />
+            </Form.Item>
+
+            <Form.Item name="sharedRate" label="Shared care rate">
+              <Select placeholder="Select a range" options={RANGES[rateType]?.shared || []} />
+            </Form.Item>
+
+            <Form.Item name="soloRate" label="Solo care rate">
+              <Select placeholder="Select a range" options={RANGES[rateType]?.solo || []} />
+            </Form.Item>
+          </div>
+
+          <FieldLabel className="mt-2">Rate by number of children</FieldLabel>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-4">
+            <Form.Item name="firstChild" label="1 child">
+              <Input type="number" prefix="$" placeholder="20" />
+            </Form.Item>
+            <Form.Item name="secChild" label="2 children">
+              <Input type="number" prefix="$" placeholder="25" />
+            </Form.Item>
+            <Form.Item name="thirdChild" label="3 children">
+              <Input type="number" prefix="$" placeholder="30" />
+            </Form.Item>
+            <Form.Item name="fourthChild" label="4 children">
+              <Input type="number" prefix="$" placeholder="35" />
+            </Form.Item>
+            <Form.Item name="fiveOrMoreChild" label="5+ children">
+              <Input type="number" prefix="$" placeholder="40" />
+            </Form.Item>
+          </div>
+        </EditSection>
+
+        {userType === "Job" ? (
+          <EditSection id="share" title="Nanny share fit" description="Helps us match you with families whose setup suits you.">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5">
+              <Form.Item name="shareExperience" label="Worked in a nanny share before?">
+                <Select placeholder="Select an answer">
                   <Select.Option value="Yes">Yes</Select.Option>
                   <Select.Option value="No">No</Select.Option>
                 </Select>
               </Form.Item>
 
-              <Form.Item name="backgroundCheck" label="Are you open to undergoing a background check?">
-                <Select className="h-12 w-full rounded-xl" placeholder="Select answer">
+              <Form.Item name="multiFamilyComfort" label="Comfortable caring for children from two families?">
+                <Select placeholder="Select an answer">
                   <Select.Option value="Yes">Yes</Select.Option>
                   <Select.Option value="No">No</Select.Option>
                 </Select>
               </Form.Item>
 
-              <Form.Item name="householdHelp" className="col-span-1 md:col-span-2" label="Are you open to helping with household tasks?">
-                <Select className="h-12 w-full rounded-xl" placeholder="Select option">
-                  <Select.Option value="Yes — both child-related and family-related">Yes — both child-related and family-related</Select.Option>
-                  <Select.Option value="Child-related tasks only">Child-related tasks only</Select.Option>
-                  <Select.Option value="No — childcare only">No — childcare only</Select.Option>
+              <Form.Item name="childrenCapacity" label="How many children at once?">
+                <Select placeholder="Select a number">
+                  <Select.Option value="1-2">1-2 children</Select.Option>
+                  <Select.Option value="2-3">2-3 children</Select.Option>
+                  <Select.Option value="3-4">3-4 children</Select.Option>
+                  <Select.Option value="Flexible">Flexible</Select.Option>
                 </Select>
               </Form.Item>
 
-              <Form.Item name="responsibilities" className="col-span-1 md:col-span-2" label="What would your role typically include?">
+              <Form.Item name="workSetup" label="Where you're happy to work">
+                <Select placeholder="Select a setup">
+                  <Select.Option value="One home">One home</Select.Option>
+                  <Select.Option value="Rotating homes">Rotating homes</Select.Option>
+                  <Select.Option value="Either">Either</Select.Option>
+                </Select>
+              </Form.Item>
+
+              <Form.Item name="preferredAges" className="md:col-span-2" label="Ages you prefer to work with">
                 <Select
                   mode="multiple"
-                  className="w-full rounded-xl"
-                  placeholder="Select typical responsibilities"
-                  options={[
-                    { value: "Childcare", label: "Childcare" },
-                    { value: "Meal/snack prep", label: "Meal/snack prep" },
-                    { value: "Educational activities", label: "Educational activities" },
-                    { value: "Outdoor play", label: "Outdoor play" },
-                    { value: "Transportation", label: "Transportation" },
-                    { value: "Homework help", label: "Homework help" },
-                    { value: "Nap/bedtime routines", label: "Nap/bedtime routines" }
-                  ]}
+                  placeholder="Select ages"
+                  options={toSelectOptions(AGE_GROUPS)}
                 />
               </Form.Item>
             </div>
-          </section>
+          </EditSection>
+        ) : (
+          <EditSection id="share" title="Current setup" description="Tell a second family about the family you already work with.">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5">
+              <Form.Item name="forWho" label="Who is this share for?">
+                <Select placeholder="Select an answer">
+                  <Select.Option value="A family I currently work with">A family I currently work with</Select.Option>
+                  <Select.Option value="Myself (bringing my own child)">Myself (bringing my own child)</Select.Option>
+                </Select>
+              </Form.Item>
 
-          {/* Professional Details Section */}
-          <section className="bg-white rounded-[24px] p-6 md:p-8 shadow-sm border border-gray-100">
-            <h2 className="Livvic-Bold text-lg text-primary mb-6 flex items-center gap-2">
-              <Briefcase className="w-5 h-5" /> Professional Details
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Form.Item name="avaiForWorking" initialValue={defaultCheckedValues2} label="Availability">
-                <Select className="h-12 w-full rounded-xl" options={options2} />
+              <SelectChildrenAge
+                form={form}
+                opt={[1, 2, 3, 4, 5]}
+                selectedValue={form.getFieldValue("numberOfChildren")}
+                handleSelectChange={(val) => form.setFieldsValue({ numberOfChildren: val })}
+                numberOfChildren={nannyProfile?.numberOfChildren}
+                childrenAges={
+                  nannyProfile?.childrenAges?.length
+                    ? nannyProfile.childrenAges.map((age) => age.label).join(", ")
+                    : ""
+                }
+              />
+              <Form.Item name="numberOfChildren" hidden><Input /></Form.Item>
+
+              <Form.Item name="whereCare" label="Where care takes place">
+                <Select placeholder="Select an answer">
+                  <Select.Option value="Current family's home">Current family’s home</Select.Option>
+                  <Select.Option value="Other family's home">Other family’s home</Select.Option>
+                  <Select.Option value="Rotating between homes">Rotating between homes</Select.Option>
+                  <Select.Option value="Neutral location">Neutral location</Select.Option>
+                </Select>
               </Form.Item>
-              <Form.Item name="availability" label="Start Availability" initialValue={getValidDate(defaultCheckedValues3)}>
-                <DatePicker className="h-12 w-full rounded-xl border-gray-200" format="MMMM D, YYYY" />
+
+              <Form.Item name="currentSchedule" label="Your current schedule">
+                <Select placeholder="Select a schedule">
+                  {SHARE_SCHEDULES.map((schedule) => (
+                    <Select.Option key={schedule} value={schedule}>{schedule}</Select.Option>
+                  ))}
+                </Select>
               </Form.Item>
-              <Form.Item name="experience" initialValue={defaultCheckedValues4} label="Years of Experience">
-                <Select className="h-12 w-full rounded-xl" options={options4} />
+
+              <Form.Item name="joinTiming" label="When a second family would join">
+                <Select placeholder="Select timing">
+                  <Select.Option value="Same schedule">Same schedule</Select.Option>
+                  <Select.Option value="Partially overlapping">Partially overlapping</Select.Option>
+                  <Select.Option value="Filling gaps">Filling gaps</Select.Option>
+                  <Select.Option value="Flexible">Flexible</Select.Option>
+                </Select>
+              </Form.Item>
+
+              <Form.Item name="together" label="Would the children be together?">
+                <Select placeholder="Select an answer">
+                  <Select.Option value="Yes">Yes</Select.Option>
+                  <Select.Option value="Sometimes">Sometimes</Select.Option>
+                  <Select.Option value="No">No</Select.Option>
+                </Select>
+              </Form.Item>
+
+              <Form.Item name="hourlyBudget" className="md:col-span-2" initialValue={cardRate(nannyProfile?.hourlyBudget)} label="Hourly rate, split between families">
+                <Select placeholder="Select a rate">
+                  <Select.Option value="$10 - $15 per hour (Each family pays $5 - $7.50)">$10 - $15 per hour (Each family pays $5 - $7.50)</Select.Option>
+                  <Select.Option value="$15 - $20 per hour (Each family pays $7.50 - $10)">$15 - $20 per hour (Each family pays $7.50 - $10)</Select.Option>
+                  <Select.Option value="$20 - $25 per hour (Each family pays $10 - $12.50)">$20 - $25 per hour (Each family pays $10 - $12.50)</Select.Option>
+                  <Select.Option value="$25 - $30 per hour (Each family pays $12.50 - $15)">$25 - $30 per hour (Each family pays $12.50 - $15)</Select.Option>
+                  <Select.Option value="$30 - $35 per hour (Each family pays $15 - $17.50)">$30 - $35 per hour (Each family pays $15 - $17.50)</Select.Option>
+                  <Select.Option value="$35 - $40 per hour (Each family pays $17.50 - $20)">$35 - $40 per hour (Each family pays $17.50 - $20)</Select.Option>
+                  <Select.Option value="$40+ per hour (Each family pays $20+)">$40+ per hour (Each family pays $20+)</Select.Option>
+                </Select>
               </Form.Item>
             </div>
+          </EditSection>
+        )}
 
-            <div className="mt-8">
-              <label className="Livvic-Bold text-primary mb-4 block flex items-center gap-2">
-                <Baby className="w-4 h-4" /> Age Group Experience
-              </label>
-              <OptionSelector options={options5} defaultCheckedValues={defaultCheckedValues5} form={form} name="ageGroupsExp" />
-            </div>
-
-            <div className="mt-8">
-              <label className="Livvic-Bold text-primary mb-4 block flex items-center gap-2">
-                <FileText className="w-4 h-4" /> About Me / Bio
-              </label>
-              <Form.Item name="jobDescription" initialValue={user?.additionalInfo.find((i) => i.key === "jobDescription")?.value}>
-                <TextArea
-                  rows={6}
-                  placeholder="Tell families about your approach, skills, and background..."
-                  className="rounded-2xl border-gray-200 p-4 Livvic focus:ring-primary/20 transition-all"
-                />
-              </Form.Item>
-            </div>
-
-            <div className="mt-8">
-              <label className="Livvic-Bold text-primary mb-4 block">Certifications</label>
-              <OptionSelector options={options6} defaultCheckedValues={nannyProfile?.certifications || defaultCheckedValues6} form={form} name="certifications" />
-            </div>
-
-            <div className="mt-8">
-              <label className="Livvic-Bold text-primary mb-4 block">Additional Certifications & Training</label>
-              <Form.Item name="customCertifications" initialValue={nannyProfile?.customCertifications}>
-                <Input placeholder="E.g., Water Safety Instructor" className="Livvic-Medium rounded-xl border-gray-200 py-3 focus:border-primary" />
-              </Form.Item>
-            </div>
-
-            <div className="mt-8">
-              <label className="Livvic-Bold text-primary mb-4 block">Special Skills</label>
-              <Form.Item name="skills" initialValue={nannyProfile?.skills}>
-                <Input placeholder="E.g., Sign Language, Music" className="Livvic-Medium rounded-xl border-gray-200 py-3 focus:border-primary" />
-              </Form.Item>
-            </div>
-          </section>
-
-          {/* Bottom Actions for Mobile */}
-          <div className="md:hidden flex flex-col gap-3 mt-8">
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-primary text-primary Livvic-Bold py-4 rounded-2xl shadow-lg flex items-center justify-center gap-2"
-            >
-              <Save className="w-5 h-5" /> Save Changes
-            </button>
-            <NavLink to="/nanny/profile">
-              <button className="w-full bg-white text-secondary border border-gray-200 Livvic-Bold py-4 rounded-2xl">
-                Discard Changes
-              </button>
-            </NavLink>
+        <EditSection id="experience" title="Experience" description="Your background and training.">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-x-5">
+            <Form.Item name="avaiForWorking" initialValue={normalizeShareSchedule(defaultCheckedValues2)} label="Care type">
+              <Select options={SHARE_SCHEDULES.map((v) => ({ value: v, label: v }))} placeholder="Select" />
+            </Form.Item>
+            <Form.Item name="availability" label="Can start from" initialValue={getValidDate(defaultCheckedValues3)}>
+              <DatePicker className="w-full" format="MMMM D, YYYY" />
+            </Form.Item>
+            <Form.Item name="experience" initialValue={normalizeAnswer(defaultCheckedValues4)} label="Years of experience">
+              <Select options={toSelectOptions(CARE_EXPERIENCE)} placeholder="Select" />
+            </Form.Item>
           </div>
-        </Form>
-      </div>
-    </div>
+
+          <FieldLabel>Age groups you’ve cared for</FieldLabel>
+          <OptionSelector key={nannyProfile ? "loaded" : "initial"} options={AGE_GROUPS} defaultCheckedValues={normalizeAnswer(readList(nannyProfile?.ageGroupsExp).length ? readList(nannyProfile.ageGroupsExp) : readList(defaultCheckedValues5))} form={form} name="ageGroupsExp" />
+
+          <FieldLabel className="mt-6">Certifications</FieldLabel>
+          <OptionSelector key={nannyProfile ? "loaded" : "initial"} options={CERTIFICATIONS} defaultCheckedValues={normalizeAnswer(readList(nannyProfile?.certifications).length ? readList(nannyProfile.certifications) : readList(defaultCheckedValues6))} form={form} name="certifications" />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 mt-6">
+            <Form.Item name="customCertifications" initialValue={nannyProfile?.customCertifications} label="Other certifications or training">
+              <Input placeholder="e.g. Water safety instructor" />
+            </Form.Item>
+            <Form.Item name="skills" initialValue={nannyProfile?.skills} label="Special skills">
+              <Input placeholder="e.g. Sign language, music" />
+            </Form.Item>
+          </div>
+        </EditSection>
+
+        <EditSection id="expectations" title="Expectations & safety" description="What you'll help with, and the checks families look for.">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5">
+            <Form.Item name="hasTransport" label="Own reliable transportation?">
+              <Select placeholder="Select an answer">
+                <Select.Option value="Yes">Yes</Select.Option>
+                <Select.Option value="No">No</Select.Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item name="backgroundCheck" label="Open to a background check?">
+              <Select placeholder="Select an answer">
+                <Select.Option value="Yes">Yes</Select.Option>
+                <Select.Option value="No">No</Select.Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item name="householdHelp" className="md:col-span-2" label="Household tasks you're open to">
+              <Select
+                mode="multiple"
+                placeholder="Select all that apply"
+                options={toSelectOptions([...HOUSEHOLD_TASKS, NOT_APPLICABLE])}
+              />
+            </Form.Item>
+
+            <Form.Item name="responsibilities" className="md:col-span-2" label="What your role usually includes">
+              <Select
+                mode="multiple"
+                placeholder="Select all that apply"
+                options={toSelectOptions(CHILD_HELP)}
+              />
+            </Form.Item>
+          </div>
+        </EditSection>
+      </Form>
+    </EditProfileLayout>
   );
 }

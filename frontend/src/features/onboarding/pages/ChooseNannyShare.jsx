@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate, NavLink } from "react-router-dom";
 import SEOMetaData from "@shared/seo/SEOMetaData";
 import { Form } from 'antd';
-import Button from '@shared/ui/Button';
 import { InputDa } from '@shared/ui/Input';
 import { fireToastMessage } from '@shared/ui/toast';
 import { Baby, BriefcaseIcon, Users } from 'lucide-react';
 import { fullNameFrom } from "@shared/lib/formName";
 
+import CustomButton from "@shared/ui/Button";
+import { saveOnboardingRecord } from "@features/onboarding/onboardingRecord";
 /* ─────────────────────────────────────────
    Loading Modal
 ───────────────────────────────────────── */
@@ -60,9 +61,9 @@ const MaybeLaterModal = ({ onClose }) => (
       >
         Create account to see positions now
       </NavLink>
-      <button type="button" onClick={onClose} className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
+      <CustomButton type="button" onClick={onClose} className="text-sm text-gray-500 hover:text-gray-700 transition-colors px-0 py-0 rounded-none Livvic">
         No thanks
-      </button>
+      </CustomButton>
     </div>
     <style>{`@keyframes popIn{0%{opacity:0;transform:scale(0.85)}100%{opacity:1;transform:scale(1)}}`}</style>
   </div>
@@ -98,20 +99,20 @@ const SuccessModal = ({ onClose, selectedPath, navigate, recordId }) => {
               : "We'll start matching you with compatible nanny share families."}
           </span>
         </p>
-        <button
+        <CustomButton
           type="button"
           onClick={() => navigate(
             selectedPath === 1
               ? `/caregiver/nanny-share/looking-for-another-family/${recordId}`
               : `/caregiver/nanny-share/looking-for-nanny-share-job/${recordId}`
           )}
-          className="w-full block text-center bg-[#AEC4FF] hover:bg-[#9db3f0] transition-colors rounded-full py-3 text-base Livvic-Bold text-black mb-3"
+          className="w-full block text-center bg-[#AEC4FF] hover:bg-[#9db3f0] transition-colors rounded-full py-3 text-base Livvic-Bold text-black mb-3 px-0"
         >
           Continue – create my account
-        </button>
-        <button type="button" onClick={() => setShowMaybeLater(true)} className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
+        </CustomButton>
+        <CustomButton type="button" onClick={() => setShowMaybeLater(true)} className="text-sm text-gray-500 hover:text-gray-700 transition-colors px-0 py-0 rounded-none Livvic">
           Maybe later
-        </button>
+        </CustomButton>
       </div>
       <style>{`
         @keyframes popIn    {0%{opacity:0;transform:scale(0.85)}100%{opacity:1;transform:scale(1)}}
@@ -181,24 +182,27 @@ const ChooseNannyShare = () => {
       Type: "Nanny share caregiver",
     };
 
-    const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
+    // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+    // const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
 
-    if (!scriptUrl) {
-      console.warn("VITE_GOOGLE_SCRIPT_URL is not set. Data:", data);
-      await new Promise((r) => setTimeout(r, 1400));
-      setLoading(false);
-      resetFormState();
-      setRecordId(newRecordId);
-      setShowSuccess(true);
-      return;
-    }
+    // if (!scriptUrl) {
+    //   console.warn("VITE_GOOGLE_SCRIPT_URL is not set. Data:", data);
+    //   await new Promise((r) => setTimeout(r, 1400));
+    //   setLoading(false);
+    //   resetFormState();
+    //   setRecordId(newRecordId);
+    //   setShowSuccess(true);
+    //   return;
+    // }
 
     try {
-      await fetch(scriptUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(data).toString(),
-      });
+      // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+      // await fetch(scriptUrl, {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      //   body: new URLSearchParams(data).toString(),
+      // });
+      await saveOnboardingRecord(data);
       setRecordId(newRecordId);
       navigate(
         selectedPath === 1
@@ -342,13 +346,13 @@ const ChooseNannyShare = () => {
 
               {/* Action buttons */}
               <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-center gap-3 pt-4">
-                <Button
+                <CustomButton
                   btnText="Go Back"
                   action={handleGoBack}
                   className="w-full sm:w-40 py-3 flex items-center justify-center rounded-full text-base Livvic-Bold text-primary border border-gray-200 hover:bg-gray-50 transition-all"
                 />
                 <Form.Item className="mb-0 w-full sm:w-auto">
-                  <Button
+                  <CustomButton
                     btnText="Continue"
                     htmlType="submit"
                     className="w-full sm:w-44 bg-[#AEC4FF] hover:bg-[#9db3f0] py-3 flex items-center justify-center rounded-full text-base Livvic-Bold text-black transition-colors disabled:opacity-60 disabled:cursor-not-allowed"

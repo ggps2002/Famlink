@@ -7,6 +7,7 @@ import {
 } from "@features/referral/store/referralSlice";
 import { fireToastMessage } from "@shared/ui/toast";
 
+import CustomButton from "@shared/ui/Button";
 /* Settings → Refer a Friend. Caregivers looking for a share position don't
    subscribe — every friend who signs up with their link buys them a month of
    matching. This is the standing home for that link, as opposed to
@@ -132,7 +133,7 @@ export default function ReferAFriendSettings() {
           <span className="flex-1 text-sm text-gray-600 truncate" title={link || ""}>
             {link || "Link unavailable"}
           </span>
-          <button
+          <CustomButton
             type="button"
             onClick={handleCopy}
             disabled={!link}
@@ -140,7 +141,7 @@ export default function ReferAFriendSettings() {
           >
             {copied ? <Check size={13} /> : <Copy size={13} />}
             {copied ? "Copied!" : "Copy"}
-          </button>
+          </CustomButton>
         </div>
         {code && (
           <p className="mt-2 text-xs text-gray-400">
@@ -150,14 +151,14 @@ export default function ReferAFriendSettings() {
         )}
 
         {canShare && link && (
-          <button
+          <CustomButton
             type="button"
             onClick={handleShare}
             className="mt-4 w-full sm:w-auto flex items-center justify-center gap-2 bg-[#D6FB9A] rounded-full px-8 py-3 text-base Livvic-Bold text-[#075B49]"
           >
             <Share2 size={16} />
             Share Your Link
-          </button>
+          </CustomButton>
         )}
       </div>
 

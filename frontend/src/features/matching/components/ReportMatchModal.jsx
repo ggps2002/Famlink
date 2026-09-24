@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { fireToastMessage } from "@shared/ui/toast";
 import { reportUserThunk } from "@features/matching/store/reportSlice";
 
+import CustomButton from "@shared/ui/Button";
 // The report dialog, opened from the chat header next to Block.
 //
 // Two fields, and both earn their place. The CATEGORY is what routes the case —
@@ -197,7 +198,7 @@ const ReportMatchModal = ({
                 onChange={(e) => setDetails(e.target.value)}
                 maxLength={2000}
                 placeholder="What did they say or do? Include anything that would help our team understand."
-                className="w-full rounded-2xl border-2 border-gray-200 focus:border-[#AEC4FF] focus:outline-none px-4 py-2.5 text-sm Livvic text-gray-800 resize-none transition-colors"
+                className="fl-field w-full resize-none"
               />
               <p className="text-xs Livvic text-gray-400 mt-1.5">
                 {trimmed.length < MIN_DETAILS
@@ -210,20 +211,20 @@ const ReportMatchModal = ({
           {/* ── Footer: pinned, so Submit and Cancel are always in reach ── */}
           <div className="shrink-0 border-t border-gray-100 bg-white px-6 pt-3 pb-4">
             <div className="flex gap-3">
-              <button
+              <CustomButton
                 type="button"
                 onClick={() => setIsReportModal(false)}
                 disabled={loading}
-                className="flex-1 py-2.5 rounded-full border-2 border-gray-200 hover:border-gray-300 disabled:opacity-50 text-sm Livvic-Bold text-gray-700 transition-colors"
+                className="flex-1 py-2.5 rounded-full border-2 border-gray-200 hover:border-gray-300 disabled:opacity-50 text-sm Livvic-Bold text-gray-700 transition-colors px-0"
               >
                 Cancel
-              </button>
+              </CustomButton>
 
-              <button
+              <CustomButton
                 type="button"
                 onClick={handleReport}
                 disabled={!canSubmit}
-                className="flex-1 flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-full py-2.5 text-sm Livvic-Bold text-white"
+                className="flex-1 flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-full py-2.5 text-sm Livvic-Bold text-white px-0"
               >
                 {loading ? (
                   <>
@@ -236,7 +237,7 @@ const ReportMatchModal = ({
                     Submit report
                   </>
                 )}
-              </button>
+              </CustomButton>
             </div>
 
             {/* If someone is in danger, a moderation queue is the wrong tool and

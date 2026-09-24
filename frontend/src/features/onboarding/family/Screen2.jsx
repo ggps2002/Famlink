@@ -13,6 +13,7 @@ import { registerThunk } from "@features/auth/store/authSlice";
 import { familyGoalFor } from "@features/onboarding/registration";
 import { useNavigate, Link } from "react-router-dom";
 
+import { saveOnboardingRecord } from "@features/onboarding/onboardingRecord";
 const Screen2 = ({ formRef, recordId, location, email, hasNanny, setIsTermsChecked }) => {
   const [form] = Form.useForm();
   const [visible, setVisible] = useState(false);
@@ -105,27 +106,30 @@ const Screen2 = ({ formRef, recordId, location, email, hasNanny, setIsTermsCheck
             Email: decoded.email,
           };
 
-          const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
+          // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+          // const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
 
-          if (!scriptUrl) {
-            console.warn(
-              "VITE_GOOGLE_SCRIPT_URL is not set. Data:",
-              payload,
-            );
-            await new Promise((r) => setTimeout(r, 1400));
-            // setIsLoading(false);
-            return;
-          }
+          // if (!scriptUrl) {
+          //   console.warn(
+          //     "VITE_GOOGLE_SCRIPT_URL is not set. Data:",
+          //     payload,
+          //   );
+          //   await new Promise((r) => setTimeout(r, 1400));
+          //   // setIsLoading(false);
+          //   return;
+          // }
 
-          const formData = new URLSearchParams(payload).toString();
+          // const formData = new URLSearchParams(payload).toString();
 
-          await fetch(scriptUrl, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: formData,
-          });
+          // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+          // await fetch(scriptUrl, {
+          //   method: "POST",
+          //   headers: {
+          //     "Content-Type": "application/x-www-form-urlencoded",
+          //   },
+          //   body: formData,
+          // });
+          await saveOnboardingRecord(payload);
 
           setLoading(false);
 

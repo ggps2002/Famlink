@@ -9,6 +9,7 @@ import { getFamilyGoal, getNannyGoal } from "@features/nanny-share/shareTypeThem
 import { fireToastMessage } from "@shared/ui/toast";
 import RejectMatchModal from "@features/matching/components/RejectMatchModal";
 
+import CustomButton from "@shared/ui/Button";
 // Abbreviate to first name + last initial (matches the profile cards' privacy
 // treatment before a match is accepted). "Jessica Miller" → "Jessica M."
 const formatName = (name) => {
@@ -122,7 +123,7 @@ const RequestProfileCard = ({ profile, setChatUserId, setMatchRequestSuccessModa
 
             {/* Actions */}
             <div className="flex items-center gap-2 shrink-0">
-                <button
+                <CustomButton
                     type="button"
                     onClick={handleAccept}
                     disabled={accepting}
@@ -136,14 +137,14 @@ const RequestProfileCard = ({ profile, setChatUserId, setMatchRequestSuccessModa
                     ) : (
                         "Accept"
                     )}
-                </button>
-                <button
+                </CustomButton>
+                <CustomButton
                     type="button"
                     onClick={() => setIsRejectModal(true)}
                     className="Livvic-SemiBold text-sm text-gray-500 px-5 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
                 >
                     Decline
-                </button>
+                </CustomButton>
             </div>
         </div>
     );

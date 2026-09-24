@@ -51,7 +51,7 @@ function NewHome() {
         <NannyShare />
       </Section>
 
-      <Section tone="mist">
+      <Section className="bg-[#DDF9FD]">
         <Community />
       </Section>
 

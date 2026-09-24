@@ -12,7 +12,7 @@ import { useJobSubmitter } from "@features/jobs/hooks/useJobSubmitter";
 import { parseHourlyRate } from "@shared/lib/rates";
 import { useDispatch } from "react-redux";
 import { postPostJob } from "@features/jobs/store/postJobSlice";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 
 export const NannyJob = () => {
   const stepRef = useRef(null);
@@ -509,6 +509,9 @@ export const NannyJob = () => {
                 </Form.Item>
               </div> */}
               <div className="relative w-full">
+                <label
+                  htmlFor={name} className="fl-label"
+                >Job Description</label>
                 <Form.Item
                   style={{ margin: 0, padding: 0 }}
                   name="jobDescription" // ✅ always use explicit `name`
@@ -525,15 +528,9 @@ export const NannyJob = () => {
                     onChange={handleChange} // Handle input changes
                     placeholder="Write your job description.."
                     rows={6}
-                    className={`peer border text-primary border-[#EEEEEE] rounded-[10px] px-4 pt-8 pb-2 w-full placeholder-transparent focus:outline-none focus:ring-2 focus:ring-primary no-resize`}
+                    className={`w-full no-resize`}
                   />
                 </Form.Item>
-                <label
-                  htmlFor={name}
-                  className="absolute left-4 top-2 text-sm text-[#666666] px-1 z-10"
-                >
-                  Job Description
-                </label>
               </div>
             </Form>
           </div>
@@ -558,8 +555,8 @@ export const NannyJob = () => {
             {renderStepContent()}
 
             <div className="mt-6 flex gap-2">
-              {/* <button
-                className="mx-auto text-[#AEC4FF] bg-white border border-[#AEC4FF] lg:w-48 w-24 lg:py-2 py-1 rounded-full font-normal text-base transition hover:opacity-60 duration-700 delay-150 ease-in-out"
+              {/* <CustomButton
+                className="mx-auto text-[#AEC4FF] bg-white border border-[#AEC4FF] lg:w-48 w-24 lg:py-2 py-1 rounded-full font-normal text-base transition hover:opacity-60 duration-700 delay-150 ease-in-out px-0 Livvic"
                 onClick={() => {
                   if (currentStep > 1) {
                     stepRef.current?.prev();
@@ -569,8 +566,8 @@ export const NannyJob = () => {
                 }}
               >
                 Back
-              </button> */}
-              <Button
+              </CustomButton> */}
+              <CustomButton
                 action={() => {
                   if (currentStep > 1) {
                     stepRef.current?.prev();
@@ -581,7 +578,7 @@ export const NannyJob = () => {
                 btnText={"Back"}
                 className="border border-[#FFFFFF] text-[#555555]"
               />
-              <Button
+              <CustomButton
                 btnText={
                   totalStep - 1 == currentStep ? "Post a Job" : "Continue"
                 }

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import { NavLink } from "react-router-dom";
 import { Spin, Input } from "antd";
 import { fireToastMessage } from "@shared/ui/toast";
@@ -144,7 +144,7 @@ function CaregiverPreview() {
               </Spin>
             </div>
 
-            <Button
+            <CustomButton
               btnText={
                 isLoading && searchType === "caregivers"
                   ? "Searching..."
@@ -155,7 +155,7 @@ function CaregiverPreview() {
               isLoading={isLoading && searchType === "caregivers"}
               loadingBtnText="Searching..."
             />
-            <Button
+            <CustomButton
               btnText={
                 isLoading && searchType === "jobs"
                   ? "Searching..."
@@ -197,13 +197,13 @@ function CaregiverPreview() {
                       } found`}
                 </p>
               </div>
-              <button
+              <CustomButton
                 onClick={handleCloseResults}
-                className="flex items-center gap-2  px-3 sm:px-4 py-2 rounded-full transition-all duration-200"
+                className="flex items-center gap-2  px-3 sm:px-4 py-2 rounded-full transition-all duration-200 Livvic"
               >
                 <X className="w-4 h-4" />
                 <span className="hidden sm:inline text-sm">Close</span>
-              </button>
+              </CustomButton>
             </div>
 
             {/* Results Content */}
@@ -284,9 +284,9 @@ function CaregiverPreview() {
                           }}
                           className="mt-auto"
                         >
-                          <button className="w-full  Livvic-Bold text-sm sm:text-base px-4 py-3 rounded-full transition-all duration-300 bg-primary text-primary">
+                          <CustomButton className="w-full  Livvic-Bold text-sm sm:text-base px-4 py-3 rounded-full transition-all duration-300 bg-primary text-primary">
                             {person.cta || "Connect Now"}
-                          </button>
+                          </CustomButton>
                         </NavLink>
                       </div>
                     ))
@@ -358,9 +358,9 @@ function CaregiverPreview() {
                           }}
                           className="mt-auto"
                         >
-                          <button className="w-full Livvic-Bold text-sm sm:text-base px-4 py-3 rounded-full transition-all duration-300 bg-primary text-primary">
+                          <CustomButton className="w-full Livvic-Bold text-sm sm:text-base px-4 py-3 rounded-full transition-all duration-300 bg-primary text-primary">
                             {job.action || "Apply Now"}
-                          </button>
+                          </CustomButton>
                         </NavLink>
                       </div>
                     ))

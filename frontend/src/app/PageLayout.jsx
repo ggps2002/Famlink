@@ -188,7 +188,12 @@ function UserLayout({ pathname }) {
     return (
       <div className="flex flex-col h-screen overflow-hidden">
         <Navbar1 nanny={true} />
-        <div className="flex-1 min-h-0 overflow-hidden bg-white">
+        {/* `[&>main]:h-full` hands this box's height down through RouteOutlet's
+            <main>, so the page's own `h-full overflow-y-auto` has something to
+            be full OF. Without it the chain stopped at <main>, the page grew to
+            its content height, and this overflow-hidden clipped it: nothing
+            scrolled. */}
+        <div className="flex-1 min-h-0 overflow-hidden bg-white [&>main]:h-full">
           <RouteOutlet />
         </div>
       </div>

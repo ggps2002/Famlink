@@ -5,10 +5,21 @@ import { useBodyScrollLock } from "@shared/lib/bodyScrollLock";
 import { Spin, Input } from "antd";
 import { fireToastMessage } from "@shared/ui/toast";
 import { api } from "@shared/api/client";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { X, Star } from "lucide-react";
 import caregiverHeroImg from "@/assets/images/caregiverHero.webp";
+import TrustRotator from "@shared/ui/TrustRotator";
+import earnIcon from "@/assets/images/Earn-text.webp";
+import matchesIcon from "@/assets/images/Matches-text.webp";
+import browseIcon from "@/assets/images/Browse-text.webp";
+
+const TRUST_ITEMS = [
+  { icon: earnIcon, text: "Earn 20-30% more" },
+  { icon: matchesIcon, text: "Matches near you" },
+  { icon: browseIcon, text: "Free to browse" },
+];
 
 function Hero() {
   const [loading, setLoading] = useState(false);
@@ -17,6 +28,10 @@ function Hero() {
   const [isLoading, setIsLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const navigate = useNavigate();
+  // Signed-in members go to their dashboard. The onboarding flows behind these
+  // buttons are logged-out only, same check as the header.
+  const { user } = useSelector((s) => s.auth);
+  const isAuthed = user?.type === "Parents" || user?.type === "Nanny";
 
   const [isGlowing, setIsGlowing] = useState(false);
   const buttonRef = useRef(null);
@@ -112,7 +127,7 @@ function Hero() {
   };
 
   return (
-    <div className="relative bg-white w-full pt-[80px] lg:pt-[100px] pb-[60px] overflow-hidden min-h-[580px] flex items-center">
+    <div className="relative bg-white w-full pt-[100px] lg:pt-[140px] pb-[80px] lg:pb-[100px] overflow-hidden min-h-[580px] flex items-center">
       <style>{`
         @keyframes buttonGlow {
           0%   { box-shadow: 0 0 0px rgba(255, 173, 225, 0); }
@@ -153,42 +168,33 @@ function Hero() {
               Work with two families instead of one. Whether you already work with a family or are looking for a nanny share job, Famlink helps you find the right match.
             </p>
 
-            {/* Trust Items */}
-            <div className="flex flex-wrap gap-5 mb-10">
-              <div className="flex items-center gap-[6px] text-[14px] font-[500] text-[#001243] Livvic">
-                <span className="bg-[#E5EEFF] w-7 h-7 rounded-full flex items-center justify-center text-[14px]">💰</span>
-                Earn 20-30% more
-              </div>
-              <div className="flex items-center gap-[6px] text-[14px] font-[500] text-[#001243] Livvic">
-                <span className="bg-[#E5EEFF] w-7 h-7 rounded-full flex items-center justify-center text-[14px]">📍</span>
-                Matches near you
-              </div>
-              <div className="flex items-center gap-[6px] text-[14px] font-[500] text-[#001243] Livvic">
-                <span className="bg-[#E5EEFF] w-7 h-7 rounded-full flex items-center justify-center text-[12px]">✔️</span>
-                Free to browse
-              </div>
-            </div>
+            {/* Trust Items — one slot that cycles through the three. */}
+            <TrustRotator
+              items={TRUST_ITEMS}
+              className="mb-10"
+              itemClassName="text-lg sm:text-xl lg:text-2xl leading-tight font-livvic-semibold text-[#011243]"
+            />
 
             {/* Call To Action */}
             <div className="mb-8" ref={buttonRef}>
-              <Button
+              <CustomButton
                 btnText={isLoading ? <Spin size="small" /> : "Find a nanny share"}
                 className={`bg-[#AEC4FF] hover:bg-[#92b0ff] text-[#001243] w-fit px-8 py-4 flex items-center justify-center rounded-full Livvic-Bold text-[16px] transition-colors ${isGlowing ? 'glow-once' : ''}`}
-                action={() => navigate("/caregiver/nannyshare")}
+                action={() => navigate(isAuthed ? "/dashboard" : "/caregiver/nannyshare")}
                 disabled={isLoading}
               />
             </div>
 
             {/* Social Proof */}
-            <div className="mt-8 flex flex-wrap items-center gap-3 text-[13px] text-[#4a5568] Livvic">
+            <div className="mt-8 flex flex-wrap items-center gap-3 lg:gap-4 text-base lg:text-lg text-[#4a5568] Livvic">
               <div className="flex">
-                <div className="w-9 h-9 rounded-full border-[2px] border-white -ml-2 first:ml-0 flex items-center justify-center text-[11px] font-bold text-[#001243] shadow-sm bg-[#AEC4FF] z-[4]">S</div>
-                <div className="w-9 h-9 rounded-full border-[2px] border-white -ml-2 first:ml-0 flex items-center justify-center text-[11px] font-bold text-[#001243] shadow-sm bg-[#AEE5FF] z-[3]">J</div>
-                <div className="w-9 h-9 rounded-full border-[2px] border-white -ml-2 first:ml-0 flex items-center justify-center text-[11px] font-bold text-[#001243] shadow-sm bg-[#FFE1A8] z-[2]">M</div>
-                <div className="w-9 h-9 rounded-full border-[2px] border-white -ml-2 first:ml-0 flex items-center justify-center text-[11px] font-bold text-[#001243] shadow-sm bg-[#E3D1FF] z-[1]">R</div>
+                <div className="w-10 h-10 lg:w-11 lg:h-11 rounded-full border-[2px] border-white -ml-2 first:ml-0 flex items-center justify-center text-sm font-livvic-bold text-[#001243] shadow-sm bg-[#AEC4FF] z-[4]">S</div>
+                <div className="w-10 h-10 lg:w-11 lg:h-11 rounded-full border-[2px] border-white -ml-2 first:ml-0 flex items-center justify-center text-sm font-livvic-bold text-[#001243] shadow-sm bg-[#AEE5FF] z-[3]">J</div>
+                <div className="w-10 h-10 lg:w-11 lg:h-11 rounded-full border-[2px] border-white -ml-2 first:ml-0 flex items-center justify-center text-sm font-livvic-bold text-[#001243] shadow-sm bg-[#FFE1A8] z-[2]">M</div>
+                <div className="w-10 h-10 lg:w-11 lg:h-11 rounded-full border-[2px] border-white -ml-2 first:ml-0 flex items-center justify-center text-sm font-livvic-bold text-[#001243] shadow-sm bg-[#E3D1FF] z-[1]">R</div>
               </div>
               <div>
-                Joined by <span className="font-bold text-black">300+ caregivers</span> across the Bay Area
+                Joined by <span className="font-livvic-bold text-ink">300+ caregivers</span> across the Bay Area
               </div>
             </div>
           </div>

@@ -57,7 +57,7 @@ function NannyShare() {
         </div>
       </Section>
 
-      <Section tone="mist">
+      <Section className="bg-[#DDF9FD]">
         <Community />
       </Section>
 

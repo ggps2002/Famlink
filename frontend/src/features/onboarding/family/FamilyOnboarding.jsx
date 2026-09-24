@@ -2,13 +2,14 @@ import { useState, useRef, useEffect } from "react";
 import { fireToastMessage } from "@shared/ui/toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { X } from "lucide-react";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import Screen1 from "@features/onboarding/family/Screen1";
 import Screen2 from "@features/onboarding/family/Screen2";
 import { registerThunk } from "@features/auth/store/authSlice";
 import { buildRegistration, familyGoal } from "@features/onboarding/registration";
 import { useDispatch } from "react-redux";
 
+import { fetchOnboardingRecord } from "@features/onboarding/onboardingRecord";
 export const  FamilyOnboarding = () => {
     const { id } = useParams();
     const [isLoading, setIsLoading] = useState(false);
@@ -58,19 +59,22 @@ export const  FamilyOnboarding = () => {
         const retrieveSheetRecord = async () => {
             if (!id) return bailToForm();
 
-            const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
-            if (!scriptUrl) {
-                console.error("VITE_GOOGLE_SCRIPT_URL is not set.");
-                return bailToForm();
-            }
+            // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+            // const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
+            // if (!scriptUrl) {
+            //     console.error("VITE_GOOGLE_SCRIPT_URL is not set.");
+            //     return bailToForm();
+            // }
 
             try {
                 setSheetLoading(true);
 
-                const response = await fetch(
-                    `${scriptUrl}?recordId=${encodeURIComponent(id)}`
-                );
-                const result = await response.json();
+                // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+                // const response = await fetch(
+                //     `${scriptUrl}?recordId=${encodeURIComponent(id)}`
+                // );
+                // const result = await response.json();
+                const result = await fetchOnboardingRecord(id);
                 const parsed =
                     result.status === "success" ? parseRecord(result.record) : null;
 
@@ -226,7 +230,7 @@ export const  FamilyOnboarding = () => {
                     <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-50">
                         <div className="flex justify-center py-4 space-x-4">
                             {currentStep > 0 && currentStep != 1 && (
-                                <Button
+                                <CustomButton
                                     action={() => {
                                         if (currentStep > 0) {
                                             setCurrentStep((prev) => prev - 1);
@@ -242,7 +246,7 @@ export const  FamilyOnboarding = () => {
                                     Create an account to connect
                                 </p>}
 
-                                <Button
+                                <CustomButton
                                     btnText={currentStep === 0 ? "Create Account" : "Continue"}
                                     action={() => HandleNext()}
                                     isLoading={isLoading}

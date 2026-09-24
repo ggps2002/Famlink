@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import { NavLink } from "react-router-dom";
 
 /* "What is a nanny share" explainer for caregivers, as a two-column split.
@@ -60,7 +60,7 @@ function About() {
           to="/caregiver/nannyshare"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         >
-          <Button
+          <CustomButton
             btnText="Get Started"
             size="lg"
             className="bg-accent hover:bg-accent-strong text-ink w-full sm:w-auto mt-8"

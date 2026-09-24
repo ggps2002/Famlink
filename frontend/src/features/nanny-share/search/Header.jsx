@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import { useBodyScrollLock } from "@shared/lib/bodyScrollLock";
 import { useLocation } from "react-router-dom";
 
@@ -93,13 +93,13 @@ function Header() {
         {!pathname.startsWith("/business") ? (
           <div className="hidden lg:flex gap-2 sm:gap-4">
             <NavLink to="/login">
-              <Button
+              <CustomButton
                 btnText="Log in"
                 className="text-white text-sm sm:text-base"
               />
             </NavLink>
             <NavLink to="/joinNow">
-              <Button
+              <CustomButton
                 btnText={"Join now"}
                 className="bg-[#AEC4FF] text-sm sm:text-base"
               />
@@ -235,13 +235,13 @@ function Header() {
             }`}
           >
             <NavLink to="/login" onClick={closeMenu} className="block">
-              <Button
+              <CustomButton
                 btnText="Log in"
                 className="w-full text-base py-3 justify-center border border-gray-300 transition-colors duration-200"
               />
             </NavLink>
             <NavLink to="/joinNow" onClick={closeMenu} className="block">
-              <Button
+              <CustomButton
                 btnText="Join now"
                 className="w-full bg-[#AEC4FF] text-gray-900 text-base py-3 justify-center hover:bg-[#9DB8FF] transition-colors duration-200"
               />

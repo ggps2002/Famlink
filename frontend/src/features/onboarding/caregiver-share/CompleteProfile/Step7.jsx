@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Form } from "antd";
 import OnboardingOptionSelector from "@features/onboarding/components/OnboardingOptionSelector";
 
+import { TRAVEL_DISTANCE } from "@shared/lib/profileOptions";
 const step5Data = {
     pets: [
         "Yes",
@@ -11,12 +12,7 @@ const step5Data = {
         "Yes",
         "No"
     ],
-    distance: [
-        "1-2 miles",
-        "3-5 miles",
-        "5-10 miles",
-        "Flexible"
-    ]
+    distance: TRAVEL_DISTANCE
 };
 
 function Step7({ formRef, initialValues }) {

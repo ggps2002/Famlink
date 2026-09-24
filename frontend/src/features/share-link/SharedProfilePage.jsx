@@ -9,6 +9,7 @@ import { fetchSharedProfileThunk } from "@features/share-link/store/shareProfile
 import { getShareProfileCopy } from "@features/share-link/shareProfileCopy";
 import { rememberSharedProfile } from "@features/share-link/sharedProfileRef";
 
+import CustomButton from "@shared/ui/Button";
 // The page behind a shared link: /share/<token>.
 //
 // This is the only FamLink page most of its readers will ever have seen — it
@@ -94,12 +95,12 @@ export default function SharedProfilePage() {
                 The link may have expired, or the family or caregiver may have
                 already found their match. There are others nearby.
               </p>
-              <button
+              <CustomButton
                 onClick={() => navigate("/joinNow")}
                 className="bg-[#AEC4FF] text-[#0D134C] Livvic-SemiBold rounded-full px-6 py-3"
               >
                 Find a Nanny Share
-              </button>
+              </CustomButton>
             </div>
           ) : (
             <>
@@ -131,12 +132,12 @@ export default function SharedProfilePage() {
                 <p className="text-center mt-8 text-sm Livvic-Medium text-secondary">
                   New to FamLink? A nanny share splits one trusted nanny — and the
                   cost — between two families.{" "}
-                  <button
+                  <CustomButton
                     onClick={() => navigate("/")}
-                    className="text-primary Livvic-SemiBold underline"
+                    className="text-primary Livvic-SemiBold underline px-0 py-0 rounded-none"
                   >
                     See how it works
-                  </button>
+                  </CustomButton>
                 </p>
               )}
             </>

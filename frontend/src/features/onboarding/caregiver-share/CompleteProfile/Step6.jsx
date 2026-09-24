@@ -2,12 +2,8 @@ import React, { useEffect } from "react";
 import { Form, Input } from "antd";
 import OnboardingOptionSelector from "@features/onboarding/components/OnboardingOptionSelector";
 
-const step6Data = [
-    "Text",
-    "Phone calls",
-    "In-person",
-    "Flexible"
-];
+import { COMMUNICATION } from "@shared/lib/profileOptions";
+const step6Data = COMMUNICATION;
 
 function Step6({ formRef, initialValues }) {
     const [form] = Form.useForm();

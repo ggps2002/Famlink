@@ -2,23 +2,10 @@ import React, { useEffect } from "react";
 import Form from "antd/es/form/Form";
 import OnboardingOptionSelector from "@features/onboarding/components/OnboardingOptionSelector";
 
+import { PARENTING_STYLE, HOUSE_RULES } from "@shared/lib/profileOptions";
 const step5Data = {
-  first: [
-    "Montessori",
-    "Attachment parenting",
-    "RIE",
-    "Authoritative",
-    "Permissive",
-    "Strict",
-    "Flexible",
-  ],
-  second: [
-    "Screen time limits",
-    "Dietary restrictions",
-    "Behavior expectations",
-    "Hygiene practices",
-    "Chore responsibilities",
-  ],
+  first: PARENTING_STYLE,
+  second: HOUSE_RULES,
 };
 
 function Step5({ formRef, parentingRule=true, houseRulesOption, initialValues }) {

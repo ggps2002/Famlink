@@ -62,13 +62,13 @@ export default function ForgetPass() {
                   </p>
                   <p className="mt-4 font-normal text-base text-gray-600">
                     Didn't get it? Check your spam folder, or{" "}
-                    <button
+                    <CustomButton
                       type="button"
-                      className="underline hover:text-blue-600 transition-colors"
+                      className="underline hover:text-blue-600 transition-colors px-0 py-0 rounded-none Livvic"
                       onClick={() => setSentTo(null)}
                     >
                       try a different email
-                    </button>
+                    </CustomButton>
                     .
                   </p>
                   <p className="mt-6 font-normal text-base already-acc">

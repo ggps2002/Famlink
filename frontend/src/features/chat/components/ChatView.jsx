@@ -433,7 +433,7 @@ const ChatView = memo(function ChatView({
                 <span className="hidden sm:inline">Reported</span>
               </span>
             ) : (
-              <button
+              <CustomButton
                 type="button"
                 onClick={() => setIsReportModal(true)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm Livvic-Medium text-gray-500 hover:text-amber-600 hover:bg-amber-50 transition-colors"
@@ -441,11 +441,11 @@ const ChatView = memo(function ChatView({
               >
                 <Flag size={18} />
                 <span className="hidden sm:inline">Report</span>
-              </button>
+              </CustomButton>
             ))}
 
           {matchInfo?.status === "accepted" && (
-            <button
+            <CustomButton
               type="button"
               onClick={() => setIsBlockModal(true)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm Livvic-Medium text-gray-500 hover:text-red-500 hover:bg-red-50 transition-colors"
@@ -453,7 +453,7 @@ const ChatView = memo(function ChatView({
             >
               <Ban size={18} />
               <span className="hidden sm:inline">Block</span>
-            </button>
+            </CustomButton>
           )}
           {nannyShare !== selectedContact?.otherParticipant?.type &&
             pathname.split("/")[1] !== "nanny" && (
@@ -535,7 +535,7 @@ const ChatView = memo(function ChatView({
             </span>
           </div>
           {blockedByMe && (
-            <button
+            <CustomButton
               type="button"
               onClick={handleUnblock}
               disabled={unblocking}
@@ -548,7 +548,7 @@ const ChatView = memo(function ChatView({
               ) : (
                 "Unblock"
               )}
-            </button>
+            </CustomButton>
           )}
         </div>
       ) : (

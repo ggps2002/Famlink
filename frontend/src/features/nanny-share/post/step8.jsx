@@ -2,23 +2,12 @@ import React, { useEffect } from "react";
 import Form from "antd/es/form/Form";
 import OnboardingOptionSelector from "@features/onboarding/components/OnboardingOptionSelector";
 
+import { COMMUNICATION, BACKUP_CARE, INVOLVEMENT } from "@shared/lib/profileOptions";
 const step8Data = {
-  first: [
-    "Group chat",
-    "Shared calendar",
-    "Email updates",
-    "Phone calls",
-    "Regular in-person meetings",
-  ],
+  first: COMMUNICATION,
 
-  second: [
-    "Family members",
-    "Backup nanny service",
-    "Friends or neighbors",
-    "Local daycare",
-    "No backup options",
-  ],
-  third: ["Very involved", "Moderately involved", "Minimal involvement"],
+  second: BACKUP_CARE,
+  third: INVOLVEMENT,
 };
 
 function Step8({ formRef, involvement=true, backUp=true, initialValues }) {

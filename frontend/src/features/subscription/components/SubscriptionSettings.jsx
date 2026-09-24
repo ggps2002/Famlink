@@ -12,6 +12,7 @@ import { PLAN } from "@features/subscription/subscriptionPlan";
 import { BTN_PRIMARY, BTN_SECONDARY } from "@shared/ui/buttonStyles";
 import TermsNotice from "@features/legal/components/TermsNotice";
 
+import CustomButton from "@shared/ui/Button";
 /* Settings → Subscription. Shown to nannies and families alike: there is a
    single plan, so nothing here branches on the user's profile type. */
 export default function SubscriptionSettings() {
@@ -170,25 +171,25 @@ export default function SubscriptionSettings() {
                   Renews on <span className="text-[#0D134C] Livvic-SemiBold">{periodEnd}</span>
                 </p>
               )}
-              <button
+              <CustomButton
                 type="button"
                 onClick={handleCancel}
                 disabled={busy}
                 className={`text-sm ${BTN_SECONDARY}`}
               >
                 {busy ? "Please wait…" : "Cancel Subscription"}
-              </button>
+              </CustomButton>
             </div>
           )
         ) : (
-          <button
+          <CustomButton
             type="button"
             onClick={handleUpgrade}
             disabled={busy}
             className={`w-full ${BTN_PRIMARY}`}
           >
             {busy ? "Redirecting…" : `Upgrade to ${PLAN.name}`}
-          </button>
+          </CustomButton>
         )}
       </div>
 

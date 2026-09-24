@@ -2,6 +2,7 @@ import { Coins, User, UserRoundPen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
+import CustomButton from "@shared/ui/Button";
 export const CompleteProfileModal = ({ setIsProfileComplete }) => {
     const navigate = useNavigate();
     const { user } = useSelector((state) => state.auth);
@@ -51,15 +52,15 @@ export const CompleteProfileModal = ({ setIsProfileComplete }) => {
                 </p>
 
                 {/* Subscribe button */}
-                <button
+                <CustomButton
                     type="button"
                     onClick={() => user.type === "Nanny" ? navigate("/dashboard/complete-profile") : navigate("/dashboard/post-a-nannyShare")}
                     // onClick={onSubscribe}
-                    className="w-full flex items-center justify-center gap-2 text-center bg-[#AEC4FF] transition-colors rounded-full py-3 text-base Livvic-Bold text-white mb-3"
+                    className="w-full flex items-center justify-center gap-2 text-center bg-[#AEC4FF] transition-colors rounded-full py-3 text-base Livvic-Bold text-white mb-3 px-0"
                 >
                     <User />
                     Complete Profile
-                </button>
+                </CustomButton>
             </div>
 
             <style>{`

@@ -4,7 +4,7 @@ import { articlesData } from "@features/resources/articlesData";
 import { api } from "@shared/api/client";
 import SEOMetaData from "@shared/seo/SEOMetaData";
 import { articleNode } from "@shared/seo/jsonLd";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import { ArrowLeft } from "lucide-react";
 import { ARTICLE_PROSE_CSS } from "@features/resources/articleProse";
 
@@ -98,7 +98,7 @@ const ArticlePage = () => {
         <h1 className="Livvic-Bold text-[#001243] text-4xl mb-4">Article Not Found</h1>
         <p className="text-[#666] Livvic-Medium mb-8">We couldn't find the resource you are looking for.</p>
         <NavLink to="/resources">
-          <Button btnText="Back to Resources" className="bg-primary text-white" />
+          <CustomButton btnText="Back to Resources" className="bg-primary text-white" />
         </NavLink>
       </div>
     );
@@ -138,14 +138,14 @@ const ArticlePage = () => {
       {/* Top Navigation Bar for returning to the main list */}
       <div className="bg-white border-b border-gray-100 py-4 sticky top-0 z-50">
         <div className="fl-container max-w-4xl flex items-center">
-          <button
+          <CustomButton
             type="button"
             onClick={() => navigate('/resources')}
-            className="flex items-center gap-2 text-muted hover:text-ink transition-colors font-livvic-medium text-sm"
+            className="flex items-center gap-2 text-muted hover:text-ink transition-colors font-livvic-medium text-sm px-0 py-0 rounded-none"
           >
             <ArrowLeft size={20} />
             Back to Resources
-          </button>
+          </CustomButton>
         </div>
       </div>
 
@@ -187,7 +187,7 @@ const ArticlePage = () => {
                 FamLink helps families connect with nearby parents who have similar schedules, childcare needs, and preferences. Join today to see who is looking in your area!
               </p>
               <NavLink to="/joinNow">
-                <Button
+                <CustomButton
                   btnText="Sign Up for Free"
                   className="bg-accent hover:bg-accent-strong text-ink px-8 py-3 w-full sm:w-auto transition-colors"
                 />

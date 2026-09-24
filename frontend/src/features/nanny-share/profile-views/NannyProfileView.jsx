@@ -50,6 +50,9 @@ export default function NannyProfileView() {
   const [isMatchRequestDenied, setIsMatchRequestDenied] = React.useState(false);
   const [isReferModal, setIsReferModal] = React.useState(false);
   const [isFavorited, setIsFavorited] = React.useState(false);
+  // Opened from "View profile" on the edit page: render the page exactly as
+  // others see it (see `preview` on the details component below).
+  const isOwnProfile = !!user?._id && user._id === id;
 
   React.useEffect(() => {
     if (user?.favourite && id) {
@@ -130,6 +133,57 @@ export default function NannyProfileView() {
       </div>
     );
   }
+
+  // The person this page is about — see the same line in the details below.
+  const targetUserId =
+    selectedNanny?.userId?._id || selectedNanny?.userId || selectedNanny?._id || id;
+
+  return (
+    <div className="min-h-screen pb-20">
+      {isRequestSubmitModal && (
+        <MatchRequestFormModal
+          setIsRequestSubmitModal={setIsRequestSubmitModal}
+          senderId={senderId}
+          receiverId={receiverId}
+          onReferralRequired={() => setIsReferModal(true)}
+        />
+      )}
+      {isProfileComplete && <CompleteProfileModal setIsProfileComplete={setIsProfileComplete} />}
+      {isMatchRequestDenied && <RequestMatchDenied setIsMatchRequestDenied={setIsMatchRequestDenied} />}
+      {isReferModal && <ReferAFriendModal onClose={() => setIsReferModal(false)} />}
+
+      <NannyProfileDetails
+        data={selectedNanny}
+        fallbackId={id}
+        preview={isOwnProfile}
+        isFavorited={isFavorited}
+        onFavourite={favourite}
+        onRequestMatch={handleMatchRequest}
+        onReviewed={() => dispatch(fetchNannyByIdThunk(id))}
+      />
+    </div>
+  );
+}
+
+/* The page itself, from a fetched profile document.
+ *
+ * `preview` shows the page exactly as a visitor sees it — heart and "Request
+ * a Match" included — with those two inert. The route page sets it when you
+ * open your own profile ("View profile" on the edit page). */
+export function NannyProfileDetails({
+  data: selectedNanny,
+  fallbackId: id,
+  preview = false,
+  isFavorited = false,
+  onFavourite,
+  onRequestMatch,
+  onReviewed,
+}) {
+  // In preview (your own profile) the heart and the match button are drawn
+  // exactly as a visitor sees them, but do nothing: you can't favourite or
+  // request yourself.
+  const favourite = preview ? undefined : onFavourite;
+  const handleMatchRequest = preview ? undefined : onRequestMatch;
 
   // Map backend data to layout
   const profile = selectedNanny?.nannyProfile || {};
@@ -516,7 +570,10 @@ export default function NannyProfileView() {
     const raw = getFallbackValue("specificDays") || getFallbackValue("specificDaysAndTime");
     if (!raw || typeof raw !== "object" || Array.isArray(raw)) return [];
     return Object.entries(raw)
-      .filter(([, slot]) => slot?.checked)
+      // Older schedules stored a chosen day as just its times, with no
+      // `checked` flag — the edit page counts those as selected, so this does
+      // too. An explicit `checked: false` still hides the day.
+      .filter(([, slot]) => slot?.checked ?? Boolean(slot?.start && slot?.end))
       .map(([day, slot]) => ({
         day,
         time: slot.start && slot.end ? `${timeOfDay(slot.start)} - ${timeOfDay(slot.end)}` : null,
@@ -655,172 +712,158 @@ export default function NannyProfileView() {
 
 
   return (
-    <div className="min-h-screen pb-20">
-      {isRequestSubmitModal && (
-        <MatchRequestFormModal
-          setIsRequestSubmitModal={setIsRequestSubmitModal}
-          senderId={senderId}
-          receiverId={receiverId}
-          onReferralRequired={() => setIsReferModal(true)}
-        />
-      )}
-      {isProfileComplete && <CompleteProfileModal setIsProfileComplete={setIsProfileComplete} />}
-      {isMatchRequestDenied && <RequestMatchDenied setIsMatchRequestDenied={setIsMatchRequestDenied} />}
-      {isReferModal && <ReferAFriendModal onClose={() => setIsReferModal(false)} />}
+    <div className="w-full max-w-[1320px] mx-auto px-4 xl:px-0 py-[20px] md:py-[30px]">
+      <div className="flex flex-col lg:flex-row gap-[20px] lg:gap-[25px] items-start">
 
-      <div className="w-full max-w-[1320px] mx-auto px-4 xl:px-0 py-[20px] md:py-[30px]">
-        <div className="flex flex-col lg:flex-row gap-[20px] lg:gap-[25px] items-start">
+        {/* ── Sidebar ─────────────────────────────────────────────────── */}
+        <div className="w-full lg:w-[378px] lg:shrink-0 space-y-[20px]">
 
-          {/* ── Sidebar ─────────────────────────────────────────────────── */}
-          <div className="w-full lg:w-[378px] lg:shrink-0 space-y-[20px]">
+          <ProfileCard className="relative px-[20px] pt-[30px] pb-[25px]">
+            <button
+              type="button"
+              onClick={favourite}
+              aria-label={isFavorited ? "Remove from favourites" : "Add to favourites"}
+              className="absolute top-[30px] right-[30px] bg-transparent border-none cursor-pointer p-0 leading-none"
+            >
+              <Heart
+                className="size-[24px]"
+                color={isFavorited ? "#EF4444" : "#555555"}
+                fill={isFavorited ? "#EF4444" : "none"}
+              />
+            </button>
 
-            <ProfileCard className="relative px-[20px] pt-[30px] pb-[25px]">
-              <button
-                type="button"
-                onClick={favourite}
-                aria-label={isFavorited ? "Remove from favourites" : "Add to favourites"}
-                className="absolute top-[30px] right-[30px] bg-transparent border-none cursor-pointer p-0 leading-none"
-              >
-                <Heart
-                  className="size-[24px]"
-                  color={isFavorited ? "#EF4444" : "#555555"}
-                  fill={isFavorited ? "#EF4444" : "none"}
+            <div className="flex flex-col items-center">
+              {nanny.img ? (
+                <img
+                  src={nanny.img}
+                  alt={nanny.name}
+                  className="mt-[25px] rounded-[16px] size-[150px] object-cover"
                 />
-              </button>
-
-              <div className="flex flex-col items-center">
-                {nanny.img ? (
-                  <img
-                    src={nanny.img}
-                    alt={nanny.name}
-                    className="mt-[25px] rounded-[16px] size-[150px] object-cover"
-                  />
-                ) : (
-                  <div className="mt-[25px] rounded-[16px] size-[150px] bg-[#AEC4FF] flex items-center justify-center text-[#0D134C] Livvic-SemiBold text-[50px]">
-                    {nanny.name ? nanny.name.charAt(0).toUpperCase() : ""}
-                  </div>
-                )}
-
-                {/* The same themed "Role • Goal" pill as the profile card, so
-                    this page reads identically to the card it was opened from. */}
-                <div
-                  style={{ backgroundColor: getNannyTheme(profile.hasFamily).bg, color: getNannyTheme(profile.hasFamily).text }}
-                  className="inline-flex items-center gap-1.5 Livvic-Bold rounded-full px-3 py-1 text-xs mt-[20px]"
-                >
-                  <Users size={13} />
-                  <ShareTypeLabel role="Nanny" goal={getNannyGoal(profile.hasFamily)} />
+              ) : (
+                <div className="mt-[25px] rounded-[16px] size-[150px] bg-[#AEC4FF] flex items-center justify-center text-[#0D134C] Livvic-SemiBold text-[50px]">
+                  {nanny.name ? nanny.name.charAt(0).toUpperCase() : ""}
                 </div>
+              )}
 
-                <p className="Livvic-SemiBold text-[25px] leading-[25px] text-[#000F36] text-center mt-[16px]">
-                  {nanny.name}
-                </p>
-                <p className="Livvic-Medium text-[16px] leading-[16px] text-[#555555] text-center mt-[12px] flex items-center gap-1.5">
-                  <MapPin size={15} /> {nanny.location}
-                </p>
+              {/* The same themed "Role • Goal" pill as the profile card, so
+                  this page reads identically to the card it was opened from. */}
+              <div
+                style={{ backgroundColor: getNannyTheme(profile.hasFamily).bg, color: getNannyTheme(profile.hasFamily).text }}
+                className="inline-flex items-center gap-1.5 Livvic-Bold rounded-full px-3 py-1 text-xs mt-[20px]"
+              >
+                <Users size={13} />
+                <ShareTypeLabel role="Nanny" goal={getNannyGoal(profile.hasFamily)} />
+              </div>
 
-                {/* Two stat tiles, still the design's 67px.
-                    `truncate` is `overflow: hidden`, and a 20px value on a
-                    20px line box has no room for a descender — which cut the
-                    tail off the y in "3-5 years". The value line now carries
-                    its full em box (25px) and the gaps absorb the difference,
-                    so the tile height is unchanged; `min-h` rather than `h`
-                    means a taller value can never be trimmed by the box again.
-                    `min-w-0` is what lets `truncate` actually truncate: a flex
-                    item defaults to `min-width: auto`, so without it a long
-                    rate escapes the tile instead of ellipsising. */}
-                {(experienceTile || rateTile) && (
-                  <div className="flex gap-[10px] w-full mt-[20px] items-stretch">
-                    {experienceTile && (
-                      <div className="flex-1 min-w-0 min-h-[67px] px-[16px] py-[12px] rounded-[10px] border border-[#EEEEEE] flex flex-col justify-center gap-[4px]">
-                        <p className="Livvic-Medium text-[12px] leading-[14px] text-[#555555]">Work Experience</p>
-                        <p className="Livvic-Bold text-[20px] leading-[25px] text-[#001243] truncate">{experienceTile}</p>
-                      </div>
-                    )}
-                    {rateTile && (
-                      <div className="flex-1 min-w-0 min-h-[67px] px-[16px] py-[12px] rounded-[10px] border border-[#EEEEEE] flex flex-col justify-center gap-[4px]">
-                        <p className="Livvic-Medium text-[12px] leading-[14px] text-[#555555] inline-flex items-center gap-[5px]">
-                          Shared rate
-                          <InfoTip text={RATE_HINTS.eachFamily} size={12} />
-                        </p>
-                        <p className="Livvic-Bold text-[20px] leading-[25px] text-[#001243] truncate">{rateTile}</p>
-                      </div>
-                    )}
-                  </div>
-                )}
+              <p className="Livvic-SemiBold text-[25px] leading-[25px] text-[#000F36] text-center mt-[16px]">
+                {nanny.name}
+              </p>
+              <p className="Livvic-Medium text-[16px] leading-[16px] text-[#555555] text-center mt-[12px] flex items-center gap-1.5">
+                <MapPin size={15} /> {nanny.location}
+              </p>
 
-                <div className="mt-[15px]">
-                  <Ra points={Number(selectedNanny?.averageRating) || 0} size={20} color="#FFB73A" />
+              {/* Two stat tiles, still the design's 67px.
+                  `truncate` is `overflow: hidden`, and a 20px value on a
+                  20px line box has no room for a descender — which cut the
+                  tail off the y in "3-5 years". The value line now carries
+                  its full em box (25px) and the gaps absorb the difference,
+                  so the tile height is unchanged; `min-h` rather than `h`
+                  means a taller value can never be trimmed by the box again.
+                  `min-w-0` is what lets `truncate` actually truncate: a flex
+                  item defaults to `min-width: auto`, so without it a long
+                  rate escapes the tile instead of ellipsising. */}
+              {(experienceTile || rateTile) && (
+                <div className="flex gap-[10px] w-full mt-[20px] items-stretch">
+                  {experienceTile && (
+                    <div className="flex-1 min-w-0 min-h-[67px] px-[16px] py-[12px] rounded-[10px] border border-[#EEEEEE] flex flex-col justify-center gap-[4px]">
+                      <p className="Livvic-Medium text-[12px] leading-[14px] text-[#555555]">Work Experience</p>
+                      <p className="Livvic-Bold text-[20px] leading-[25px] text-[#001243] truncate">{experienceTile}</p>
+                    </div>
+                  )}
+                  {rateTile && (
+                    <div className="flex-1 min-w-0 min-h-[67px] px-[16px] py-[12px] rounded-[10px] border border-[#EEEEEE] flex flex-col justify-center gap-[4px]">
+                      <p className="Livvic-Medium text-[12px] leading-[14px] text-[#555555] inline-flex items-center gap-[5px]">
+                        Shared rate
+                        <InfoTip text={RATE_HINTS.eachFamily} size={12} />
+                      </p>
+                      <p className="Livvic-Bold text-[20px] leading-[25px] text-[#001243] truncate">{rateTile}</p>
+                    </div>
+                  )}
                 </div>
-                {totalReviews > 0 && (
-                  <p className="Livvic-SemiBold text-[14px] leading-[24px] text-[#555555] text-center mt-[12px]">
-                    {totalReviews} {totalReviews === 1 ? "Review" : "Reviews"}
+              )}
+
+              <div className="mt-[15px]">
+                <Ra points={Number(selectedNanny?.averageRating) || 0} size={20} color="#FFB73A" />
+              </div>
+              {totalReviews > 0 && (
+                <p className="Livvic-SemiBold text-[14px] leading-[24px] text-[#555555] text-center mt-[12px]">
+                  {totalReviews} {totalReviews === 1 ? "Review" : "Reviews"}
+                </p>
+              )}
+
+              <CustomButton
+                type="button"
+                onClick={handleMatchRequest}
+                className="mt-[15px] w-full h-[50px] rounded-[35px] bg-[#AEC4FF] hover:bg-[#C1D6FF] transition-colors border-none cursor-pointer Livvic-SemiBold text-[14px] leading-[14px] text-[#000F36] px-0 py-0"
+              >
+                Request a Match
+              </CustomButton>
+            </div>
+          </ProfileCard>
+
+          {nanny.compatibility.length > 0 && (
+            <ProfileCard className="px-[25px] pt-[30px] pb-[25px]">
+              <SectionTitle className="mb-[16px]">At a glance</SectionTitle>
+              <div className="flex flex-col">
+                {nanny.compatibility.map((item) => (
+                  <p
+                    key={String(item)}
+                    className="Livvic-Medium text-[16px] leading-[24px] text-[#555555]"
+                  >
+                    {`✔  ${sentenceCase(item)}`}
                   </p>
-                )}
-
-                <button
-                  type="button"
-                  onClick={handleMatchRequest}
-                  className="mt-[15px] w-full h-[50px] rounded-[35px] bg-[#AEC4FF] hover:bg-[#C1D6FF] transition-colors border-none cursor-pointer Livvic-SemiBold text-[14px] leading-[14px] text-[#000F36]"
-                >
-                  Request a Match
-                </button>
+                ))}
               </div>
             </ProfileCard>
+          )}
+        </div>
 
-            {nanny.compatibility.length > 0 && (
-              <ProfileCard className="px-[25px] pt-[30px] pb-[25px]">
-                <SectionTitle className="mb-[16px]">At a glance</SectionTitle>
-                <div className="flex flex-col">
-                  {nanny.compatibility.map((item) => (
-                    <p
-                      key={String(item)}
-                      className="Livvic-Medium text-[16px] leading-[24px] text-[#555555]"
-                    >
-                      {`✔  ${sentenceCase(item)}`}
-                    </p>
-                  ))}
-                </div>
-              </ProfileCard>
-            )}
-          </div>
+        {/* ── Main column ─────────────────────────────────────────────── */}
+        <div className="w-full lg:flex-1 lg:min-w-0 space-y-[25px]">
 
-          {/* ── Main column ─────────────────────────────────────────────── */}
-          <div className="w-full lg:flex-1 lg:min-w-0 space-y-[25px]">
+          {renderGroups[0]}
 
-            {renderGroups[0]}
+          {/* The design's paired boxes: the week on the left, what they
+              charge on the right. */}
+          {(scheduleRows.length > 0 || rateRows.length > 0) && (
+            <div className="flex flex-col lg:flex-row gap-[20px] lg:gap-[25px] items-stretch">
+              {scheduleRows.length > 0 && (
+                <ProfileCard className="lg:flex-1 px-[25px] pt-[30px] pb-[30px]">
+                  <SectionTitle className="mb-[22px]">Weekly Schedule</SectionTitle>
+                  <ScheduleList items={scheduleRows} />
+                </ProfileCard>
+              )}
 
-            {/* The design's paired boxes: the week on the left, what they
-                charge on the right. */}
-            {(scheduleRows.length > 0 || rateRows.length > 0) && (
-              <div className="flex flex-col lg:flex-row gap-[20px] lg:gap-[25px] items-stretch">
-                {scheduleRows.length > 0 && (
-                  <ProfileCard className="lg:flex-1 px-[25px] pt-[30px] pb-[30px]">
-                    <SectionTitle className="mb-[22px]">Weekly Schedule</SectionTitle>
-                    <ScheduleList items={scheduleRows} />
-                  </ProfileCard>
-                )}
+              {rateRows.length > 0 && (
+                <ProfileCard className="lg:flex-1 px-[25px] pt-[30px] pb-[30px]">
+                  <SectionTitle className="mb-[22px]">Rates</SectionTitle>
+                  <PriceRows items={rateRows} />
+                </ProfileCard>
+              )}
+            </div>
+          )}
 
-                {rateRows.length > 0 && (
-                  <ProfileCard className="lg:flex-1 px-[25px] pt-[30px] pb-[30px]">
-                    <SectionTitle className="mb-[22px]">Rates</SectionTitle>
-                    <PriceRows items={rateRows} />
-                  </ProfileCard>
-                )}
-              </div>
-            )}
+          {renderGroups.slice(1)}
 
-            {renderGroups.slice(1)}
-
-            {/* Same panel, and the same accepted-match gate, as the caregiver
-                profile screen. */}
-            <ProfileReviews
-              targetUserId={targetUserId}
-              targetName={firstName || nanny.name}
-              reviews={selectedNanny?.reviews}
-              averageRating={selectedNanny?.averageRating}
-              onReviewed={() => dispatch(fetchNannyByIdThunk(id))}
-            />
-          </div>
+          {/* Same panel, and the same accepted-match gate, as the caregiver
+              profile screen. */}
+          <ProfileReviews
+            targetUserId={targetUserId}
+            targetName={firstName || nanny.name}
+            reviews={selectedNanny?.reviews}
+            averageRating={selectedNanny?.averageRating}
+            onReviewed={onReviewed}
+          />
         </div>
       </div>
     </div>

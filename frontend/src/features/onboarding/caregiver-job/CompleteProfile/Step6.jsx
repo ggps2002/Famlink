@@ -7,13 +7,9 @@ import { CameraIcon } from "lucide-react";
 import { InputDa } from "@shared/ui/Input";
 import Input from "antd/es/input/Input";
 
+import { CERTIFICATIONS } from "@shared/lib/profileOptions";
 const step4Data = {
-    first: [
-        "CPR Certified",
-        "First Aid Certified",
-        "Early Childhood Education (ECE)",
-        "TrustLine Registered",
-    ],
+    first: CERTIFICATIONS,
 };
 
 function Step4({ formRef, handleImageChange, image, initialValues }) {

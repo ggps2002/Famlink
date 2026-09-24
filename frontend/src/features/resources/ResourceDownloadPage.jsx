@@ -6,6 +6,7 @@ import NannyShareAgreement from "@features/resources/content/NannyShareAgreement
 import PayrollTaxGuide from "@features/resources/content/PayrollTaxGuide";
 import { DOWNLOADS_META, downloadMeta } from "@shared/seo/routeMeta";
 
+import CustomButton from "@shared/ui/Button";
 // The printable resource documents delivered by the Resource Center lead magnets.
 // Reached from the capture modal (and from the emailed link). Each renders as a
 // clean, print-optimized document — the toolbar is hidden when printing so a
@@ -48,13 +49,13 @@ export default function ResourceDownloadPage() {
           >
             <ArrowLeft size={16} /> Back to resources
           </Link>
-          <button
+          <CustomButton
             type="button"
             onClick={() => window.print()}
             className="inline-flex items-center gap-2 bg-accent hover:bg-accent-strong text-ink font-livvic-bold text-sm px-4 py-2 rounded-full transition-colors"
           >
             <Printer size={16} /> Print / Save as PDF
-          </button>
+          </CustomButton>
         </div>
       </div>
 

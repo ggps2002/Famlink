@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import Spinner from "@shared/ui/Spinner";
 import { fireToastMessage } from "@shared/ui/toast";
 import { PiggyBank, User, Users } from "lucide-react";
@@ -253,7 +253,7 @@ function CostEstimation() {
             </span>
           </div>
 
-          <Button
+          <CustomButton
             btnText="Estimate Savings"
             className="bg-[#FFADE1] w-full sm:w-auto px-6 py-3 sm:py-4"
             action={() => handleEstimate()}
@@ -383,14 +383,14 @@ function CostEstimation() {
             <NavLink to={"/find-nanny-share"} onClick={() =>
               window.scrollTo({ top: 0, behavior: "smooth" })
             }>
-              <Button
+              <CustomButton
                 btnText={"See Local Matches"}
                 className="bg-pink-300 px-6 py-4"
               />
             </NavLink>
-            {/* <button className="mt-1 bg-pink-300 hover:bg-pink-400 transition-colors text-gray-900 Livvic-Bold text-base rounded-full px-9 py-3.5 shadow-md">
+            {/* <CustomButton className="mt-1 bg-pink-300 hover:bg-pink-400 transition-colors text-gray-900 Livvic-Bold text-base rounded-full px-9 py-3.5 shadow-md">
             See Local Matches &nbsp;→
-          </button> */}
+          </CustomButton> */}
           </div>
         )}
       </div>

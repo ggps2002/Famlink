@@ -3,6 +3,7 @@ import Form from "antd/es/form/Form";
 import OnboardingOptionSelector from "@features/onboarding/components/OnboardingOptionSelector";
 import { deparseHourlyRate } from "@shared/lib/rates";
 
+import { PETS } from "@shared/lib/profileOptions";
 /* A family answers one budget question: what THEY pay per hour.
  *
  * The label is their own share; the value is left as the full combined string
@@ -26,7 +27,7 @@ const step7Data = {
     { label: "$20+ per hour", value: "$40+ per hour (Each family pays $20+)" },
   ],
 
-  second: ["No pets", "Dog(s)", "Cat(s)", "Small animals", "Birds"],
+  second: PETS,
 };
 
 function Step7({ formRef, petsInfo = true, initialValues }) {

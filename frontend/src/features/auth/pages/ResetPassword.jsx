@@ -79,6 +79,7 @@ export default function ResetPassword() {
                   )}
 
                   <div className="relative w-full mb-6">
+                    <label className="fl-label">New password</label>
                     <Form.Item
                       style={{ margin: 0, padding: 0 }}
                       name="password"
@@ -92,16 +93,14 @@ export default function ResetPassword() {
                       hasFeedback
                     >
                       <Input.Password
-                        className="peer border text-primary border-[#EEEEEE] rounded-[10px] px-4 pt-7 pb-2 w-[300px] placeholder-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+                        className="w-[300px]"
                         placeholder="New password"
                       />
                     </Form.Item>
-                    <label className="absolute left-4 top-2 text-sm Livvic-Medium text-[#666666] px-1 z-10">
-                      New password
-                    </label>
                   </div>
 
                   <div className="relative w-full">
+                    <label className="fl-label">Confirm password</label>
                     <Form.Item
                       style={{ margin: 0, padding: 0 }}
                       name="confirm"
@@ -122,13 +121,10 @@ export default function ResetPassword() {
                       ]}
                     >
                       <Input.Password
-                        className="peer border text-primary border-[#EEEEEE] rounded-[10px] px-4 pt-7 pb-2 w-[300px] placeholder-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+                        className="w-[300px]"
                         placeholder="Confirm new password"
                       />
                     </Form.Item>
-                    <label className="absolute left-4 top-2 text-sm Livvic-Medium text-[#666666] px-1 z-10">
-                      Confirm password
-                    </label>
                   </div>
 
                   <div className="my-8 text-center">

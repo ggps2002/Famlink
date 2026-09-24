@@ -15,7 +15,7 @@ import { fireToastMessage } from "@shared/ui/toast";
 import { hourlyData, prefer } from "@features/nanny-share/questionnaire/options";
 import { findMatchingRate1, parseHourlyRate } from "@shared/lib/rates";
 import { formatKey } from "@shared/lib/strings";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 
 const parseTime = (time) => (time ? dayjs(time) : null);
 
@@ -706,34 +706,34 @@ const JobListingView = () => {
                 )}
               </div>
               <div className="flex justify-center gap-2 lg:my-8 my-4">
-                {/* <button
+                {/* <CustomButton
                                     onClick={handleDeleteClick}
-                                    className=" text-white bg-[#FF0000] border border-[#FF0119] lg:w-32 w-24 h-10 rounded-full font-normal text-base transition hover:-translate-y-1 duration-700 delay-150 ease-in-out hover:scale-110"
+                                    className=" text-white bg-[#FF0000] border border-[#FF0119] lg:w-32 w-24 h-10 rounded-full font-normal text-base transition hover:-translate-y-1 duration-700 delay-150 ease-in-out hover:scale-110 px-0 py-0 Livvic"
                                 >
                                     Delete Job
-                                </button> */}
-                <Button
+                                </CustomButton> */}
+                <CustomButton
                   btnText={"Delete Job"}
                   action={() => handleDeleteClick()}
                   className="bg-[#FF8484] text-white"
                 />
-                {/* <button onClick={() => navigate(-1)}
-                                    className=" text-[#AEC4FF] bg-white border border-[#AEC4FF] lg:w-32 w-24 h-10 rounded-full font-normal text-base transition hover:opacity-60 duration-700 delay-150 ease-in-out"
+                {/* <CustomButton onClick={() => navigate(-1)}
+                                    className=" text-[#AEC4FF] bg-white border border-[#AEC4FF] lg:w-32 w-24 h-10 rounded-full font-normal text-base transition hover:opacity-60 duration-700 delay-150 ease-in-out px-0 py-0 Livvic"
                                 >
                                     Go back
-                                </button> */}
-                <Button
+                                </CustomButton> */}
+                <CustomButton
                   btnText={"Go Back"}
                   action={() => navigate(-1)}
                   className="text-[#555555] border border-[#EEEEEE]"
                 />
-                {/* <button
+                {/* <CustomButton
                                     onClick={handleEditClick}
-                                    className=" bg-[#AEC4FF] text-white lg:w-32 w-24 h-10 border-none rounded-full font-normal text-base transition hover:-translate-y-1 duration-700 delay-150 ease-in-out hover:scale-110"
+                                    className=" bg-[#AEC4FF] text-white lg:w-32 w-24 h-10 border-none rounded-full font-normal text-base transition hover:-translate-y-1 duration-700 delay-150 ease-in-out hover:scale-110 px-0 py-0 Livvic"
                                 >
                                     Edit Job
-                                </button> */}
-                <Button
+                                </CustomButton> */}
+                <CustomButton
                   btnText={"Edit Job"}
                   action={() => handleEditClick()}
                   className="bg-[#AEC4FF]"

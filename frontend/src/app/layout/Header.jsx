@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import { useBodyScrollLock } from "@shared/lib/bodyScrollLock";
 import { useLocation } from "react-router-dom";
 
@@ -136,9 +136,9 @@ function Header() {
               {!pathname.startsWith("/business") &&
                 (isAuthed ? (
                   <NavLink to="/dashboard">
-                    <button className="bg-[#AEC4FF] hover:bg-[#9BB8FF] text-[#001243] Livvic-SemiBold text-[15px] py-2.5 px-6 rounded-full transition-colors">
+                    <CustomButton className="bg-[#AEC4FF] hover:bg-[#9BB8FF] text-[#001243] Livvic-SemiBold text-[15px] py-2.5 px-6 rounded-full transition-colors">
                       Go to dashboard
-                    </button>
+                    </CustomButton>
                   </NavLink>
                 ) : (
                   <>
@@ -146,9 +146,9 @@ function Header() {
                       Log in
                     </NavLink>
                     <NavLink to="/joinNow">
-                      <button className="bg-[#AEC4FF] hover:bg-[#9BB8FF] text-[#001243] Livvic-SemiBold text-[15px] py-2.5 px-6 rounded-full transition-colors">
+                      <CustomButton className="bg-[#AEC4FF] hover:bg-[#9BB8FF] text-[#001243] Livvic-SemiBold text-[15px] py-2.5 px-6 rounded-full transition-colors">
                         Join now
-                      </button>
+                      </CustomButton>
                     </NavLink>
                   </>
                 ))}
@@ -283,7 +283,7 @@ function Header() {
             <div className="space-y-3 border-t border-gray-100 pt-6">
               {isAuthed ? (
                 <NavLink to="/dashboard" onClick={closeMenu} className="block">
-                  <Button
+                  <CustomButton
                     btnText="Go to dashboard"
                     className="w-full bg-[#AEC4FF] text-gray-900 text-base py-3 justify-center hover:bg-[#9DB8FF] transition-colors duration-200"
                   />
@@ -291,13 +291,13 @@ function Header() {
               ) : (
                 <>
                   <NavLink to="/login" onClick={closeMenu} className="block">
-                    <Button
+                    <CustomButton
                       btnText="Log in"
                       className="w-full text-base py-3 justify-center border border-gray-200 text-primary"
                     />
                   </NavLink>
                   <NavLink to="/joinNow" onClick={closeMenu} className="block">
-                    <Button
+                    <CustomButton
                       btnText="Join now"
                       className="w-full bg-[#AEC4FF] text-gray-900 text-base py-3 justify-center hover:bg-[#9DB8FF] transition-colors duration-200"
                     />

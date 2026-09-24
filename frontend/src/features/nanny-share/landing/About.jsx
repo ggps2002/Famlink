@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import { NavLink } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import Carousal1 from "../../../assets/images/Carousal1.jpg";
@@ -61,7 +61,7 @@ function About() {
             })
           }
         >
-          <Button
+          <CustomButton
             btnText="Join Now"
             size="lg"
             className="bg-blossom hover:bg-blossom-strong text-blossom-ink w-full sm:w-auto mt-8"

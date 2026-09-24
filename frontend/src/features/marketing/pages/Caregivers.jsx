@@ -53,7 +53,7 @@ function Caregivers() {
         </div>
       </Section>
 
-      <Section tone="mist">
+      <Section className="bg-[#DDF9FD]">
         <Community />
       </Section>
 

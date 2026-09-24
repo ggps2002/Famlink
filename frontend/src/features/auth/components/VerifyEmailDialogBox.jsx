@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import CustomButton from "@shared/ui/Button";
 function VerifyEmailPrompt({ user }) {
   const [dismissed, setDismissed] = useState(false);
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ function VerifyEmailPrompt({ user }) {
             gap-4 sm:gap-6
           "
             >
-              <button
+              <CustomButton
                 onClick={() => {
                   navigate("setting");
                   setDismissed(true);
@@ -44,23 +45,21 @@ function VerifyEmailPrompt({ user }) {
                 text-black text-lg Livvic-Medium
                 px-4 py-2
                 rounded-lg transition
-                w-full sm:w-auto
-              "
+                w-full sm:w-auto"
               >
                 Verify now
-              </button>
+              </CustomButton>
 
-              <button
+              <CustomButton
                 onClick={() => setDismissed(true)}
                 className="
                 text-yellow-800/70 hover:text-yellow-900
                 text-lg
                 w-full sm:w-auto
-                Livvic-Medium
-              "
+                Livvic-Medium px-0 py-0 rounded-none"
               >
                 Later
-              </button>
+              </CustomButton>
             </div>
           </div>
         </div>

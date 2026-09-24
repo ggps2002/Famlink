@@ -14,6 +14,7 @@ import { registerThunk } from "@features/auth/store/authSlice";
 import { useNavigate, Link } from "react-router-dom";
 import { nannyshareProfileThunk } from "@features/nanny-share/store/nannyShareSlice";
 
+import { saveOnboardingRecord } from "@features/onboarding/onboardingRecord";
 const Screen3 = ({ formRef, recordId, location, careType, setIsTermsChecked }) => {
   const [form] = Form.useForm();
   const [visible, setVisible] = useState(false);
@@ -80,26 +81,29 @@ const Screen3 = ({ formRef, recordId, location, careType, setIsTermsChecked }) =
             Type: careType,
           };
 
-          const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
+          // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+          // const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
 
-          if (!scriptUrl) {
-            console.warn(
-              "VITE_GOOGLE_SCRIPT_URL is not set. Data:",
-              payload,
-            );
-            await new Promise((r) => setTimeout(r, 1400));
-            return;
-          }
+          // if (!scriptUrl) {
+          //   console.warn(
+          //     "VITE_GOOGLE_SCRIPT_URL is not set. Data:",
+          //     payload,
+          //   );
+          //   await new Promise((r) => setTimeout(r, 1400));
+          //   return;
+          // }
 
-          const formData = new URLSearchParams(payload).toString();
+          // const formData = new URLSearchParams(payload).toString();
 
-          await fetch(scriptUrl, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: formData,
-          });
+          // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+          // await fetch(scriptUrl, {
+          //   method: "POST",
+          //   headers: {
+          //     "Content-Type": "application/x-www-form-urlencoded",
+          //   },
+          //   body: formData,
+          // });
+          await saveOnboardingRecord(payload);
 
           setLoading(false);
 

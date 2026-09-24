@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Avatar from "react-avatar";
 import { ShareTypeBadge } from "@features/nanny-share/shareTypeTheme";
 
+import CustomButton from "@shared/ui/Button";
 /* ── Mock matches ──
    variant drives the badge (color + label, from the shared theme) and which
    fields render:
@@ -224,25 +225,23 @@ function MatchCard({ match, visible }) {
                     </button>
 
                     {/* View Details */}
-                    <button className="
+                    <CustomButton className="
                         flex items-center gap-1 bg-transparent border-none cursor-pointer
-                        text-[#0D134C] Livvic-SemiBold text-sm whitespace-nowrap mb-2
-                    ">
+                        text-[#0D134C] Livvic-SemiBold text-sm whitespace-nowrap mb-2 px-0 py-0 rounded-none">
                         View Details
                         <ChevronRightIcon />
-                    </button>
+                    </CustomButton>
 
                     {/* Request Match */}
-                    <button className="
+                    <CustomButton className="
                         flex items-center gap-1.5 justify-center
                         bg-[#AEC4FF] hover:opacity-90 text-[#0D134C] border-none
                         h-10 rounded-xl cursor-pointer transition-colors duration-200
-                        flex-shrink-0 w-full px-3 text-sm font-bold Livvic-Bold whitespace-nowrap
-                    ">
+                        flex-shrink-0 w-full px-3 text-sm font-bold Livvic-Bold whitespace-nowrap py-0">
                         <span className="flex shrink-0"><UsersIcon color="#0D134C" size={14} /></span>
                         <span className="Livvic-Bold font-bold">Request Match</span>
                         <span className="flex shrink-0"><LockIcon size={14} color="#0D134C" /></span>
-                    </button>
+                    </CustomButton>
                 </div>
 
             </div>
@@ -311,12 +310,12 @@ const Screen2 = ({ onCreateAccount, location = { neighborhood: "Rockridge", city
                     <span className="hidden sm:block text-sm text-[#C7D2FE] whitespace-nowrap">
                         Join Famlink to message, connect, and build your nanny share.
                     </span>
-                    <button
+                    <CustomButton
                         onClick={onCreateAccount}
                         className="bg-white text-[#3730A3] Livvic-Bold text-xs sm:text-sm border-none rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 cursor-pointer whitespace-nowrap hover:bg-gray-100 transition-colors flex-shrink-0"
                     >
                         Create Account
-                    </button>
+                    </CustomButton>
                 </div>
             </div>
         </div>

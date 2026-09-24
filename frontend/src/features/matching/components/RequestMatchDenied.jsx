@@ -1,6 +1,7 @@
 import { Coins } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+import CustomButton from "@shared/ui/Button";
 export const RequestMatchDenied = ({ onSubscribe, setIsMatchRequestDenied }) => {
   const navigate = useNavigate()
   return (
@@ -49,19 +50,19 @@ export const RequestMatchDenied = ({ onSubscribe, setIsMatchRequestDenied }) => 
         </p>
 
         {/* Subscribe button */}
-        <button
+        <CustomButton
           type="button"
           onClick={() => {
             navigate("/dashboard/setting?option=Subscription");
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
-          className="w-full flex items-center justify-center gap-2 text-center bg-[#D6FB9A] transition-colors rounded-full py-3 text-base Livvic-Bold text-[#075B49] mb-3"
+          className="w-full flex items-center justify-center gap-2 text-center bg-[#D6FB9A] transition-colors rounded-full py-3 text-base Livvic-Bold text-[#075B49] mb-3 px-0"
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M8 1L10.2 5.5L15 6.2L11.5 9.6L12.4 14.4L8 12L3.6 14.4L4.5 9.6L1 6.2L5.8 5.5Z" fill="#075B49" fillOpacity="0.7" />
           </svg>
           Subscribe &amp; Keep Matching
-        </button>
+        </CustomButton>
       </div>
 
       <style>{`

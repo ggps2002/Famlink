@@ -35,6 +35,7 @@ export function InputDa({
   // marks a field optional. Kept working so existing call sites are unchanged,
   // but `required` is the one to reach for.
   const isRequired = required ?? !req;
+  const inputId = `field-${val ? val : fieldKey(name)}`;
 
   const rules = [
     {
@@ -323,10 +324,10 @@ export function InputDa({
               </div>
             </div>
             <div className="m-0 p-0 mb-8 flex justify-end">
-              <button
+              <CustomButton
                 type="button"
                 disabled={isLoading}
-                className="bg-[#AEC4FF] w-24 py-3 rounded-3xl text-white Livvic-Medium text-base disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#9BB5FF] transition-colors text-primary Livvic-Medium"
+                className="bg-[#AEC4FF] w-24 py-3 rounded-3xl text-white Livvic-Medium text-base disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#9BB5FF] transition-colors text-primary Livvic-Medium px-0"
                 onClick={handleVerifyOtp}
               >
                 {isLoading ? (
@@ -356,7 +357,7 @@ export function InputDa({
                 ) : (
                   "Verify"
                 )}
-              </button>
+              </CustomButton>
             </div>
           </>
         );
@@ -368,7 +369,12 @@ export function InputDa({
 
   return (
     <div>
-      <div className="relative w-full">
+      <div className="w-full">
+        {labelText && (
+          <label htmlFor={inputId} className="fl-label">
+            {labelText}
+          </label>
+        )}
         <Form.Item
           style={{ margin: 0, padding: 0 }}
           name={val ? val : fieldKey(name)}
@@ -376,20 +382,13 @@ export function InputDa({
           initialValue={defaultValue}
         >
           <Input
+            id={inputId}
             type={type}
             placeholder={placeholder}
             onChange={(e) => setEmail(e.target.value)}
-            className={`peer border text-primary border-[#EEEEEE] rounded-[10px] px-4 ${labelText.length > 0 ? "pt-7" : "pt-2" } pb-2 ${
-              fp ? "w-[300px]" : "w-full"
-            } placeholder-transparent focus:outline-none focus:ring-2 focus:ring-primary`}
+            className={fp ? "w-[300px]" : "w-full"}
           />
         </Form.Item>
-        <label
-          htmlFor={name}
-          className="absolute left-4 top-2 text-sm Livvic-Medium text-[#666666] px-1 z-10"
-        >
-          {labelText}
-        </label>
       </div>
       {emailVer && renderEmailVerSteps()}
     </div>
@@ -415,7 +414,10 @@ export function InputPassword() {
                 </label>
               </Form.Item>
             </div> */}
-        <div className="relative w-full">
+        <div className="w-full">
+          <label htmlFor="password" className="fl-label">
+            Password
+          </label>
           <Form.Item
             name="password"
             rules={[
@@ -431,19 +433,17 @@ export function InputPassword() {
             hasFeedback
           >
             <Input.Password
-              className="peer border border-[#EEEEEE] rounded-[10px] px-4 pt-7 pb-2 w-full  placeholder-transparent focus:outline-none "
-              placeholder="Enter your password"
+              id="password"
+              className="w-full"
+              placeholder="At least 8 characters"
             />
           </Form.Item>
-          <label
-            htmlFor="password"
-            className="absolute left-4 top-2 text-sm text-[#666666] px-1 z-10"
-          >
-            Password
-          </label>
         </div>
 
-        <div className="relative w-full">
+        <div className="w-full">
+          <label htmlFor="confirm" className="fl-label">
+            Confirm password
+          </label>
           <Form.Item
             name="confirm"
             dependencies={["password"]}
@@ -464,16 +464,11 @@ export function InputPassword() {
             ]}
           >
             <Input.Password
-              className="peer border border-[#EEEEEE] rounded-[10px] px-4 pt-7 pb-2 w-full  placeholder-transparent focus:outline-none"
-              placeholder="Enter password again"
+              id="confirm"
+              className="w-full"
+              placeholder="Enter your password again"
             />
           </Form.Item>
-          <label
-            htmlFor="confirm password"
-            className="absolute left-4 top-2 text-sm text-[#666666] px-1 z-10"
-          >
-            Confirm Password
-          </label>
         </div>
       </div>
     </div>
@@ -528,16 +523,17 @@ export function InputDOB() {
   };
 
   return (
-    <div className="relative">
+    <div>
+      <p className="fl-label" id="dob-label">Date of birth</p>
       <Form.Item required>
-        <div className="grid grid-cols-3 gap-2 px-4 pt-7 pb-2 border border-[#EEEEEE] rounded-[10px]">
+        <div className="grid grid-cols-3 gap-2" role="group" aria-labelledby="dob-label">
           <Col>
             <Form.Item
               name="month"
               noStyle
               rules={[{ required: true, message: "" }]}
             >
-              <Select className="width-dob" placeholder="Month">
+              <Select className="w-full" placeholder="Month">
                 {months.map((month, index) => (
                   <Option key={index} value={month}>
                     {month}
@@ -553,7 +549,7 @@ export function InputDOB() {
               noStyle
               rules={[{ required: true, message: "" }]}
             >
-              <Select className="width-dob" placeholder="Date">
+              <Select className="w-full" placeholder="Day">
                 {dates.map((date) => (
                   <Option key={date} value={date}>
                     {date}
@@ -575,7 +571,7 @@ export function InputDOB() {
                 }),
               ]}
             >
-              <Select className="width-dob" placeholder="Year">
+              <Select className="w-full" placeholder="Year">
                 {years.map((year) => (
                   <Option key={year} value={year}>
                     {year}
@@ -586,10 +582,6 @@ export function InputDOB() {
           </Col>
         </div>
       </Form.Item>
-
-      <label className="absolute left-4 top-2 text-sm text-[#666666] px-1 z-10">
-        Date of birth
-      </label>
     </div>
   );
 }
@@ -636,25 +628,21 @@ export function SelectComponent({
     //       </Option>
     //     ))}
     //   </Select>
-    <div className="relative w-72">
+    <div className="w-72">
+      <label className="fl-label">{placeholder}</label>
       <Select
         value={selectedValue}
-        bordered={false}
         onChange={onSelectChange}
-        className="peer w-full pt-6 pb-2 px-2 border border-[#EEEEEE] rounded-[10px]"
-        style={{
-          height: "64px",
-        }}
+        placeholder="Select"
+        aria-label={placeholder}
+        className="w-full"
       >
         {opt.map((opt) => (
           <Select.Option key={opt} value={opt}>
-            <span className="Livvic-SemiBold text-sm text-primary">{opt}</span>
+            {opt}
           </Select.Option>
         ))}
       </Select>
-      <label className="absolute left-4 top-2 text-sm Livvic-Medium text-[#777777] px-1 z-10">
-        {placeholder}
-      </label>
     </div>
   );
 }
@@ -671,7 +659,12 @@ export function InputTextArea({
 }) {
   return (
     <div>
-      <div className="relative w-full">
+      <div className="w-full">
+        {labelText && (
+          <label htmlFor={`field-${name}`} className="fl-label">
+            {labelText}
+          </label>
+        )}
         <Form.Item
           style={{ margin: 0, padding: 0 }}
           name={name} // ✅ always use explicit `name`
@@ -684,6 +677,7 @@ export function InputTextArea({
           preserve={false}
         >
           <Input.TextArea
+            id={`field-${name}`}
             placeholder={placeholder}
             rows={rows || 6}
             onChange={async (e) => {
@@ -691,19 +685,9 @@ export function InputTextArea({
                 [name]: e.target.value,
               });
             }}
-            className={`peer border text-primary border-[#EEEEEE] rounded-[10px] px-4 pt-8 pb-2 w-full placeholder-transparent focus:outline-none focus:ring-2 focus:ring-primary ${
-              !grid && "input-width"
-            } no-resize`}
+            className={`w-full ${!grid ? "input-width" : ""} no-resize`}
           />
         </Form.Item>
-        {labelText && (
-          <label
-            htmlFor={name}
-            className="absolute left-4 top-2 text-sm text-primary Livvic-Medium px-1 z-10"
-          >
-            {labelText}
-          </label>
-        )}
       </div>
     </div>
   );

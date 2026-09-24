@@ -13,7 +13,7 @@ import { persistor } from "@app/store";
 import { selectUnseenCount } from "@features/notifications/store/notificationSlice";
 import { useNotifications } from "@features/notifications/useNotification";
 import { timeAgo } from "@shared/lib/toCamelCase";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import PlusBadge from "@shared/ui/PlusBadge";
 import UserAvatar from "@app/layout/UserAvatar";
 import SubscriptionModal from "@features/subscription/components/SubscriptionModal";
@@ -291,14 +291,14 @@ export default function Navbar1({ nanny }) {
         {/* Billing CTA — referral for caregivers, subscription for everyone else
             (see billingCta above). Null while a nanny's status is still loading. */}
         {billingCta === "refer" && (
-          <Button
+          <CustomButton
             btnText={"Refer a Friend"}
             action={() => setShowReferModal(true)}
             className="btn-shine bg-[#D6FB9A] text-[#025747] text-sm px-3 py-2 whitespace-nowrap"
           />
         )}
         {billingCta === "upgrade" && (
-          <Button
+          <CustomButton
             btnText={"Upgrade"}
             action={() => setShowUpgradeModal(true)}
             className="btn-shine bg-[#D6FB9A] text-[#025747] text-sm px-3 py-2"

@@ -4,6 +4,7 @@ import { Check, Copy, Gift, Loader2, Share2 } from "lucide-react";
 import { getMyReferralThunk } from "@features/referral/store/referralSlice";
 import { fireToastMessage } from "@shared/ui/toast";
 
+import CustomButton from "@shared/ui/Button";
 // Caregivers (Nanny + hasFamily false) have no subscription. Their first match
 // request is free; after that they keep matching by referring a friend — each
 // signup through their link grants a calendar month. This is the wall they hit,
@@ -131,7 +132,7 @@ export const ReferAFriendModal = ({ onClose }) => {
                 <span className="flex-1 text-left text-sm text-gray-600 truncate" title={link || ""}>
                   {link || "Link unavailable"}
                 </span>
-                <button
+                <CustomButton
                   type="button"
                   onClick={handleCopy}
                   disabled={!link}
@@ -139,7 +140,7 @@ export const ReferAFriendModal = ({ onClose }) => {
                 >
                   {copied ? <Check size={13} /> : <Copy size={13} />}
                   {copied ? "Copied!" : "Copy"}
-                </button>
+                </CustomButton>
               </div>
               {code && (
                 <p className="mt-2 text-xs text-gray-400">
@@ -152,14 +153,14 @@ export const ReferAFriendModal = ({ onClose }) => {
         </div>
 
         {canShare && link && (
-          <button
+          <CustomButton
             type="button"
             onClick={handleShare}
-            className="w-full flex items-center justify-center gap-2 text-center bg-[#D6FB9A] transition-colors rounded-full py-3 text-base Livvic-Bold text-[#075B49] mb-3"
+            className="w-full flex items-center justify-center gap-2 text-center bg-[#D6FB9A] transition-colors rounded-full py-3 text-base Livvic-Bold text-[#075B49] mb-3 px-0"
           >
             <Share2 size={16} />
             Share Your Link
-          </button>
+          </CustomButton>
         )}
 
         {/* Status footer — only meaningful once they've actually referred someone */}

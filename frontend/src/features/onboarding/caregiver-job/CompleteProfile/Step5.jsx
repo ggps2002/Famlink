@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Modal } from "antd";
+import { Form, Input, Modal } from "antd";
 import CustomButton from "@shared/ui/Button";
 
 const RANGES = {
@@ -196,9 +196,9 @@ function SummaryModal({ open, onClose, data }) {
                 </div>
 
                 <div className="flex gap-3">
-                    <button onClick={onClose} className="flex-1 border border-gray-200 text-gray-600 text-sm Livvic-Medium rounded-xl py-2.5 hover:bg-gray-50">
+                    <CustomButton onClick={onClose} className="flex-1 border border-gray-200 text-gray-600 text-sm Livvic-Medium rounded-xl py-2.5 hover:bg-gray-50 px-0">
                         Edit Rates
-                    </button>
+                    </CustomButton>
                 </div>
             </div>
         </Modal>
@@ -352,6 +352,29 @@ function Step5({ formRef, initialValues }) {
                                 return errors.length ? <p className="text-red-500 text-xs mt-1">{errors[0]}</p> : null;
                             }}
                         </Form.Item>
+                    </div>
+
+                    {/* Section 3 — optional. Saved as `salaryExp`, the per-child
+                        price list the profile page shows under Rates. */}
+                    <div className="mb-6">
+                        <SectionLabel number="3" text="Rate by number of children (optional)" />
+                        <p className="text-xs text-gray-400 mb-3">Your hourly rate for 1, 2, 3 or more children.</p>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            {[
+                                ["firstChild", "1 child"],
+                                ["secChild", "2 children"],
+                                ["thirdChild", "3 children"],
+                                ["fourthChild", "4 children"],
+                                ["fiveOrMoreChild", "5+ children"],
+                            ].map(([key, label]) => (
+                                <div key={key}>
+                                    <label htmlFor={`salary-${key}`} className="fl-label">{label}</label>
+                                    <Form.Item name={["salaryExp", key]} noStyle>
+                                        <Input id={`salary-${key}`} type="number" min={0} prefix="$" placeholder="0" />
+                                    </Form.Item>
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
                     {/* Info note */}

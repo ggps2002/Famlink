@@ -196,9 +196,9 @@ function SummaryModal({ open, onClose, data }) {
                 </div>
 
                 <div className="flex gap-3">
-                    <button onClick={onClose} className="flex-1 border border-gray-200 text-gray-600 text-sm Livvic-Medium rounded-xl py-2.5 hover:bg-gray-50">
+                    <CustomButton onClick={onClose} className="flex-1 border border-gray-200 text-gray-600 text-sm Livvic-Medium rounded-xl py-2.5 hover:bg-gray-50 px-0">
                         Edit Rates
-                    </button>
+                    </CustomButton>
                 </div>
             </div>
         </Modal>

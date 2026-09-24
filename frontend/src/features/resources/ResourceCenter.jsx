@@ -6,7 +6,7 @@ import FAQ from "@features/marketing/home/FAQ";
 import SEOMetaData from "@shared/seo/SEOMetaData";
 import { resourceCenterMeta } from "@shared/seo/routeMeta";
 import CostEstimation from "@features/nanny-share/landing/CostEstimation";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import { RESOURCES } from "@features/resources/resourcesData";
 import LeadMagnetModal from "@features/resources/LeadMagnetModal";
 import { Section, SectionHeading, CardGrid, Card } from "@shared/ui/Section";
@@ -58,7 +58,7 @@ export default function ResourceCenter() {
         title="Everything you need to set up a nanny share"
         lede="Free calculators, templates, and guides — built with families who've done it. No fluff, no account required."
         actions={
-          <Button
+          <CustomButton
             btnText="Explore the resources"
             className="bg-accent text-ink hover:bg-accent-strong px-7 py-3.5 transition-colors"
             action={() =>
@@ -91,13 +91,13 @@ export default function ResourceCenter() {
                 </p>
                 <h3 className="fl-h3 text-ink mb-2">{resource.title}</h3>
                 <p className="fl-small flex-1">{resource.description}</p>
-                <button
+                <CustomButton
                   type="button"
                   onClick={() => handleCardCta(resource)}
-                  className="mt-6 inline-flex items-center gap-1.5 font-livvic-bold text-ink hover:gap-2.5 transition-all self-start"
+                  className="mt-6 inline-flex items-center gap-1.5 font-livvic-bold text-ink hover:gap-2.5 transition-all self-start px-0 py-0 rounded-none"
                 >
                   {resource.cta} <ArrowRight size={18} />
-                </button>
+                </CustomButton>
               </Card>
             );
           })}
@@ -136,7 +136,7 @@ export default function ResourceCenter() {
         </CardGrid>
         <div className="text-center mt-12">
           <a href="/find-nanny-share">
-            <Button
+            <CustomButton
               btnText="Find your nanny share match"
               size="lg"
               className="bg-blossom hover:bg-blossom-strong text-blossom-ink"

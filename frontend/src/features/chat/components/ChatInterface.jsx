@@ -19,6 +19,7 @@ import { getIncomingRequestsThunk } from "@features/matching/store/matchSlice";
 import { MatchRequestSuccessModal } from "@features/matching/components/MatchSuccessModal";
 import ChatInterfaceRequests from "@features/chat/components/ChatInterfaceRequests";
 
+import CustomButton from "@shared/ui/Button";
 const isProbablyAudio = (str) =>
   typeof str === "string" && str.length > 200 && /^[A-Za-z0-9+/=]+$/.test(str);
 
@@ -99,9 +100,9 @@ function Sidebar({ pendingMatches, activeConversations }) {
             Browse families and caregivers who might be a great fit and send a request.
           </p>
           <NavLink to="/dashboard">
-            <button className="bg-[#AEC4FF] hover:bg-[#9db4f7] text-[#0D134C] rounded-lg px-3 py-2 text-sm Livvic-Bold transition-colors">
+            <CustomButton className="bg-[#AEC4FF] hover:bg-[#9db4f7] text-[#0D134C] rounded-lg px-3 py-2 text-sm Livvic-Bold transition-colors">
               Find a Match →
-            </button>
+            </CustomButton>
           </NavLink>
         </div>
       </div>
@@ -160,9 +161,9 @@ function DashboardFeed({
             )}
           </div>
           <NavLink to="/dashboard/requests" className="shrink-0 ml-4">
-            <button className="flex items-center gap-1 text-[#0D134C] Livvic-SemiBold text-sm hover:underline">
+            <CustomButton className="flex items-center gap-1 text-[#0D134C] Livvic-SemiBold text-sm hover:underline px-0 py-0 rounded-none">
               View All <ChevronRight size={15} />
-            </button>
+            </CustomButton>
           </NavLink>
         </div>
 
@@ -204,9 +205,9 @@ function DashboardFeed({
             {pendingMatches.length > 3 && (
               <div className="text-center px-6 sm:px-8 pb-6">
                 <NavLink to="/dashboard/requests">
-                  <button className="text-[#0D134C] Livvic-SemiBold text-base hover:underline">
+                  <CustomButton className="text-[#0D134C] Livvic-SemiBold text-base hover:underline px-0 py-0 rounded-none">
                     View All Requests →
-                  </button>
+                  </CustomButton>
                 </NavLink>
               </div>
             )}
@@ -232,12 +233,12 @@ function DashboardFeed({
             )}
           </div>
           {activeConversations.length > 0 && (
-            <button
+            <CustomButton
               onClick={onViewAllConversations}
-              className="text-[#0D134C] Livvic-SemiBold text-sm hover:underline shrink-0 ml-4"
+              className="text-[#0D134C] Livvic-SemiBold text-sm hover:underline shrink-0 ml-4 px-0 py-0 rounded-none"
             >
               View All
-            </button>
+            </CustomButton>
           )}
         </div>
 
@@ -308,9 +309,9 @@ function DashboardFeed({
             ))}
           </div>
           <NavLink to="/dashboard" className="shrink-0">
-            <button className="bg-[#AEC4FF] hover:bg-[#9db4f7] text-[#0D134C] Livvic-Bold px-5 py-2.5 rounded-xl text-sm whitespace-nowrap transition-colors">
+            <CustomButton className="bg-[#AEC4FF] hover:bg-[#9db4f7] text-[#0D134C] Livvic-Bold px-5 py-2.5 rounded-xl text-sm whitespace-nowrap transition-colors">
               Find a Match →
-            </button>
+            </CustomButton>
           </NavLink>
         </div>
       </div>
@@ -573,7 +574,10 @@ export default function Component() {
   }, [dispatch]);
 
   return (
-    <div className={`padding-navbar1 bg-[#F4F5F7] ${showChatPanel ? "h-full overflow-hidden" : "h-full overflow-y-auto"}`}>
+    // Scrolls in both modes. With a chat open the panel scrolls its own list
+    // and messages, but the desktop sidebar beside it can be taller than the
+    // window, and overflow-hidden here used to cut it off.
+    <div className="padding-navbar1 bg-[#F4F5F7] h-full overflow-y-auto">
       {isRequestMatchSuccessModal && (
         <MatchRequestSuccessModal
           setIsRequestMatchSuccessModal={setIsRequestMatchSuccessModal}

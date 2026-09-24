@@ -1,11 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
 import Header from "@app/layout/Header";
 import Spinner from "@shared/ui/Spinner";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import familyHeroImg from "@/assets/images/familyHero.webp";
 import familyHero480 from "@/assets/images/familyHero-480w.webp";
 import familyHero800 from "@/assets/images/familyHero-800w.webp";
+import TrustRotator from "@shared/ui/TrustRotator";
+import locationIcon from "@/assets/images/Location-text.webp";
+import savingsIcon from "@/assets/images/Savings-text.webp";
+import browseIcon from "@/assets/images/Browse-text.webp";
+
+const TRUST_ITEMS = [
+  { icon: locationIcon, text: "Location-based matching" },
+  { icon: savingsIcon, text: "~ Save up to 50% vs. hiring your own nanny" },
+  { icon: browseIcon, text: "Free to browse" },
+];
 
 function Hero() {
   const [zipCode, setZipCode] = useState("");
@@ -14,6 +25,10 @@ function Hero() {
   const [isGlowing, setIsGlowing] = useState(false);
   const buttonRef = useRef(null);
   const navigate = useNavigate();
+  // Signed-in members go to their dashboard. The onboarding flows behind these
+  // buttons are logged-out only, same check as the header.
+  const { user } = useSelector((s) => s.auth);
+  const isAuthed = user?.type === "Parents" || user?.type === "Nanny";
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -70,7 +85,7 @@ function Hero() {
   };
 
   return (
-    <div className="relative bg-white w-full pt-[80px] lg:pt-[100px] pb-[60px] overflow-hidden min-h-[580px] flex items-center">
+    <div className="relative bg-white w-full pt-[100px] lg:pt-[140px] pb-[80px] lg:pb-[100px] overflow-hidden min-h-[580px] flex items-center">
       <Header />
 
       {/* Radial Gradient Background behind dashboard */}
@@ -96,39 +111,30 @@ function Hero() {
               Connect with nearby families to share a nanny and split the cost of personalized childcare.
             </p>
 
-            {/* Trust Items */}
-            <div className="flex flex-wrap gap-5 mb-9">
-              <div className="flex items-center gap-[7px] text-[13px] lg:text-[14px] font-[500] text-[#4a5568] Livvic">
-                <div className="w-[24px] h-[24px] rounded-full bg-[#E7FCFF] flex items-center justify-center text-[12px]">📍</div>
-                Location-based matching
-              </div>
-              <div className="flex items-center gap-[7px] text-[13px] lg:text-[14px] font-[500] text-[#4a5568] Livvic">
-                <div className="w-[24px] h-[24px] rounded-full bg-[#fff5db] flex items-center justify-center text-[12px]">💰</div>
-                <span className="leading-tight">~ Save up to 50% <br /> vs. hiring your own nanny</span>
-              </div>
-              <div className="flex items-center gap-[7px] text-[13px] lg:text-[14px] font-[500] text-[#4a5568] Livvic">
-                <div className="w-[24px] h-[24px] rounded-full bg-[#f0fff4] flex items-center justify-center text-[12px]">✓</div>
-                Free to browse
-              </div>
-            </div>
+            {/* Trust Items — one slot that cycles through the three. */}
+            <TrustRotator
+              items={TRUST_ITEMS}
+              className="mb-9"
+              itemClassName="text-lg sm:text-xl lg:text-2xl leading-tight Livvic-SemiBold text-[#011243]"
+            />
 
             {/* Call To Action */}
             <div className="mb-8">
-              <Button
+              <CustomButton
                 btnText={isLoading ? <Spinner size="small" /> : "Find a nanny share"}
                 className="bg-[#FFADE1] hover:bg-[#ff94d4] text-[#001243] w-fit px-8 py-4 flex items-center justify-center rounded-full Livvic-Bold text-[16px] transition-colors"
-                action={() => navigate(`/find-nanny-share`)}
+                action={() => navigate(isAuthed ? "/dashboard" : "/find-nanny-share")}
                 disabled={isLoading}
               />
             </div>
 
             {/* Social Proof */}
-            <div className="mt-8 flex flex-wrap items-center gap-3 text-[13px] text-[#4a5568] Livvic">
+            <div className="mt-8 flex flex-wrap items-center gap-3 lg:gap-4 text-base lg:text-lg text-[#4a5568] Livvic">
               <div className="flex">
-                <div className="w-9 h-9 rounded-full border-[2px] border-white -ml-2 first:ml-0 flex items-center justify-center text-[11px] font-livvic-bold text-ink shadow-sm bg-[#FF789F] z-[4]">S</div>
-                <div className="w-9 h-9 rounded-full border-[2px] border-white -ml-2 first:ml-0 flex items-center justify-center text-[11px] font-livvic-bold text-ink shadow-sm bg-[#87C0FF] z-[3]">J</div>
-                <div className="w-9 h-9 rounded-full border-[2px] border-white -ml-2 first:ml-0 flex items-center justify-center text-[11px] font-livvic-bold text-ink shadow-sm bg-[#00D261] z-[2]">M</div>
-                <div className="w-9 h-9 rounded-full border-[2px] border-white -ml-2 first:ml-0 flex items-center justify-center text-[11px] font-livvic-bold text-ink shadow-sm bg-[#FFB300] z-[1]">R</div>
+                <div className="w-10 h-10 lg:w-11 lg:h-11 rounded-full border-[2px] border-white -ml-2 first:ml-0 flex items-center justify-center text-sm font-livvic-bold text-ink shadow-sm bg-[#FF789F] z-[4]">S</div>
+                <div className="w-10 h-10 lg:w-11 lg:h-11 rounded-full border-[2px] border-white -ml-2 first:ml-0 flex items-center justify-center text-sm font-livvic-bold text-ink shadow-sm bg-[#87C0FF] z-[3]">J</div>
+                <div className="w-10 h-10 lg:w-11 lg:h-11 rounded-full border-[2px] border-white -ml-2 first:ml-0 flex items-center justify-center text-sm font-livvic-bold text-ink shadow-sm bg-[#00D261] z-[2]">M</div>
+                <div className="w-10 h-10 lg:w-11 lg:h-11 rounded-full border-[2px] border-white -ml-2 first:ml-0 flex items-center justify-center text-sm font-livvic-bold text-ink shadow-sm bg-[#FFB300] z-[1]">R</div>
               </div>
               <div>
                 Joined by <span className="font-livvic-bold text-ink">500+ families</span> across the Bay Area

@@ -15,7 +15,7 @@ import {
 } from "@features/subscription/store/cardSlice";
 import { fireToastMessage } from "@shared/ui/toast";
 import { CreditCardIcon } from "lucide-react";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import { PLAN } from "@features/subscription/subscriptionPlan";
 
 const BillingMethod = () => {
@@ -186,16 +186,15 @@ const BillingMethod = () => {
                 placeholder="Zip code"
                 value={zip}
                 onChange={(e) => setZip(e.target.value)}
-                className=" p-4 border border-[#EEEEEE] rounded-[10px]"
+                className="fl-field w-full"
               />
-              <div className="relative w-full">
-                <div className="pointer-events-none absolute left-3 top-1 text-xs text-gray-500 z-10 bg-white px-1">
-                  Country/Region
-                </div>
+              <div className="w-full">
+                <label htmlFor="billing-country" className="fl-label">Country/Region</label>
                 <select
+                  id="billing-country"
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
-                  className="w-full p-3 pt-6 border border-[#EEEEEE] rounded-[10px] appearance-none text-primary Livvic-SemiBold"
+                  className="fl-field w-full"
                 >
                   <option value="usa">United States of America</option>
                   <option value="canada">Australia</option>
@@ -251,7 +250,7 @@ const BillingMethod = () => {
         <div className="flex gap-2 justify-end">
           {/* Cancel Button */}
           {isActive && !isCanceling && (
-            <Button
+            <CustomButton
               action={() => cancelSubscription()}
               disabled={isLoading}
               btnText={isLoading ? "Cancelling..." : "Cancel Subscription"}
@@ -260,7 +259,7 @@ const BillingMethod = () => {
           )}
           {/* Submit Button */}
           {!isActive && !isCanceling && (
-            <Button
+            <CustomButton
               action={billingMethod === "card" ? handleSubmit : undefined}
               disabled={isLoading}
               btnText={

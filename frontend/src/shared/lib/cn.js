@@ -1,5 +1,5 @@
 import { clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { extendTailwindMerge } from "tailwind-merge";
 
 /**
  * Merge class names, with later Tailwind utilities beating earlier ones.
@@ -13,6 +13,27 @@ import { twMerge } from "tailwind-merge";
  * twMerge drops the loser, so a `className` prop can always override a
  * component's own padding or colour.
  */
+/* Livvic is four font FAMILIES, not weights (see App.css), so its classes are
+ * invisible to twMerge's font-weight group. Teaching it they are one group is
+ * what lets a component's `className="Livvic-Medium"` replace its default
+ * `Livvic-SemiBold` rather than leaving both and letting App.css order pick. */
+const twMerge = extendTailwindMerge({
+  extend: {
+    classGroups: {
+      "livvic-face": [
+        "Livvic",
+        "Livvic-Medium",
+        "Livvic-SemiBold",
+        "Livvic-Bold",
+        "font-livvic",
+        "font-livvic-medium",
+        "font-livvic-semibold",
+        "font-livvic-bold",
+      ],
+    },
+  },
+});
+
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }

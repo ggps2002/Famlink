@@ -4,6 +4,7 @@ import nannyResources2 from "@/assets/images/nannyResources2.webp";
 import nannyResources3 from "@/assets/images/nannyResources3.webp";
 import { ARTICLES_META } from "@shared/seo/articlesMeta";
 
+import CustomButton from "@shared/ui/Button";
 // slug/title/excerpt (+ SEO fields) live in articlesMeta.js so the build-time
 // prerender script can read them without evaluating JSX. Merge them back here.
 const meta = Object.fromEntries(ARTICLES_META.map((m) => [m.slug, m]));
@@ -172,9 +173,9 @@ export const articlesData = [
         <div className="bg-[#FFF3EA] p-5 sm:p-6 rounded-xl border border-[#FFE4CC]">
           <h4 className="text-[#C4621A] Livvic-Bold text-lg mb-2">Curious how much you could save?</h4>
           <p className="text-[#C4621A] mb-3">Before comparing childcare options, estimate what a nanny share could cost in your area using the FamLink Nanny Share Savings Calculator.</p>
-          <button className="bg-[#C4621A] text-white px-5 py-2 rounded-lg Livvic-Medium hover:bg-[#a65215] transition-colors border-none cursor-pointer">
+          <CustomButton className="bg-[#C4621A] text-white px-5 py-2 rounded-lg Livvic-Medium hover:bg-[#a65215] transition-colors border-none cursor-pointer">
             Calculate My Savings
-          </button>
+          </CustomButton>
         </div>
 
         <div>

@@ -10,6 +10,7 @@ import { useFavourite } from "@features/dashboard/useFavourite";
 import Ra from "@shared/ui/Rate";
 import Loader from "@shared/ui/Loader";
 
+import CustomButton from "@shared/ui/Button";
 // First name + last initial, matching the browse cards. A favourite is not
 // necessarily a match, so the same pre-match privacy treatment applies here.
 const formatName = (name) => {
@@ -184,9 +185,9 @@ export default function Favorites() {
             you here.
           </p>
           <NavLink to="/dashboard">
-            <button className="bg-[#AEC4FF] hover:bg-[#9db4f7] text-[#0D134C] Livvic-Bold px-5 py-2.5 rounded-xl text-sm transition-colors">
+            <CustomButton className="bg-[#AEC4FF] hover:bg-[#9db4f7] text-[#0D134C] Livvic-Bold px-5 py-2.5 rounded-xl text-sm transition-colors">
               Find a Match →
-            </button>
+            </CustomButton>
           </NavLink>
         </div>
       )}

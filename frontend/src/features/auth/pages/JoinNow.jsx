@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { resetForm } from "@shared/store/formValueSlice";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import SEOMetaData from "@shared/seo/SEOMetaData";
 import { User, Users } from "lucide-react";
 
@@ -189,12 +189,12 @@ export default function JoinNow() {
         </div>
       </div>
       <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-8 sm:mt-24 justify-center">
-        <Button
+        <CustomButton
           btnText={"Back"}
           className=" w-full sm:w-auto border-2 border-[#EEEEEE] px-20"
           action={handleGoBack}
         />
-        <Button
+        <CustomButton
           btnText={"Continue"}
           className="bg-[#AEC4FF] w-full sm:w-auto px-16"
           action={handleCreateAccount}

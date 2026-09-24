@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Form, Spin, Input } from "antd";
-import Autocomplete from "react-google-autocomplete";
+import AutocompleteModule from "react-google-autocomplete";
+
+// The package is CommonJS: depending on the bundler's interop the default
+// import is the component or `{ default: component }`. Rendering the object is
+// React error #130, which is what crashed this page.
+const Autocomplete = AutocompleteModule.default ?? AutocompleteModule;
 import OnboardingOptionSelector from "@features/onboarding/components/OnboardingOptionSelector";
 import { NavLink } from "react-router-dom";
 import { Users } from "lucide-react";
 import { zipFromPlace } from "@shared/lib/serviceArea";
 import { fireToastMessage } from "@shared/ui/toast";
 
+import { CARE_EXPERIENCE, TRAVEL_DISTANCE } from "@shared/lib/profileOptions";
 const step1Data = {
-    experience: ["1-0 year", "1-3 years", "3-5 years", "5+ years"],
+    experience: CARE_EXPERIENCE,
     // A share is one or the other — see SHARE_SCHEDULES in shared/lib/scheduleFormat.js.
     schedule: ["Full-time", "Part-time"],
-    distance: ["1-3 miles", "3-5 miles", "5-10 miles", "Flexible"],
+    distance: TRAVEL_DISTANCE,
 };
 
 function Screen1({ formRef }) {
@@ -142,12 +148,7 @@ function Screen1({ formRef }) {
                                     <Autocomplete
                                         id="location-input-job"
                                         apiKey={import.meta.env.VITE_GOOGLE_KEY}
-                                        style={{
-                                            width: "55%",
-                                            borderRadius: "10px",
-                                            padding: "0.75rem",
-                                            border: "1px solid #D6DDEB",
-                                        }}
+                                        className="fl-field w-full md:w-[55%]"
                                         value={location}
                                         onPlaceSelected={async (place) => {
                                             if (!place || !place.geometry) return;

@@ -3,7 +3,6 @@ import {
   Form,
   Modal,
   Input,
-  Button,
   Checkbox,
   Radio,
   Select,
@@ -13,8 +12,6 @@ import {
   BTN_PRIMARY,
   BTN_SECONDARY,
   BTN_DANGER,
-  BTN_PRIMARY_ANTD,
-  BTN_SECONDARY_ANTD,
 } from "@shared/ui/buttonStyles";
 import { InputOTP } from "antd-input-otp";
 import { RightOutlined } from "@ant-design/icons";
@@ -48,6 +45,7 @@ import {
 import useSocket from "@shared/realtime/useSocket";
 import { number } from "prop-types";
 import PhoneVerification from "@features/auth/components/PhoneVerification";
+import CustomButton from "@shared/ui/Button";
 const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
   const dispatch = useDispatch();
   const cardElementOptions = {
@@ -559,6 +557,7 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
             <p className="Livvic-SemiBold text-primary text-lg">Change Email</p>
             <div className="mt-6 space-y-4">
               <div className="relative">
+                <label htmlFor="currentEmail" className="fl-label">Current Email</label>
                 <Form.Item
                   style={{ margin: 0, padding: 0 }}
                   name="currentEmail"
@@ -569,16 +568,10 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
                     type="email"
                     readOnly
                     defaultValue={user?.email}
-                    className="peer border border-[#EEEEEE] rounded-[10px] px-4 pt-7 pb-2 w-full placeholder-transparent"
+                    className="w-full"
                     placeholder="Your Email"
                   />
                 </Form.Item>
-                <label
-                  htmlFor="currentEmail"
-                  className="absolute left-4 top-2 text-sm text-gray-500 bg-white px-1 z-10"
-                >
-                  Current Email
-                </label>
               </div>
 
               <div>
@@ -590,22 +583,21 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
                   <Input
                     type="email"
                     placeholder="Confirm Email"
-                    className="peer border border-[#EEEEEE] rounded-[10px] px-4 py-4  placeholder-transparent focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </Form.Item>
               </div>
             </div>
             <Form.Item className="m-0 p-0 self-end mt-6">
-              <Button className={`ml-4 ${BTN_SECONDARY_ANTD}`}>
+              <CustomButton className={`ml-4 ${BTN_SECONDARY}`}>
                 Discard Changes
-              </Button>
-              <Button
-                loading={loading}
+              </CustomButton>
+              <CustomButton
+                isLoading={loading} loadingBtnText="Save Changes"
                 htmlType="submit"
-                className={`ml-4 ${BTN_PRIMARY_ANTD}`}
+                className={`ml-4 ${BTN_PRIMARY}`}
               >
                 Save Changes
-              </Button>
+              </CustomButton>
             </Form.Item>
           </div>
         );
@@ -625,7 +617,6 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
               ]}
             >
               <Input.Password
-                className="peer border border-[#EEEEEE] rounded-[10px] px-4 py-4  placeholder-transparent focus:outline-none "
                 placeholder="Current password"
               />
             </Form.Item>
@@ -639,7 +630,6 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
               ]}
             >
               <Input.Password
-                className="peer border border-[#EEEEEE] rounded-[10px] px-4 py-4  placeholder-transparent focus:outline-none"
                 placeholder="New password"
               />
             </Form.Item>
@@ -663,21 +653,20 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
               ]}
             >
               <Input.Password
-                className="peer border border-[#EEEEEE] rounded-[10px] px-4 py-4  placeholder-transparent focus:outline-none"
                 placeholder="Confirm password"
               />
             </Form.Item>
             <Form.Item className="m-0 p-0 self-end mt-6">
-              <Button className={`ml-4 ${BTN_SECONDARY_ANTD}`}>
+              <CustomButton className={`ml-4 ${BTN_SECONDARY}`}>
                 Discard Changes
-              </Button>
-              <Button
-                loading={loading}
+              </CustomButton>
+              <CustomButton
+                isLoading={loading} loadingBtnText="Save Changes"
                 htmlType="submit"
-                className={`ml-4 ${BTN_PRIMARY_ANTD}`}
+                className={`ml-4 ${BTN_PRIMARY}`}
               >
                 Save Changes
-              </Button>
+              </CustomButton>
             </Form.Item>
           </div>
         );
@@ -698,12 +687,12 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
                       alt="Front National ID"
                       className="mx-auto mb-4 rounded-lg w-full max-w-xs h-36 object-fit"
                     />
-                    <button
+                    <CustomButton
                       onClick={() => handleRemoveImage("front")}
-                      className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-white transition"
+                      className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-white transition Livvic"
                     >
                       Remove
-                    </button>
+                    </CustomButton>
                   </div>
                 ) : (
                   <div
@@ -712,7 +701,7 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
                   >
                     <p className="mb-2 Livvic-Bold text-sm">Upload Front Side</p>
                     <input {...getFrontInputProps()} />
-                    <button
+                    <CustomButton
                       type="button"
                       className="flex items-center gap-2 bg-[#FCFCFC] px-4 py-2 border rounded-md Livvic-Bold"
                       style={{
@@ -725,7 +714,7 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
                         className="mx-auto object-fit-contain"
                       />
                       Click or drop image
-                    </button>
+                    </CustomButton>
                   </div>
                 )}
               </div>
@@ -742,12 +731,12 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
                       alt="Back National ID"
                       className="mx-auto mb-4 rounded-lg w-full h-36"
                     />
-                    <button
+                    <CustomButton
                       onClick={() => handleRemoveImage("back")}
-                      className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-white transition"
+                      className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-white transition Livvic"
                     >
                       Remove
-                    </button>
+                    </CustomButton>
                   </div>
                 ) : (
                   <div
@@ -756,7 +745,7 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
                   >
                     <p className="mb-2 Livvic-Bold text-sm">Upload Back Side</p>
                     <input {...getBackInputProps()} />
-                    <button
+                    <CustomButton
                       type="button"
                       className="flex items-center gap-2 bg-[#FCFCFC] px-4 py-2 border rounded-md Livvic-Bold"
                       style={{
@@ -769,19 +758,19 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
                         className="mx-auto object-fit-contain"
                       />
                       Click or drop image
-                    </button>
+                    </CustomButton>
                   </div>
                 )}
               </div>
             </div>
             <Form.Item>
               <div className="flex gap-2 justify-end mt-6">
-                <button type="button" onClick={handleCancel} className={BTN_SECONDARY}>
+                <CustomButton type="button" onClick={handleCancel} className={BTN_SECONDARY}>
                   Cancel
-                </button>
-                <button type="submit" disabled={loading} className={BTN_PRIMARY}>
+                </CustomButton>
+                <CustomButton type="submit" disabled={loading} className={BTN_PRIMARY}>
                   {loading ? "Processing..." : "Verify"}
-                </button>
+                </CustomButton>
               </div>
             </Form.Item>
           </>
@@ -807,21 +796,21 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
                 type="text"
                 value={deleteText}
                 onChange={(e) => setDeleteText(e.target.value)}
-                className="w-full rounded-[10px] border border-[#EEEEEE] text-primary focus:outline-none focus:ring-2 focus:ring-[#FF8484] focus:border-[#FF8484]"
+                className="fl-field w-full"
                 placeholder="Type DELETE"
               />
               <div className="flex gap-2">
-                <button type="button" onClick={handleCancel} className={BTN_SECONDARY}>
+                <CustomButton type="button" onClick={handleCancel} className={BTN_SECONDARY}>
                   Cancel
-                </button>
-                <button
+                </CustomButton>
+                <CustomButton
                   type="submit"
                   disabled={isDeleting}
                   onClick={() => deleteAccount()}
                   className={BTN_DANGER}
                 >
                   {isDeleting ? "Deleting..." : "Confirm Delete"}
-                </button>
+                </CustomButton>
               </div>
             </div>
           </div>
@@ -883,14 +872,13 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
 
                       <div className="flex justify-center items-center">
                         {isResendEnabled ? (
-                          <Button
-                            loading={loading}
+                          <CustomButton
+                            isLoading={loading} loadingBtnText="Resend OTP"
                             onClick={handleResend}
-                            type="primary"
-                            className="bg-[#AEC4FF] px-6 rounded-3xl text-white "
+                            className="bg-[#AEC4FF] px-6 rounded-3xl text-white h-8 py-0 text-sm Livvic"
                           >
                             Resend OTP
-                          </Button>
+                          </CustomButton>
                         ) : (
                           <p className="text-gray-600 text-center">
                             Resend OTP in {formatTime(timeLeft)}
@@ -901,14 +889,14 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
                   )}
 
                   <Form.Item className="m-0 p-0 mb-8">
-                    <Button
+                    <CustomButton
                       htmlType={step === 1 ? "submit" : undefined}
-                      loading={loading}
-                      className={`w-52 text-base ${BTN_PRIMARY_ANTD}`}
+                      isLoading={loading} loadingBtnText={step === 1 ? "Verified" : "Request for OTP"}
+                      className={`w-52 text-base ${BTN_PRIMARY}`}
                       onClick={step === 0 ? billingMethod : undefined}
                     >
                       {step === 1 ? "Verified" : "Request for OTP"}
-                    </Button>
+                    </CustomButton>
                   </Form.Item>
                 </>
               )}
@@ -1158,13 +1146,13 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
 
                   <div className="flex justify-center items-center mt-2">
                     {isResendEnabled ? (
-                      <Button
-                        loading={loading}
+                      <CustomButton
+                        isLoading={loading} loadingBtnText="Resend OTP"
                         onClick={handleResend}
-                        type="primary"
-                      >
+                      
+                        className="bg-[#AEC4FF] px-6 rounded-3xl text-white h-8 py-0 text-sm Livvic">
                         Resend OTP
-                      </Button>
+                      </CustomButton>
                     ) : (
                       <p className="text-gray-600">
                         Resend OTP in {formatTime(timeLeft)}
@@ -1189,12 +1177,12 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
                       alt="Front National ID"
                       className="mx-auto mb-4 rounded-lg w-full max-w-xs h-36 object-fit"
                     />
-                    <button
+                    <CustomButton
                       onClick={() => handleRemoveImage("front")}
-                      className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-white transition"
+                      className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-white transition Livvic"
                     >
                       Remove
-                    </button>
+                    </CustomButton>
                   </div>
                 ) : (
                   <div
@@ -1203,7 +1191,7 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
                   >
                     <p className="mb-2 Livvic-Bold text-sm">Upload Front Side</p>
                     <input {...getFrontInputProps()} />
-                    <button
+                    <CustomButton
                       type="button"
                       className="flex items-center gap-2 bg-[#FCFCFC] px-4 py-2 border rounded-md Livvic-Bold"
                       style={{
@@ -1216,7 +1204,7 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
                         className="mx-auto object-fit-contain"
                       />
                       Click or drop image
-                    </button>
+                    </CustomButton>
                   </div>
                 )}
               </div> */}
@@ -1233,12 +1221,12 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
                       alt="Back National ID"
                       className="mx-auto mb-4 rounded-lg w-full h-36"
                     />
-                    <button
+                    <CustomButton
                       onClick={() => handleRemoveImage("back")}
-                      className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-white transition"
+                      className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-white transition Livvic"
                     >
                       Remove
-                    </button>
+                    </CustomButton>
                   </div>
                 ) : (
                   <div
@@ -1247,7 +1235,7 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
                   >
                     <p className="mb-2 Livvic-Bold text-sm">Upload Back Side</p>
                     <input {...getBackInputProps()} />
-                    <button
+                    <CustomButton
                       type="button"
                       className="flex items-center gap-2 bg-[#FCFCFC] px-4 py-2 border rounded-md Livvic-Bold"
                       style={{
@@ -1260,7 +1248,7 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
                         className="mx-auto object-fit-contain"
                       />
                       Click or drop image
-                    </button>
+                    </CustomButton>
                   </div>
                 )}
               </div>
@@ -1271,6 +1259,7 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
               {head == "Email" && (
                 <div>
                   <div className="relative w-72">
+                    <label htmlFor="currentEmail" className="fl-label">Current Email</label>
                     <Form.Item
                       style={{ margin: 0, padding: 0 }}
                       name="currentEmail"
@@ -1285,19 +1274,14 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
                       <Input
                         type="email"
                         defaultValue={user?.email}
-                        className="peer border border-[#EEEEEE] rounded-[10px] px-4 pt-7 pb-2 w-full placeholder-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+                        className="w-full"
                         placeholder="Your Email"
                       />
                     </Form.Item>
-                    <label
-                      htmlFor="currentEmail"
-                      className="absolute left-4 top-2 text-sm text-gray-500 bg-white px-1 z-10"
-                    >
-                      Current Email
-                    </label>
                   </div>
 
                   <div className="relative w-72">
+                    <label htmlFor="confirmEmail" className="fl-label">Confirm Email</label>
                     <Form.Item
                       style={{ margin: 0, padding: 0 }}
                       name="newEmail"
@@ -1310,16 +1294,10 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
                     >
                       <Input
                         type="email"
-                        className="peer border border-[#EEEEEE] rounded-[10px] px-4 pt-7 pb-2 w-full placeholder-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+                        className="w-full"
                         placeholder={"thelumleyfamily123@gmail.com"}
                       />
                     </Form.Item>
-                    <label
-                      htmlFor="confirmEmail"
-                      className="absolute left-4 top-2 text-sm text-gray-500 bg-white px-1 z-10"
-                    >
-                      Confirm Email
-                    </label>
                   </div>
                 </div>
               )}
@@ -1465,92 +1443,87 @@ const App = ({ head, enable, withDraw, payNow, emailVer = false }) => {
               <div className="flex justify-center mt-6 mb-2">
                 <Form.Item className="m-0 p-0">
                   {head != "Payments" && head != "Email Verification" && (
-                    <Button
+                    <CustomButton
                       style={{ color: "#AEC4FF", border: "1px solid #AEC4FF" }}
-                      className="bg-[#FFFFFF] rounded-3xl"
+                      className="bg-[#FFFFFF] rounded-3xl px-[15px] h-8 py-0 text-sm Livvic"
                       onClick={handleCancel}
                     >
                       Cancel
-                    </Button>
+                    </CustomButton>
                   )}
                   {head == "Payments" && step != 0 && (
-                    <Button
+                    <CustomButton
                       style={{ color: "#AEC4FF", border: "1px solid #AEC4FF" }}
-                      className="bg-[#FFFFFF] rounded-3xl"
+                      className="bg-[#FFFFFF] rounded-3xl px-[15px] h-8 py-0 text-sm Livvic"
                       onClick={handleCancel}
                     >
                       Cancel
-                    </Button>
+                    </CustomButton>
                   )}
 
                   {(head == "Email" ||
                     head == "Password" ||
                     head == "Phone Number" ||
                     head == "Email Notification") && (
-                    <Button
-                      type="primary"
+                    <CustomButton
                       htmlType="submit"
-                      loading={loading}
-                      className="bg-[#AEC4FF] ml-2 px-6 rounded-3xl text-white"
+                      isLoading={loading} loadingBtnText="Update"
+                      className="bg-[#AEC4FF] ml-2 px-6 rounded-3xl text-white h-8 py-0 text-sm Livvic"
                     >
                       Update
-                    </Button>
+                    </CustomButton>
                   )}
                   {head == "Delete Account" && (
-                    <Button
+                    <CustomButton
                       onClick={deleteAccount}
-                      className="bg-[#FF3333] ml-2 px-6 rounded-3xl text-white"
+                      className="bg-[#FF3333] ml-2 px-6 rounded-3xl text-white h-8 py-0 text-sm Livvic"
                     >
                       Delete
-                    </Button>
+                    </CustomButton>
                   )}
                   {head == "SMS" && enable ? (
-                    <Button
+                    <CustomButton
                       onClick={deleteAccount}
-                      className="bg-[#FF3333] ml-2 px-6 rounded-3xl text-white"
+                      className="bg-[#FF3333] ml-2 px-6 rounded-3xl text-white h-8 py-0 text-sm Livvic"
                     >
                       Disable
-                    </Button>
+                    </CustomButton>
                   ) : (
                     head == "SMS" && (
-                      <Button
-                        type="primary"
-                        className="bg-[#AEC4FF] ml-2 px-6 rounded-3xl text-white"
+                      <CustomButton
+                        className="bg-[#AEC4FF] ml-2 px-6 rounded-3xl text-white h-8 py-0 text-sm Livvic"
                       >
                         Enable
-                      </Button>
+                      </CustomButton>
                     )
                   )}
                   {head == "Payments" && (
-                    <Button
-                      type="primary"
+                    <CustomButton
                       htmlType={step == 2 && "submit"}
-                      className="bg-[#AEC4FF] ml-2 px-6 rounded-3xl text-white"
+                      className="bg-[#AEC4FF] ml-2 px-6 rounded-3xl text-white h-8 py-0 text-sm Livvic"
                       onClick={billingMethod}
                     >
                       {step == 2 ? "Save" : "Add Billing Method"}
-                    </Button>
+                    </CustomButton>
                   )}
                   {head === "Email Verification" && (
-                    <Button
-                      type="primary"
+                    <CustomButton
                       htmlType={step === 1 ? "submit" : undefined}
-                      loading={loading}
-                      className="bg-[#AEC4FF] ml-2 px-6 rounded-3xl text-white"
+                      isLoading={loading} loadingBtnText={step === 1 ? "Verified" : "Request for OTP"}
+                      className="bg-[#AEC4FF] ml-2 px-6 rounded-3xl text-white h-8 py-0 text-sm Livvic"
                       onClick={step === 0 ? billingMethod : undefined} // Ensures onClick is only set when step is 0
                     >
                       {step === 1 ? "Verified" : "Request for OTP"}
-                    </Button>
+                    </CustomButton>
                   )}
                   {head == "National ID" && (
-                    <Button
-                      type="primary"
+                    <CustomButton
                       htmlType="submit"
-                      loading={loading}
-                      className="bg-[#AEC4FF] ml-2 px-6 rounded-3xl text-white"
+                      isLoading={loading} loadingBtnText="Verified"
+                      className="bg-[#AEC4FF] ml-2 px-6 rounded-3xl text-white h-8 py-0 text-sm Livvic"
                     >
                       Verified
-                    </Button>
+                    </CustomButton>
                   )}
                 </Form.Item>
               </div>

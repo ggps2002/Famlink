@@ -2,24 +2,10 @@ import React, { useEffect } from "react";
 import Form from "antd/es/form/Form";
 import OnboardingOptionSelector from "@features/onboarding/components/OnboardingOptionSelector";
 
+import { CHILD_HELP, NOT_APPLICABLE, HOUSEHOLD_TASKS } from "@shared/lib/profileOptions";
 const step4Data = {
-  first: [
-    "Transportation",
-    "Educational activities",
-    "Outdoor play",
-    "Storytime / reading",
-    "Meal/snack prep for kids",
-    "Homework help",
-    "Nap/bedtime support",
-    "Not Applicable",
-  ],
-  second: [
-    "Light housekeeping",
-    "Grocery shopping",
-    "Errands",
-    "Meal preparation for family",
-    "Not Applicable",
-  ],
+  first: [...CHILD_HELP, NOT_APPLICABLE],
+  second: [...HOUSEHOLD_TASKS, NOT_APPLICABLE],
 };
 
 function Step4({ formRef, options, householdAddOns=true, initialValues }) {

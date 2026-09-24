@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import { SectionHeading, Card } from "@shared/ui/Section";
 
 // Entries with a slug link to their landing page (real internal links so the
@@ -101,7 +101,7 @@ const ServiceAreaOakland = () => (
         to="/find-nanny-share"
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       >
-        <Button
+        <CustomButton
           btnText="Create Your Profile"
           className="text-ink bg-accent hover:bg-accent-strong w-full sm:w-auto transition-colors"
         />

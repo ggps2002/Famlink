@@ -13,6 +13,7 @@ import SEOMetaData from "@shared/seo/SEOMetaData";
 import { nannyshareProfileThunk } from "@features/nanny-share/store/nannyShareSlice";
 
 
+import { fetchOnboardingRecord } from "@features/onboarding/onboardingRecord";
 export default function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -68,14 +69,17 @@ export default function Login() {
     const init = async () => {
       if (!recordId) return;
 
-      const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
+      // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+      // const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
 
       try {
         setSheetLoading(true);
 
         // 1. Fetch sheet data
-        const res = await fetch(`${scriptUrl}?recordId=${encodeURIComponent(recordId)}`);
-        const result = await res.json();
+        // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+        // const res = await fetch(`${scriptUrl}?recordId=${encodeURIComponent(recordId)}`);
+        // const result = await res.json();
+        const result = await fetchOnboardingRecord(recordId);
 
         if (result.status !== "success" || !result.record) {
           throw new Error(result.message || "Failed to fetch record");

@@ -1,16 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Form, Spin } from "antd";
-import Autocomplete from "react-google-autocomplete";
+import AutocompleteModule from "react-google-autocomplete";
+
+// The package is CommonJS: depending on the bundler's interop the default
+// import is the component or `{ default: component }`. Rendering the object is
+// React error #130, which is what crashed this page.
+const Autocomplete = AutocompleteModule.default ?? AutocompleteModule;
 import OnboardingOptionSelector from "@features/onboarding/components/OnboardingOptionSelector";
 import { NavLink } from "react-router-dom";
 import { Users } from "lucide-react";
 import { zipFromPlace } from "@shared/lib/serviceArea";
 import { fireToastMessage } from "@shared/ui/toast";
 
+import { AGE_GROUPS } from "@shared/lib/profileOptions";
 const step1Data = {
   forWho: ["A family I currently work with", "Myself (bringing my own child)"],
   numChildren: ["1", "2", "3+"],
-  ages: ["Infant", "Toddler", "Preschool", "School-age"],
+  ages: AGE_GROUPS,
   // A share is one or the other — see SHARE_SCHEDULES in shared/lib/scheduleFormat.js.
   schedule: ["Full-time", "Part-time"],
   joinTiming: ["Same schedule", "Partially overlapping", "Filling gaps", "Flexible"],
@@ -150,7 +156,7 @@ function Screen1({ formRef }) {
                 <Autocomplete
                   id="location-input-family"
                   apiKey={import.meta.env.VITE_GOOGLE_KEY}
-                  className="w-full sm:w-3/4 md:w-3/5 rounded-xl px-4 py-3 border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#AEC4FF] focus:border-transparent transition-all placeholder:text-gray-400"
+                  className="fl-field w-full sm:w-3/4 md:w-3/5"
                   value={location}
                   onPlaceSelected={async (place) => {
                     if (!place || !place.geometry) return;

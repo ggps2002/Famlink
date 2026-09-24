@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Header from "@app/layout/Header";
 import { Spin, Input } from "antd";
 import { fireToastMessage } from "@shared/ui/toast";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import { useNavigate } from "react-router-dom";
 
 function HeroOakland({ city }) {
@@ -117,7 +117,7 @@ function HeroOakland({ city }) {
                             {/* "Learn more", not a waitlist ask — San Francisco
                                 is the one page that still pitches the waitlist
                                 (./Hero.jsx). Destination is still sign-up. */}
-                            <Button
+                            <CustomButton
                                 btnText={isLoading ? <Spin size="small" /> : "Learn more"}
                                 className="bg-[#AEC4FF] hover:bg-[#92b0ff] text-[#001243] Livvic-Bold w-full sm:w-auto px-8 py-3.5 text-[15px] flex items-center justify-center rounded-full transition-colors"
                                 action={() => navigate(`/joinNow`)}
@@ -126,7 +126,7 @@ function HeroOakland({ city }) {
                         </div>
                         {/* Was a second "Learn More" — now that the primary
                             carries that label, this one points at the map. */}
-                        <Button
+                        <CustomButton
                             btnText="See who's nearby"
                             className="bg-white hover:bg-gray-50 border border-gray-200 text-[#001243] Livvic-Bold w-full sm:w-auto px-8 py-3.5 text-[15px] flex items-center justify-center rounded-full transition-colors"
                             action={() =>

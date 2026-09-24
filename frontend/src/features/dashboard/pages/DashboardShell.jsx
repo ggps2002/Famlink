@@ -148,12 +148,12 @@ export default function Nanny() {
               </button>
 
               {/* Refer CTA — vertically level with the status text. */}
-              <button
+              <CustomButton
                 onClick={() => setShowReferModal(true)}
                 className="w-full sm:w-auto bg-[#D6FB9A] text-[#075B49] Livvic-SemiBold text-sm rounded-full px-5 py-2.5 whitespace-nowrap transition-colors hover:brightness-95"
               >
                 {hasActiveMatching ? "Refer again" : "Refer a friend"}
-              </button>
+              </CustomButton>
             </div>
           )}
 

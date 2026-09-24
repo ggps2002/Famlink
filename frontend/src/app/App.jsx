@@ -5,6 +5,7 @@ import {
   RouterProvider,
   Navigate,
   useLocation,
+  matchPath,
 } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useEffect, useState, lazy } from "react";
@@ -65,6 +66,7 @@ const ResourceDownloadPage = lazy(() => import("@features/resources/ResourceDown
 const ShareManagement = lazy(() => import("@features/share-link/pages/ShareManagement"));
 const SharedProfilePage = lazy(() => import("@features/share-link/SharedProfilePage"));
 const WaitlistForm = lazy(() => import("@features/waitlist/pages/WaitlistForm"));
+const NotFound = lazy(() => import("@features/marketing/pages/NotFound"));
 
 const OnboardingCompleteProfile = () => {
   const { user } = useSelector((s) => s.auth);
@@ -82,20 +84,27 @@ const OnboardingCompleteProfile = () => {
   return <JobScreen4 recordId={recordId} />;
 };
 
-// Catch-all landing for any path the router doesn't match. A logged-in member
-// goes to their dashboard; a logged-out visitor goes home — EXCEPT when they
-// were trying to reach a /dashboard/* page (e.g. a "View Request" button in an
-// email opened without a session). Those get bounced to login with the intended
-// path preserved as ?redirect=, so signing in drops them exactly where the email
-// meant to send them instead of stranding them on the home page.
-function AuthFallback({ isAuthed }) {
+// Catch-all for any path the router doesn't match. Most of these are simply
+// wrong — a typo, an old link, a removed profile — and get the 404 page. Two
+// kinds are real pages the visitor just can't open in their current state, and
+// those keep redirecting:
+//
+//  • A logged-out visitor on a /dashboard/* page (e.g. a "View Request" button
+//    in an email opened without a session) goes to login with the intended path
+//    in ?redirect=, so signing in drops them exactly where the email meant.
+//  • A signed-in member on a logged-out-only page (/login, /joinNow, the signup
+//    questionnaires) goes to their dashboard — they're past that step.
+function AuthFallback({ isAuthed, hasSession, loggedOutPaths = [] }) {
   const { pathname, search } = useLocation();
-  if (isAuthed) return <Navigate to="/dashboard" replace />;
-  if (pathname.startsWith("/dashboard")) {
+  if (!hasSession && pathname.startsWith("/dashboard")) {
     const target = encodeURIComponent(pathname + search);
     return <Navigate to={`/login?redirect=${target}`} replace />;
   }
-  return <Navigate to="/" replace />;
+  const isLoggedOutOnly = loggedOutPaths.some((path) => matchPath(path, pathname));
+  if (hasSession && isLoggedOutOnly) {
+    return <Navigate to={isAuthed ? "/dashboard" : "/"} replace />;
+  }
+  return <NotFound />;
 }
 
 function App() {
@@ -112,6 +121,26 @@ function App() {
   if (loading) {
     return <div>Loading...</div>; // Show loading spinner or fallback while user loads
   }
+
+  // Pages only a logged-out visitor can open. Their paths are also what the
+  // "*" fallback checks to send a signed-in member to the dashboard instead of
+  // the 404 page, so both read from this one list.
+  const loggedOutRoutes = [
+    { path: "/login", element: <Login /> },
+    { path: "/forgetPass", element: <ForgetPass /> },
+    { path: "/reset-password", element: <ResetPassword /> },
+    { path: "/nanny-share/profile/:id", element: <ViewProfileDetails /> },
+    { path: "/events", element: <Events /> },
+    { path: "/families", element: <NewHome /> },
+    { path: "/joinNow", element: <JoinNow /> },
+    { path: "/caregiver/nannyshare", element: <ChooseNannyShare /> },
+    { path: "/find-nanny-share/family/:id", element: <FamilyOnboarding /> },
+    { path: "/caregiver/nanny-share/looking-for-nanny-share-job/:id", element: <JobQuestionnaire /> },
+    { path: "/caregiver/nanny-share/looking-for-another-family/:id", element: <ShareQuestionnaire /> },
+    { path: "/find-nanny-share/nanny-share-questionnaire/:id", element: <PostANannyShare login={false} /> },
+    { path: "/find-nanny-share/nanny-share-questionnaire/fulltime-care/:id", element: <FullTime login={false} /> },
+    { path: "/find-nanny-share/nanny-share-questionnaire/parttime-care/:id", element: <PartTime login={false} /> },
+  ];
 
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -174,25 +203,11 @@ function App() {
         <Route path="/" element={<NannyShare />} />
         <Route path="/jobSeekers" element={<Caregivers />} />
 
-        {/* Common routes */}
-        {!user?.type && (
-          <>
-            <Route path="/login" element={<Login />} />
-            <Route path="/forgetPass" element={<ForgetPass />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/nanny-share/profile/:id" element={<ViewProfileDetails />} />
-            <Route path="/events" element={<Events />} />
-            <Route path="/families" element={<NewHome />} />
-            <Route path="/joinNow" element={<JoinNow />} />
-            <Route path="/caregiver/nannyshare" element={<ChooseNannyShare />} />
-            <Route path="/find-nanny-share/family/:id" element={<FamilyOnboarding />} />
-            <Route path="/caregiver/nanny-share/looking-for-nanny-share-job/:id" element={<JobQuestionnaire />} />
-            <Route path="/caregiver/nanny-share/looking-for-another-family/:id" element={<ShareQuestionnaire />} />
-            <Route path="/find-nanny-share/nanny-share-questionnaire/:id" element={<PostANannyShare login={false} />} />
-            <Route path="/find-nanny-share/nanny-share-questionnaire/fulltime-care/:id" element={<FullTime login={false} />} />
-            <Route path="/find-nanny-share/nanny-share-questionnaire/parttime-care/:id" element={<PartTime login={false} />} />
-          </>
-        )}
+        {/* Logged-out only — see loggedOutRoutes. */}
+        {!user?.type &&
+          loggedOutRoutes.map(({ path, element }) => (
+            <Route key={path} path={path} element={element} />
+          ))}
         {/* The member area. One dashboard for both types — see PageLayout. */}
         {(user?.type === "Parents" || user?.type === "Nanny") && (
           <Route path="/dashboard/*" element={<Nanny />}>
@@ -225,16 +240,18 @@ function App() {
             <Route path="description/:id" element={<JobDescription />} />
             <Route path="jobListing" element={<JobListing />} />
             <Route path="jobListingView/:id" element={<JobListingView />} />
+            <Route path="*" element={<NotFound />} />
           </Route>
         )}
 
-        {/* Fallback: dashboard for members, home for visitors, and
-            login-with-return-URL for logged-out clicks on a /dashboard/* link. */}
+        {/* Fallback: the 404 page, except for the two redirects in AuthFallback. */}
         <Route
           path="*"
           element={
             <AuthFallback
               isAuthed={user?.type === "Parents" || user?.type === "Nanny"}
+              hasSession={Boolean(user?.type)}
+              loggedOutPaths={loggedOutRoutes.map(({ path }) => path)}
             />
           }
         />

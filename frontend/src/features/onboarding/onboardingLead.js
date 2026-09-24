@@ -12,15 +12,15 @@ export const ONBOARDING_SOURCE = {
 // Record someone who has just finished the intake questions but has NOT created
 // an account yet.
 //
-// The answers themselves already go to the Google Sheet, which is fine for
-// reading but is not something the backend can query — so an abandoned signup
-// used to be invisible to us. This is the server-side copy that makes the
-// drop-off addressable: a cron picks it up a few hours later and, if the
-// address still has no account, sends the "you're one step away" email.
+// The answers themselves are saved as an onboarding record (see
+// onboardingRecord.js — they used to go to a Google Sheet). This lead is the
+// separate, email-keyed copy that makes the drop-off addressable: a cron picks
+// it up a few hours later and, if the address still has no account, sends the
+// "you're one step away" email. `sheetId` is the onboarding record's id.
 //
 // Deliberately never throws, and is deliberately not awaited by the forms. It
-// is bookkeeping layered on top of the real work — writing the sheet row and
-// getting the visitor into the questionnaire — so a failure here must not stall
+// is bookkeeping layered on top of the real work — saving the onboarding record
+// and getting the visitor into the questionnaire — so a failure here must not stall
 // or break the flow the person is in the middle of. Logged and swallowed.
 export const captureOnboardingLead = async ({
   email,

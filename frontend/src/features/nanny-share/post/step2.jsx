@@ -6,8 +6,9 @@ import StartEndDatePicker from "@features/nanny-share/post/StartEndDatePicker";
 import dayjs from "dayjs";
 import { DatePicker } from "antd";
 
+import { FLEXIBILITY, URGENCY } from "@shared/lib/profileOptions";
 const step2Data = {
-  first: ["Very flexible", "Somewhat flexible", "Not flexible"],
+  first: FLEXIBILITY,
   second: [
     "My home",
     "Other family’s home",
@@ -15,7 +16,7 @@ const step2Data = {
     "Neutral location (e.g., school pickup spot)",
   ],
   third: ["Within the next month", "In 1–3 months", "In 3+ months / flexible"],
-  fourth: ["Urgent – I need care soon", "Actively looking", "Just exploring"],
+  fourth: URGENCY,
 };
 
 function Step2({

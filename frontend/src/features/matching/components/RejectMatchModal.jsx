@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { fireToastMessage } from "@shared/ui/toast";
 import { rejectIncomingRequestThunk } from "@features/matching/store/matchSlice";
 
+import CustomButton from "@shared/ui/Button";
 const RejectMatchModal = ({ matchId, setIsRejectModal }) => {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
@@ -65,11 +66,11 @@ const RejectMatchModal = ({ matchId, setIsRejectModal }) => {
 
                 {/* Buttons */}
                 <div className="flex flex-col gap-2.5 w-full">
-                    <button
+                    <CustomButton
                         type="button"
                         onClick={() => handleRequestReject()}
                         disabled={loading}
-                        className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-full py-3 text-sm Livvic-Bold text-white"
+                        className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-full py-3 text-sm Livvic-Bold text-white px-0"
                     >
                         {loading ? (
                             <>
@@ -82,15 +83,15 @@ const RejectMatchModal = ({ matchId, setIsRejectModal }) => {
                                 Yes, reject request
                             </>
                         )}
-                    </button>
+                    </CustomButton>
 
-                    <button
+                    <CustomButton
                         type="button"
                         onClick={() => setIsRejectModal(false)}
-                        className="w-full py-3 rounded-full border-2 border-gray-200 hover:border-gray-300 text-sm Livvic-Bold text-gray-700 transition-colors"
+                        className="w-full py-3 rounded-full border-2 border-gray-200 hover:border-gray-300 text-sm Livvic-Bold text-gray-700 transition-colors px-0"
                     >
                         Keep considering
-                    </button>
+                    </CustomButton>
                 </div>
             </div>
 

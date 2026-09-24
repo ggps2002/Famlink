@@ -2,19 +2,21 @@ import { useState, useRef, useEffect } from "react";
 import { fireToastMessage } from "@shared/ui/toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { X } from "lucide-react";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import Step1 from "@features/onboarding/caregiver-job/CompleteProfile/Step1";
 import Step2 from "@features/onboarding/caregiver-job/CompleteProfile/Step2";
 import Step3 from "@features/onboarding/caregiver-job/CompleteProfile/Step3";
 import Step4 from "@features/onboarding/caregiver-job/CompleteProfile/Step4";
 import Step5 from "@features/onboarding/caregiver-job/CompleteProfile/Step5";
 import Step6 from "@features/onboarding/caregiver-job/CompleteProfile/Step6";
+import CaregiverExperienceStep from "@features/onboarding/components/CaregiverExperienceStep";
 import { useDispatch, useSelector } from "react-redux";
 import { setNannyProfileCompleted } from "@features/auth/store/authSlice"
 import { nannyshareProfileThunk } from "@features/nanny-share/store/nannyShareSlice"
 import CustomStepper from "@shared/ui/Stepper";
 
 
+import { fetchOnboardingRecord } from "@features/onboarding/onboardingRecord";
 export const Screen4 = ({ recordId } = {}) => {
   // Prefer an explicit recordId (the signed-in user's sheetId, passed from the
   // "Complete your profile" email link) and fall back to the route param.
@@ -23,7 +25,7 @@ export const Screen4 = ({ recordId } = {}) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const totalStep = 5;
+  const totalStep = 6;
   const [currentStep, setCurrentStep] = useState(0);
   const [formValues, setFormValues] = useState({});
   // const [showSuccessModal, setShowSuccessModal] = useState(false); // ✅ modal state
@@ -80,22 +82,25 @@ export const Screen4 = ({ recordId } = {}) => {
     const retrieveSheetRecord = async () => {
       if (!id) return;
 
-      const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
-      if (!scriptUrl) {
-        fireToastMessage({
-          type: "error",
-          message: "Google Script URL is missing.",
-        });
-        return;
-      }
+      // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+      // const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
+      // if (!scriptUrl) {
+      //   fireToastMessage({
+      //     type: "error",
+      //     message: "Google Script URL is missing.",
+      //   });
+      //   return;
+      // }
 
       try {
         setSheetLoading(true);
 
-        const response = await fetch(
-          `${scriptUrl}?recordId=${encodeURIComponent(id)}`
-        );
-        const result = await response.json();
+        // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+        // const response = await fetch(
+        //   `${scriptUrl}?recordId=${encodeURIComponent(id)}`
+        // );
+        // const result = await response.json();
+        const result = await fetchOnboardingRecord(id);
         if (result.status === "success" && result.record) {
           setSheetUserData(result.record);
         } else {
@@ -164,6 +169,12 @@ export const Screen4 = ({ recordId } = {}) => {
           });
         });
     } else if (currentStep == 1) {
+      // Your experience — optional answers; keep whatever was chosen.
+      const values = jobFormRef.current.getFieldsValue();
+      setFormValues((prev) => ({ ...prev, ...values }));
+      setCurrentStep((prev) => prev + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else if (currentStep == 2) {
       jobFormRef.current
         .validateFields()
         .then((values) => {
@@ -242,37 +253,11 @@ export const Screen4 = ({ recordId } = {}) => {
               errorInfo?.errorFields?.[0]?.errors?.[0] || "Validation failed",
           });
         });
-    } else if (currentStep == 2) {
-      jobFormRef.current
-        .validateFields()
-        .then(async (values) => {
-          if (values.responsibilities && values.householdHelp) {
-            setFormValues({
-              ...formValues,
-              ...values
-            })
-            setCurrentStep((prev) => prev + 1);
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          } else {
-            fireToastMessage({
-              type: "error",
-              message:
-                "Please fill out all the fields",
-            });
-          }
-        })
-        .catch((errorInfo) => {
-          fireToastMessage({
-            type: "error",
-            message:
-              errorInfo?.errorFields?.[0]?.errors?.[0] || "Validation failed",
-          });
-        });
     } else if (currentStep == 3) {
       jobFormRef.current
         .validateFields()
         .then(async (values) => {
-          if (values.hasTransport && values.backgroundCheck) {
+          if (values.responsibilities?.length && values.householdHelp?.length) {
             setFormValues({
               ...formValues,
               ...values
@@ -298,15 +283,46 @@ export const Screen4 = ({ recordId } = {}) => {
       jobFormRef.current
         .validateFields()
         .then(async (values) => {
+          if (values.hasTransport && values.backgroundCheck) {
+            setFormValues({
+              ...formValues,
+              ...values
+            })
+            setCurrentStep((prev) => prev + 1);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          } else {
+            fireToastMessage({
+              type: "error",
+              message:
+                "Please fill out all the fields",
+            });
+          }
+        })
+        .catch((errorInfo) => {
+          fireToastMessage({
+            type: "error",
+            message:
+              errorInfo?.errorFields?.[0]?.errors?.[0] || "Validation failed",
+          });
+        });
+    } else if (currentStep == 5) {
+      jobFormRef.current
+        .validateFields()
+        .then(async (values) => {
           if (values.sharedRate && values.soloRate && values.rateType && values.budget) {
             const parsedBudget = typeof values.budget === "string"
               ? JSON.parse(values.budget)
               : values.budget;
 
+            // Per-child rates are optional; save them only if any were given.
+            const salaryExp = Object.fromEntries(
+              Object.entries(values.salaryExp || {}).filter(([, v]) => v !== undefined && v !== null && v !== "")
+            );
             setFormValues({
               ...formValues,
               ...values,
               budget: parsedBudget,
+              salaryExp: Object.keys(salaryExp).length ? salaryExp : undefined,
             });
             setCurrentStep((prev) => prev + 1);
             window.scrollTo({ top: 0, behavior: "smooth" });
@@ -323,7 +339,7 @@ export const Screen4 = ({ recordId } = {}) => {
             message: errorInfo?.errorFields?.[0]?.errors?.[0] || "Validation failed",
           });
         });
-    } else if (currentStep == 5) {
+    } else if (currentStep == 6) {
       jobFormRef.current
         .validateFields()
         .then(async (values) => {
@@ -412,23 +428,25 @@ export const Screen4 = ({ recordId } = {}) => {
       case 0:
         return <Step1 formRef={jobFormRef} initialValues={formValues}/>;
       case 1:
+        return <CaregiverExperienceStep formRef={jobFormRef} initialValues={formValues} askExperience={false} />;
+      case 2:
         return (
           <Step2 formRef={jobFormRef} daysState={daysState}
             setDaysState={setDaysState} initialValues={formValues}/>
         );
-      case 2:
+      case 3:
         return (
           <Step3 formRef={jobFormRef} initialValues={formValues}/>
         );
-      case 3:
+      case 4:
         return (
           <Step4 formRef={jobFormRef} initialValues={formValues}/>
         );
-      case 4:
+      case 5:
         return (
           <Step5 formRef={jobFormRef} initialValues={formValues}/>
         );
-      case 5:
+      case 6:
         return (
           <Step6 formRef={jobFormRef} image={image} handleImageChange={handleImageChange} initialValues={formValues}/>
         );
@@ -479,7 +497,7 @@ export const Screen4 = ({ recordId } = {}) => {
           <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-50">
             <div className="flex justify-center py-4 space-x-4">
               {currentStep > 0 && (
-                <Button
+                <CustomButton
                   action={() => {
                     if (currentStep > 0) {
                       setCurrentStep((prev) => prev - 1);
@@ -490,7 +508,7 @@ export const Screen4 = ({ recordId } = {}) => {
                 />
               )}
 
-              <Button
+              <CustomButton
                 btnText={totalStep === currentStep ? "Submit Responses" : "Continue"}
                 action={() => HandleNext()}
                 isLoading={isLoading}

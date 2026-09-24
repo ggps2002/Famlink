@@ -4,6 +4,7 @@ import OnboardingOptionSelector from "@features/onboarding/components/Onboarding
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
 
+import { AGE_GROUPS } from "@shared/lib/profileOptions";
 const step1Data = {
     first: [
         "Yes",
@@ -19,12 +20,7 @@ const step1Data = {
         "3-4",
         "Flexible",
     ],
-    fourth: [
-        "Infants (0–1)",
-        "Toddlers (1–3)",
-        "Preschool (3–5)",
-        "School-age (5+)",
-    ],
+    fourth: AGE_GROUPS,
     fifth: [
         "One home",
         "Rotating homes",

@@ -103,6 +103,9 @@ export function SectionHeading({
   titleClassName = "",
   ledeClassName = "",
   actions,
+  /* Where `actions` sits against the heading on wide screens: "end" lines it
+   * up with the last line of the lede, "start" with the title. */
+  actionsAlign = "end",
   children,
 }) {
   const centered = align === "center";
@@ -137,7 +140,8 @@ export function SectionHeading({
   return (
     <div
       className={clsx(
-        "fl-heading-gap flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between",
+        "fl-heading-gap flex flex-col gap-6 sm:flex-row sm:justify-between",
+        actionsAlign === "start" ? "sm:items-start" : "sm:items-end",
         className
       )}
     >

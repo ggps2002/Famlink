@@ -10,7 +10,9 @@ const step2Data = [
 ]
 
 
-function Step2({ formRef, daysState, setDaysState, initialValues }) {
+// `askStart={false}` drops the start-date question, for flows that already
+// asked it on an earlier step.
+function Step2({ formRef, daysState, setDaysState, initialValues, askStart = true }) {
     const [form] = Form.useForm();
 
     const updateDaysState = (updatedDaysState) => {
@@ -56,20 +58,24 @@ function Step2({ formRef, daysState, setDaysState, initialValues }) {
                         setDaysState={updateDaysState}
                     />
 
-                    <p className="text-lg Livvic-SemiBold text-primary my-4">
-                        When are you available to start?
-                    </p>
-                    <Form.Item
-                        name="startAvailability"
-                        rules={[{ required: true, message: "Please select a start date" }]}
-                    >
-                        <DatePicker
-                            className="max-w-2xl rounded-xl border-gray-300 py-3 px-4"
-                            format="MMMM D, YYYY"
-                            disabledDate={(current) => current && current < dayjs().startOf("day")}
-                            placeholder="Select a start date"
-                        />
-                    </Form.Item>
+                    {askStart && (
+                        <>
+                            <p className="text-lg Livvic-SemiBold text-primary my-4">
+                                When are you available to start?
+                            </p>
+                            <Form.Item
+                                name="startAvailability"
+                                rules={[{ required: true, message: "Please select a start date" }]}
+                            >
+                                <DatePicker
+                                    className="max-w-2xl rounded-xl border-gray-300 py-3 px-4"
+                                    format="MMMM D, YYYY"
+                                    disabledDate={(current) => current && current < dayjs().startOf("day")}
+                                    placeholder="Select a start date"
+                                />
+                            </Form.Item>
+                        </>
+                    )}
 
                 </div>
             </Form>

@@ -229,6 +229,7 @@ function Feedback() {
               </div>
 
               <div className="relative">
+                <label htmlFor="your-email" className="fl-label">Your email</label>
                 <input
                   id="your-email"
                   type="email"
@@ -237,43 +238,31 @@ function Feedback() {
                     setEmail(e.target.value);
                     validateEmail(e.target.value);
                   }}
-                  className={`peer border ${
-                    error ? "border-red-500" : "border-[#EEEEEE]"
-                  } rounded-[10px] px-2 pt-7 w-full outline-none focus:outline-none focus:ring-0 placeholder:text-[#999999]`}
+                  aria-invalid={error ? true : undefined}
+                  className="fl-field w-full"
                   placeholder="abc@example.com"
                 />
-                <label
-                  htmlFor="your email"
-                  className="absolute left-2 top-2 text-sm text-primary Livvic-Medium bg-white px-1 z-10"
-                >
-                  Your Email
-                </label>
               </div>
 
               {/* Feedback Textarea */}
               <div className="relative w-full">
+                <label htmlFor="description" className="fl-label">Your message</label>
                 <textarea
                   id="description"
                   value={feedback}
                   placeholder="Tell us about your question, issue or feedback..."
                   rows={4}
                   onChange={(e) => setFeedback(e.target.value)}
-                  className="peer border border-[#D6DDEB] rounded-[10px] px-2 pt-7 pb-2 w-full placeholder:!text-[#999999] focus:outline-none focus:ring-0 focus:ring-primary"
+                  className="fl-field w-full"
                   style={{
                     width: "100%",
                     resize: "none",
                   }}
                 />
-                <label
-                  htmlFor="description"
-                  className="absolute left-2 top-2 text-sm text-primary Livvic-Medium bg-white px-1 z-10"
-                >
-                  Your Message
-                </label>
               </div>
 
               {/* Submit Button */}
-              <button
+              <CustomButton
                 type="button"
                 onClick={handleSubmit}
                 disabled={!isFormValid || isSubmitting}
@@ -289,7 +278,7 @@ function Feedback() {
                     Send Feedback
                   </>
                 )}
-              </button>
+              </CustomButton>
             </div>
           </>
         ) : (

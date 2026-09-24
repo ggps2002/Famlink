@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { fireToastMessage } from "@shared/ui/toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { X } from "lucide-react";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import Step1 from "@features/onboarding/caregiver-share/CompleteProfile/Step1";
 import Step2 from "@features/onboarding/caregiver-share/CompleteProfile/Step2";
 import Step3 from "@features/onboarding/caregiver-share/CompleteProfile/Step3";
@@ -11,7 +11,14 @@ import Step5 from "@features/onboarding/caregiver-share/CompleteProfile/Step5";
 import Step6 from "@features/onboarding/caregiver-share/CompleteProfile/Step6";
 import Step7 from "@features/onboarding/caregiver-share/CompleteProfile/Step7";
 import FamilyStep7 from "@features/nanny-share/post/step7";
-import Step8 from "@features/onboarding/caregiver-share/CompleteProfile/Step8";
+// The caregiver steps both flows share: the job flow's schedule, help, trust
+// and profile screens ask exactly what the profile page shows for a caregiver.
+import ScheduleStep from "@features/onboarding/caregiver-job/CompleteProfile/Step2";
+import HelpStep from "@features/onboarding/caregiver-job/CompleteProfile/Step3";
+import TrustStep from "@features/onboarding/caregiver-job/CompleteProfile/Step4";
+import ProfileStep from "@features/onboarding/caregiver-job/CompleteProfile/Step6";
+import CaregiverExperienceStep from "@features/onboarding/components/CaregiverExperienceStep";
+import { emptyWeek, validateSchedule } from "@features/onboarding/schedule";
 import { useDispatch, useSelector } from "react-redux";
 import { setNannyProfileCompleted } from "@features/auth/store/authSlice";
 import { nannyshareProfileThunk } from "@features/nanny-share/store/nannyShareSlice";
@@ -26,12 +33,13 @@ export const Screen4 = () => {
     const [selectedValue, setSelectedValue] = useState(null);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const totalStep = 7;
+    const totalStep = 11;
     const [currentStep, setCurrentStep] = useState(0);
     const [formValues, setFormValues] = useState({});
 
     const [image, setImage] = useState(null);
     const [file, setFile] = useState(null);
+    const [daysState, setDaysState] = useState(emptyWeek);
 
     const handleImageChange = (event) => {
         const selectedFile = event.target.files[0];
@@ -157,6 +165,39 @@ export const Screen4 = () => {
                         }));
                     }
 
+                    // Step 7 — Your experience (all optional)
+                    else if (currentStep === 7) {
+                        setFormValues(prev => ({ ...prev, ...values }));
+                    }
+
+                    // Step 8 — Weekly schedule (start date was asked on step 0)
+                    else if (currentStep === 8) {
+                        const { error, specificDays } = validateSchedule(daysState);
+                        if (error) {
+                            fireToastMessage({ type: "error", message: error });
+                            return;
+                        }
+                        setFormValues(prev => ({ ...prev, specificDays }));
+                    }
+
+                    // Step 9 — Help with the children / around the house
+                    else if (currentStep === 9) {
+                        if (!values.responsibilities?.length || !values.householdHelp?.length) {
+                            fireToastMessage({ type: "error", message: "Please specify all the fields" });
+                            return;
+                        }
+                        setFormValues(prev => ({ ...prev, ...values }));
+                    }
+
+                    // Step 10 — Transportation and background check
+                    else if (currentStep === 10) {
+                        if (!values.hasTransport || !values.backgroundCheck) {
+                            fireToastMessage({ type: "error", message: "Please specify all the fields" });
+                            return;
+                        }
+                        setFormValues(prev => ({ ...prev, ...values }));
+                    }
+
                     setCurrentStep(prev => prev + 1);
                     window.scrollTo({ top: 0, behavior: "smooth" });
                 })
@@ -168,7 +209,7 @@ export const Screen4 = () => {
                 });
 
         } else if (currentStep === totalStep) {
-            // Step 7 — Bio + image submit (Step8)
+            // Step 11 — Bio, certifications, skills + image submit
             familyFormRef.current
                 .validateFields()
                 .then(async (values) => {
@@ -234,7 +275,11 @@ export const Screen4 = () => {
             case 4: return <FamilyStep7 petsInfo={false} formRef={familyFormRef} initialValues={formValues} />;
             case 5: return <Step6 formRef={familyFormRef} initialValues={formValues} />;
             case 6: return <Step7 formRef={familyFormRef} initialValues={formValues} />;
-            case 7: return <Step8 formRef={familyFormRef} image={image} handleImageChange={handleImageChange} />;
+            case 7: return <CaregiverExperienceStep formRef={familyFormRef} initialValues={formValues} />;
+            case 8: return <ScheduleStep formRef={familyFormRef} daysState={daysState} setDaysState={setDaysState} initialValues={formValues} askStart={false} />;
+            case 9: return <HelpStep formRef={familyFormRef} initialValues={formValues} />;
+            case 10: return <TrustStep formRef={familyFormRef} initialValues={formValues} />;
+            case 11: return <ProfileStep formRef={familyFormRef} image={image} handleImageChange={handleImageChange} initialValues={formValues} />;
             default: return null;
         }
     };
@@ -259,13 +304,13 @@ export const Screen4 = () => {
                     <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-50">
                         <div className="flex justify-center py-4 space-x-4">
                             {currentStep > 0 && (
-                                <Button
+                                <CustomButton
                                     action={goBack}  // ✅ use goBack instead of just setCurrentStep
                                     btnText={"Back"}
                                     className="border border-[#FFFFFF] text-[#555555]"
                                 />
                             )}
-                            <Button
+                            <CustomButton
                                 btnText={totalStep === currentStep ? "Submit Responses" : "Continue"}
                                 action={HandleNext}
                                 isLoading={isLoading}

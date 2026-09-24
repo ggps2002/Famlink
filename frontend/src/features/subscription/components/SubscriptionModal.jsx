@@ -7,6 +7,7 @@ import { PLAN } from "@features/subscription/subscriptionPlan";
 import { Link } from "react-router-dom";
 import { useBodyScrollLock } from "@shared/lib/bodyScrollLock";
 
+import CustomButton from "@shared/ui/Button";
 /* Subscription upgrade modal ("FamLink Plus").
    Opens from the navbar "Upgrade" button. The CTA runs the same Stripe
    Checkout flow as the pricing page (createCheckoutThunk → redirect).
@@ -99,14 +100,14 @@ export default function SubscriptionModal({ onClose }) {
         </div>
 
         {/* CTA */}
-        <button
+        <CustomButton
           type="button"
           onClick={handleUpgrade}
           disabled={loading}
-          className="w-full bg-[#AEC4FF] hover:bg-[#9db4f7] disabled:opacity-60 disabled:cursor-not-allowed text-[#0D134C] Livvic-Bold py-3 rounded-xl transition-colors"
+          className="w-full bg-[#AEC4FF] hover:bg-[#9db4f7] disabled:opacity-60 disabled:cursor-not-allowed text-[#0D134C] Livvic-Bold py-3 rounded-xl transition-colors px-0"
         >
           {loading ? "Redirecting…" : `Upgrade to ${PLAN.name}`}
-        </button>
+        </CustomButton>
 
         {/* OR Divider */}
         <div className="flex items-center gap-4 my-6">

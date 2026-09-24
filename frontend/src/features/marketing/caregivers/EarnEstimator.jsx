@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import { Spin, Input, Select } from "antd";
 import { fireToastMessage } from "@shared/ui/toast";
 import { TrendingUp, Users, DollarSign, User } from "lucide-react";
@@ -235,7 +235,7 @@ function EarnEstimation() {
               <Option value={3}>3 Families</Option>
             </Select>
 
-            <Button
+            <CustomButton
               btnText={"Calculate Earnings"}
               className="bg-[#AEC4FF] w-full sm:w-auto px-6 py-3 sm:py-4"
               action={() => handleCalculate()}

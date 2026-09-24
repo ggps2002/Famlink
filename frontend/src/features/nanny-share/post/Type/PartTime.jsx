@@ -12,9 +12,10 @@ import { step7Data, step8Data, step9Data, step10Data, step11Data, step12Data, st
 import { resolveChildrenAges } from "@shared/lib/children";
 import { parseHourlyRate } from "@shared/lib/rates";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchWithTimeout } from "@shared/api/fetchWithTimeout";
+// [Google Sheet — only the sheet post used this; kept for reference]
+// import { fetchWithTimeout } from "@shared/api/fetchWithTimeout";
 import { postNannyShare } from "@features/nanny-share/store/nannyShareSlice";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import Step1 from "@features/nanny-share/post/step1";
 import OpenText from "@features/nanny-share/post/OpenText";
 import Step2 from "@features/nanny-share/post/step2";
@@ -25,8 +26,10 @@ import Step4 from "@features/nanny-share/post/step4";
 import Step5 from "@features/nanny-share/post/step5";
 import Step6 from "@features/nanny-share/post/step6";
 import { nannyshareProfileThunk } from "@features/nanny-share/store/nannyShareSlice";
-import { setNannyProfileCompleted } from "@features/auth/store/authSlice";
+import { editUserThunk, setNannyProfileCompleted } from "@features/auth/store/authSlice";
+import FamilyPhotoPicker from "@features/nanny-share/post/FamilyPhotoPicker";
 
+import { saveOnboardingRecord } from "@features/onboarding/onboardingRecord";
 const afterSchoolCareOptions = [
   "Not Applicable",
   "Transportation",
@@ -43,6 +46,12 @@ export const PartTime = ({ login = true }) => {
   const dispatch = useDispatch();
   const [selectedValue, setSelectedValue] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  // Optional family photo, uploaded after the profile saves (see FamilyPhotoPicker).
+  const [photo, setPhoto] = useState({ file: null, url: null });
+  const handlePhotoChange = (event) => {
+    const file = event.target.files?.[0];
+    if (file) setPhoto({ file, url: URL.createObjectURL(file) });
+  };
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const { additionalInfo } = useSelector((s) => s.form);
@@ -468,6 +477,18 @@ export const PartTime = ({ login = true }) => {
                 }),
               ).unwrap();
 
+              if (photo.file) {
+                // A failed photo upload shouldn't undo a saved profile — say
+                // so, and let them add it from Edit profile.
+                try {
+                  const photoData = new FormData();
+                  photoData.append("imageUrl", photo.file);
+                  await dispatch(editUserThunk(photoData)).unwrap();
+                } catch {
+                  fireToastMessage({ type: "error", message: "Your profile is saved, but the photo didn't upload. You can add it from Edit profile." });
+                }
+              }
+
               fireToastMessage({
                 success: true,
                 message: data.message,
@@ -513,29 +534,31 @@ export const PartTime = ({ login = true }) => {
                 ...flattenValues
               };
 
-              const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
+              // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+              // const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
 
-              if (!scriptUrl) {
-                console.warn(
-                  "VITE_GOOGLE_SCRIPT_URL is not set. Data:",
-                  payload,
-                );
-                await new Promise((r) => setTimeout(r, 1400));
-                setIsLoading(false);
-                return;
-              }
+              // if (!scriptUrl) {
+              //   console.warn(
+              //     "VITE_GOOGLE_SCRIPT_URL is not set. Data:",
+              //     payload,
+              //   );
+              //   await new Promise((r) => setTimeout(r, 1400));
+              //   setIsLoading(false);
+              //   return;
+              // }
 
-              const formData = new URLSearchParams(payload).toString();
+              // const formData = new URLSearchParams(payload).toString();
 
-              const response = await fetchWithTimeout(scriptUrl, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/x-www-form-urlencoded",
-                },
-                body: formData,
-              });
-
-              await response.text();
+              // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+              // const response = await fetchWithTimeout(scriptUrl, {
+              //   method: "POST",
+              //   headers: {
+              //     "Content-Type": "application/x-www-form-urlencoded",
+              //   },
+              //   body: formData,
+              // });
+              await saveOnboardingRecord(payload);
+              // await response.text();
 
               setIsLoading(false);
 
@@ -653,19 +676,22 @@ export const PartTime = ({ login = true }) => {
           //   }
           //   data={step5Data}
           // />
-          <Step8 formRef={jobFormRef} involvement={false} initialValues={formValues} />
+          <Step8 formRef={jobFormRef} initialValues={formValues} />
         );
       case 7:
         return (
-          <OpenText
-            title={
-              "Anything else another family should know? (optional free-text)"
-            }
-            formRef={jobFormRef}
-            openFieldName={"additionalInfo"}
-            placeholder={"Specify..."}
-            required={false}
-          />
+          <>
+            <OpenText
+              title={
+                "Anything else another family should know? (optional free-text)"
+              }
+              formRef={jobFormRef}
+              openFieldName={"additionalInfo"}
+              placeholder={"Specify..."}
+              required={false}
+            />
+            {login && <FamilyPhotoPicker image={photo.url} onChange={handlePhotoChange} />}
+          </>
         );
     }
   };
@@ -719,7 +745,7 @@ export const PartTime = ({ login = true }) => {
                 // >
                 //     Back
                 // </button>
-                <Button
+                <CustomButton
                   action={() => {
                     if (currentStep > 0) {
                       setCurrentStep((prev) => prev - 1);
@@ -747,7 +773,7 @@ export const PartTime = ({ login = true }) => {
                                     (totalStep - 1) === currentStep ? 'Post a Job' : 'Continue'
                                 )}
                             </button> */}
-              <Button
+              <CustomButton
                 btnText={
                   totalStep === currentStep ? login ? "Post a Job" : "Submit Responses" : "Continue"
                 }
@@ -818,28 +844,28 @@ const FinalSuccessModal = ({ onClose, recordId }) => {
           within 24 hours.
         </p>
 
-        <button
+        <CustomButton
           type="button"
           onClick={() =>
             navigate(`/hire?recordId=${recordId || ""}`)
           }
-          className="w-full block text-center bg-[#FFADE1] hover:bg-[#f99dd5] transition-colors rounded-full py-3 text-base Livvic-Bold text-black"
+          className="w-full block text-center bg-[#FFADE1] hover:bg-[#f99dd5] transition-colors rounded-full py-3 text-base Livvic-Bold text-black px-0"
         >
           Set up my FamLink profile now
-        </button>
+        </CustomButton>
 
         <p className="text-xs text-gray-500 mt-3 mb-4 leading-relaxed max-w-[280px]">
           Save and update your info, and view your nanny-share matches in one
           place.
         </p>
 
-        <button
+        <CustomButton
           type="button"
           onClick={onClose}
-          className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+          className="text-sm text-gray-500 hover:text-gray-700 transition-colors px-0 py-0 rounded-none Livvic"
         >
           Close for now
-        </button>
+        </CustomButton>
       </div>
 
       <style>{`

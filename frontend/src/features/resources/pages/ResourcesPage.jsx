@@ -8,6 +8,7 @@ import CommunityResourceCard from "@features/resources/components/CommunityResou
 import { ArrowLeft } from "lucide-react";
 import { Section, CardGrid } from "@shared/ui/Section";
 
+import CustomButton from "@shared/ui/Button";
 // Read-time estimate for database articles, which don't store one.
 const readMinutes = (html) => {
   const words = String(html || "")
@@ -85,14 +86,14 @@ const ResourcesPage = () => {
       {/* Navy band, same as the Resource Center and city-page heroes. The back
           link sits inside it rather than above, so it doesn't need its own band. */}
       <Section tone="ink" size="hero" className="relative">
-        <button
+        <CustomButton
           type="button"
           onClick={() => navigate("/")}
-          className="flex items-center gap-2 text-white hover:text-accent transition-colors font-livvic-medium text-sm mb-8"
+          className="flex items-center gap-2 text-white hover:text-accent transition-colors font-livvic-medium text-sm mb-8 px-0 py-0 rounded-none"
         >
           <ArrowLeft size={18} />
           Back to FamLink
-        </button>
+        </CustomButton>
 
         <div className="text-center">
           <h1 className="fl-display text-white mx-auto max-w-heading">

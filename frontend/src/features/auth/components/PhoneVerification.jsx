@@ -8,6 +8,7 @@ import { requestOTP, resendOTP, verifyOTP } from "@features/auth/store/smsSlice"
 import { Edit2 } from "lucide-react";
 import { updatePhoneThunk } from "@features/dashboard/store/updateSlice";
 
+import CustomButton from "@shared/ui/Button";
 const PhoneVerification = () => {
   const [step, setStep] = useState(0);
   const [timeLeft, setTimeLeft] = useState(120); // 2 min countdown
@@ -223,13 +224,12 @@ const PhoneVerification = () => {
           <>
             <div className="w-full mb-8 lg:mb-0">
               <div
-                className="flex border-2 rounded-3xl overflow-hidden"
-                style={{ borderColor: "#D6DDEB" }}
+                className="fl-field"
               >
                 <select
                   value={selectedCountryCode}
                   onChange={(e) => setSelectedCountryCode(e.target.value)}
-                  className="px-3 py-3 bg-gray-50 border-r border-none text-sm Livvic-Medium focus:outline-none"
+                  className="pl-3.5 pr-2 !bg-[#F7F9FA] border-r !border-[#EEF0F4] text-sm"
                   style={{ minWidth: "80px" }}
                 >
                   {countryCodes.map((country) => (
@@ -247,7 +247,7 @@ const PhoneVerification = () => {
                       setErrors({ ...errors, phone: "" });
                     }
                   }}
-                  className="flex-1 py-3 px-4 text-base border-none outline-none"
+                  className="flex-1 min-w-0 px-3.5"
                   placeholder="Enter your phone number"
                   onKeyPress={(e) => {
                     if (!/\d/.test(e.key) && e.key !== "Backspace") {
@@ -263,10 +263,10 @@ const PhoneVerification = () => {
               )}
             </div>
             <div className="m-0 p-0 mb-8">
-              <button
+              <CustomButton
                 type="button"
                 disabled={isLoading}
-                className="bg-[#AEC4FF] w-52 py-3 rounded-3xl text-white Livvic-Medium text-base disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#9BB5FF] transition-colors text-primary Livvic-Medium"
+                className="bg-[#AEC4FF] w-52 py-3 rounded-3xl text-white Livvic-Medium text-base disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#9BB5FF] transition-colors text-primary Livvic-Medium px-0"
                 onClick={handleRequestOtp}
               >
                 {isLoading ? (
@@ -296,7 +296,7 @@ const PhoneVerification = () => {
                 ) : (
                   "Request for OTP"
                 )}
-              </button>
+              </CustomButton>
             </div>
           </>
         );
@@ -334,7 +334,7 @@ const PhoneVerification = () => {
 
               <div className="flex justify-center items-center">
                 {isResendEnabled ? (
-                  <button
+                  <CustomButton
                     disabled={isLoading}
                     onClick={handleResendOtp}
                     type="button"
@@ -367,7 +367,7 @@ const PhoneVerification = () => {
                     ) : (
                       "Resend OTP"
                     )}
-                  </button>
+                  </CustomButton>
                 ) : (
                   <p className="text-gray-600 text-center">
                     Resend OTP in {formatTime(timeLeft)}
@@ -376,10 +376,10 @@ const PhoneVerification = () => {
               </div>
             </div>
             <div className="m-0 p-0 mb-8">
-              <button
+              <CustomButton
                 type="button"
                 disabled={isLoading}
-                className="bg-[#AEC4FF] w-52 py-3 rounded-3xl text-white Livvic-Medium text-base disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#9BB5FF] transition-colors text-primary Livvic-Medium"
+                className="bg-[#AEC4FF] w-52 py-3 rounded-3xl text-white Livvic-Medium text-base disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#9BB5FF] transition-colors text-primary Livvic-Medium px-0"
                 onClick={handleVerifyOtp}
               >
                 {isLoading ? (
@@ -409,7 +409,7 @@ const PhoneVerification = () => {
                 ) : (
                   "Verify"
                 )}
-              </button>
+              </CustomButton>
             </div>
           </>
         );
@@ -462,13 +462,12 @@ const PhoneVerification = () => {
               <div>
                 <div className="w-full mb-8">
                   <div
-                    className="flex border-2 rounded-3xl overflow-hidden"
-                    style={{ borderColor: "#D6DDEB" }}
+                    className="fl-field"
                   >
                     <select
                       value={selectedCountryCode}
                       onChange={(e) => setSelectedCountryCode(e.target.value)}
-                      className="px-3 py-3 bg-gray-50 border-r border-none text-sm Livvic-Medium focus:outline-none"
+                      className="pl-3.5 pr-2 !bg-[#F7F9FA] border-r !border-[#EEF0F4] text-sm"
                       style={{ minWidth: "80px" }}
                     >
                       {countryCodes.map((country) => (
@@ -486,7 +485,7 @@ const PhoneVerification = () => {
                           setErrors({ ...errors, phone: "" });
                         }
                       }}
-                      className="flex-1 py-3 px-4 text-base border-none outline-none"
+                      className="flex-1 min-w-0 px-3.5"
                       placeholder="Enter your phone number"
                       onKeyPress={(e) => {
                         if (!/\d/.test(e.key) && e.key !== "Backspace") {
@@ -502,10 +501,10 @@ const PhoneVerification = () => {
                   )}
                 </div>
                 <div className="mb-8 flex gap-6">
-                  <button
+                  <CustomButton
                     type="button"
                     disabled={isLoading}
-                    className="bg-[#AEC4FF] w-52 py-3 rounded-3xl text-white Livvic-Medium text-base disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#9BB5FF] transition-colors text-primary Livvic-Medium"
+                    className="bg-[#AEC4FF] w-52 py-3 rounded-3xl text-white Livvic-Medium text-base disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#9BB5FF] transition-colors text-primary Livvic-Medium px-0"
                     onClick={handleUpdatePhoneNumber}
                   >
                     {isLoading ? (
@@ -535,14 +534,14 @@ const PhoneVerification = () => {
                     ) : (
                       "Update phone number"
                     )}
-                  </button>
+                  </CustomButton>
                   {isEditingPhone && (
-                    <button
+                    <CustomButton
                       onClick={() => setIsEditingPhone(false)}
-                      className="text-sm text-gray-500 mt-2 underline"
+                      className="text-sm text-gray-500 mt-2 underline px-0 py-0 rounded-none Livvic"
                     >
                       Cancel
-                    </button>
+                    </CustomButton>
                   )}
                 </div>
               </div>

@@ -10,6 +10,7 @@ import { fireToastMessage } from "@shared/ui/toast";
 import { submitReviewThunk } from "@features/dashboard/store/reviewSlice";
 import { getMatchWithUserThunk } from "@features/matching/store/matchSlice";
 
+import CustomButton from "@shared/ui/Button";
 /**
  * The Reviews panel every profile screen shows, and the rule that decides
  * whether it offers one: "Leave a review" appears only when the viewer and the
@@ -128,13 +129,13 @@ export default function ProfileReviews({
   const scrollBy = (amount) => scrollRef.current?.scrollBy({ left: amount, behavior: "smooth" });
 
   const reviewButton = canLeaveReview ? (
-    <button
+    <CustomButton
       type="button"
       onClick={() => setIsOpen(true)}
-      className="h-[38px] px-[20px] rounded-[25px] bg-[#AEC4FF] hover:bg-[#C1D6FF] transition-colors border-none cursor-pointer Livvic-SemiBold text-[14px] leading-[14px] text-[#000F36] whitespace-nowrap"
+      className="h-[38px] px-[20px] rounded-[25px] bg-[#AEC4FF] hover:bg-[#C1D6FF] transition-colors border-none cursor-pointer Livvic-SemiBold text-[14px] leading-[14px] text-[#000F36] whitespace-nowrap py-0"
     >
       Leave a review
-    </button>
+    </CustomButton>
   ) : null;
 
   return (

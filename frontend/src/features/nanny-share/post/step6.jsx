@@ -2,16 +2,8 @@ import React, { useEffect } from "react";
 import Form from "antd/es/form/Form";
 import OnboardingOptionSelector from "@features/onboarding/components/OnboardingOptionSelector";
 
-const step6Data = [
-  "Nap times",
-  "Outdoor play",
-  "Educational activities",
-  "Structured meal times",
-  "Storytime",
-  "Arts & crafts",
-  "Playdates/outings",
-  "Not Applicable",
-];
+import { DAILY_ROUTINE, NOT_APPLICABLE } from "@shared/lib/profileOptions";
+const step6Data = [...DAILY_ROUTINE, NOT_APPLICABLE];
 
 function Step6({ formRef, initialValues }) {
   const [form] = Form.useForm();

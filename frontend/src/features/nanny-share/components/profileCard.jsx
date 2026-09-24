@@ -888,27 +888,25 @@ export const FamilyProfile = ({
           {/* View Details */}
           {user.nannyProfileCompleted ? (
             user._id === userId ? (
-              <button
+              <CustomButton
                 onClick={() => navigate(`/dashboard/edit`)}
                 className="
             flex items-center md:justify-center gap-1 bg-transparent border-none cursor-pointer
-            text-primary Livvic-SemiBold text-[13px] whitespace-nowrap md:mb-2
-          "
+            text-primary Livvic-SemiBold text-[13px] whitespace-nowrap md:mb-2 px-0 py-0 rounded-none"
               >
                 Edit profile
                 <ChevronRight size={14} />
-              </button>
+              </CustomButton>
             ) : (
-              <button
+              <CustomButton
                 onClick={() => navigate(`/dashboard/family-profile-view/${id}`)}
                 className="
             flex items-center md:justify-center gap-1 bg-transparent border-none cursor-pointer
-            text-primary Livvic-SemiBold text-[13px] whitespace-nowrap md:mb-2
-          "
+            text-primary Livvic-SemiBold text-[13px] whitespace-nowrap md:mb-2 px-0 py-0 rounded-none"
               >
                 View Details
                 <ChevronRight size={14} />
-              </button>
+              </CustomButton>
             )
           ) : null}
 
@@ -1719,27 +1717,25 @@ export const NannyProfile = ({
           {/* View Details */}
           {user.nannyProfileCompleted ? (
             user._id === userId ? (
-              <button
+              <CustomButton
                 onClick={() => navigate(`/dashboard/edit`)}
                 className="
             flex items-center md:justify-center gap-1 bg-transparent border-none cursor-pointer
-            text-primary Livvic-SemiBold text-[13px] whitespace-nowrap md:mb-2
-          "
+            text-primary Livvic-SemiBold text-[13px] whitespace-nowrap md:mb-2 px-0 py-0 rounded-none"
               >
                 Edit profile
                 <ChevronRight size={14} />
-              </button>
+              </CustomButton>
             ) : (
-              <button
+              <CustomButton
                 onClick={() => navigate(`/dashboard/nanny-profile-view/${id}`)}
                 className="
             flex items-center md:justify-center gap-1 bg-transparent border-none cursor-pointer
-            text-primary Livvic-SemiBold text-[13px] whitespace-nowrap md:mb-2
-          "
+            text-primary Livvic-SemiBold text-[13px] whitespace-nowrap md:mb-2 px-0 py-0 rounded-none"
               >
                 View Details
                 <ChevronRight size={14} />
-              </button>
+              </CustomButton>
             )
           ) : null}
 

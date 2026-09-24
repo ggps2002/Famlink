@@ -5,6 +5,7 @@ import { fireToastMessage } from "@shared/ui/toast";
 import { sentMatchRequestThunk } from "@features/matching/store/matchSlice";
 import { increaseMatchRequestSent } from "@features/auth/store/authSlice";
 
+import CustomButton from "@shared/ui/Button";
 // `onReferralRequired` lets the parent swap this modal for the refer-a-friend
 // one when the server turns the request down. That only fires if the client-side
 // gate in Config/matchGate.js and the server disagree — a stale user object, or
@@ -79,13 +80,13 @@ export const MatchRequestFormModal = ({ setIsRequestSubmitModal, senderId, recei
                             once they accept and start chatting.
                         </p>
 
-                        <button
+                        <CustomButton
                             type="button"
                             onClick={() => setIsRequestSubmitModal(false)}
-                            className="w-full flex items-center justify-center gap-2 bg-[#AEC4FF] hover:opacity-90 transition-opacity rounded-full py-3 text-sm Livvic-Bold text-[#0D134C]"
+                            className="w-full flex items-center justify-center gap-2 bg-[#AEC4FF] hover:opacity-90 transition-opacity rounded-full py-3 text-sm Livvic-Bold text-[#0D134C] px-0"
                         >
                             Done
-                        </button>
+                        </CustomButton>
                     </div>
                 ) : (
                     /* ── Form state ── */
@@ -127,10 +128,10 @@ export const MatchRequestFormModal = ({ setIsRequestSubmitModal, senderId, recei
                         </div> */}
 
                         {/* Send button */}
-                        <button
+                        <CustomButton
                             type="button"
                             onClick={handleRequest}
-                            className="w-full flex items-center justify-center gap-2 bg-[#AEC4FF] hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity rounded-full py-3 text-sm Livvic-Bold text-[#0D134C]"
+                            className="w-full flex items-center justify-center gap-2 bg-[#AEC4FF] hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity rounded-full py-3 text-sm Livvic-Bold text-[#0D134C] px-0"
                         >
                             {loading ? (
                                 <>
@@ -143,7 +144,7 @@ export const MatchRequestFormModal = ({ setIsRequestSubmitModal, senderId, recei
                                     Send Request
                                 </>
                             )}
-                        </button>
+                        </CustomButton>
                     </>
                 )}
             </div>

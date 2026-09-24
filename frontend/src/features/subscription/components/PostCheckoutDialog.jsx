@@ -10,6 +10,7 @@ import { refreshTokenThunk } from "@features/auth/store/authSlice";
 import { PLAN } from "@features/subscription/subscriptionPlan";
 import { useBodyScrollLock } from "@shared/lib/bodyScrollLock";
 
+import CustomButton from "@shared/ui/Button";
 /* Post-checkout result dialog.
    After Stripe Checkout the user is sent back to /dashboard?status=success
    (or ?status=cancelled). This reads that param, shows the matching
@@ -140,14 +141,14 @@ export default function PostCheckoutDialog() {
                 : "Your payment wasn't completed. You can try again anytime."}
         </p>
 
-        <button
+        <CustomButton
           type="button"
           onClick={close}
           disabled={confirming}
-          className="w-full bg-[#AEC4FF] hover:bg-[#9db4f7] disabled:opacity-60 disabled:cursor-not-allowed text-[#0D134C] Livvic-Bold py-3 rounded-xl transition-colors"
+          className="w-full bg-[#AEC4FF] hover:bg-[#9db4f7] disabled:opacity-60 disabled:cursor-not-allowed text-[#0D134C] Livvic-Bold py-3 rounded-xl transition-colors px-0"
         >
           {confirming ? "Please wait…" : success || pending ? "Continue" : "Close"}
-        </button>
+        </CustomButton>
       </div>
 
       <style>{`@keyframes popIn { 0% { opacity:0; transform:scale(0.9) } 100% { opacity:1; transform:scale(1) } }`}</style>

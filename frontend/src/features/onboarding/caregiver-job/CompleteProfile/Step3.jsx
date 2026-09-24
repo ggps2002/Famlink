@@ -2,21 +2,10 @@ import React, { useEffect } from "react";
 import Form from "antd/es/form/Form";
 import OnboardingOptionSelector from "@features/onboarding/components/OnboardingOptionSelector";
 
+import { CHILD_HELP, HOUSEHOLD_TASKS, NOT_APPLICABLE } from "@shared/lib/profileOptions";
 const step3Data = {
-    first: [
-        "Childcare",
-        "Meal/snack prep",
-        "Educational activities",
-        "Outdoor play",
-        "Transportation",
-        "Homework help",
-        "Nap/bedtime routines"
-    ],
-    second: [
-        "Yes — both child-related and family-related",
-        "Child-related tasks only",
-        "No — childcare only"
-    ],
+    first: CHILD_HELP,
+    second: [...HOUSEHOLD_TASKS, NOT_APPLICABLE],
 };
 
 function Step3({ formRef, initialValues }) {
@@ -53,13 +42,17 @@ function Step3({ formRef, initialValues }) {
                     />
 
                     <p className="text-lg Livvic-SemiBold text-primary mb-4">
-                        Are you open to helping with household tasks?
+                        Which household tasks are you open to helping with?
                     </p>
                     <OnboardingOptionSelector
                         form={form}
                         options={step3Data.second}
                         name={"householdHelp"}
-                        defaultCheckedValue={initialValues?.householdHelp}
+                        multi={true}
+                        selectAll={false}
+                        defaultCheckedValues={
+                            Array.isArray(initialValues?.householdHelp) ? initialValues.householdHelp : undefined
+                        }
                     />
 
                 </div>

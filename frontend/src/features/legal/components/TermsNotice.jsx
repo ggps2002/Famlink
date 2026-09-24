@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { Modal, Button } from "antd";
+import { Modal } from "antd";
 
+import CustomButton from "@shared/ui/Button";
 export default function TermsNotice({ className = "" }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -45,9 +46,9 @@ export default function TermsNotice({ className = "" }) {
             rel="noopener noreferrer"
             onClick={handleCancel}
           >
-            <Button type="primary" className="Livvic-semibold bg-[#AEC4FF] text-[#001243] border-none hover:bg-[#9cb5ff]">
+            <CustomButton className="Livvic-SemiBold bg-[#AEC4FF] text-[#001243] border-none hover:bg-[#9cb5ff] px-[15px] h-8 py-0 text-sm Livvic rounded-md">
               Read more
-            </Button>
+            </CustomButton>
           </Link>,
         ]}
       >

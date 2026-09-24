@@ -137,6 +137,7 @@ export default function Unsubscribe() {
                 initialValues={{ email }}
               >
                 <div className="relative w-full">
+                  <label className="fl-label">Your email</label>
                   <Form.Item
                     style={{ margin: 0, padding: 0 }}
                     name="email"
@@ -148,12 +149,9 @@ export default function Unsubscribe() {
                     <Input
                       type="email"
                       placeholder="Your email"
-                      className="peer border text-primary border-[#EEEEEE] rounded-[10px] px-4 pt-7 pb-2 w-full placeholder-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="w-full"
                     />
                   </Form.Item>
-                  <label className="absolute left-4 top-2 text-sm Livvic-Medium text-[#666666] px-1 z-10">
-                    Your email
-                  </label>
                 </div>
 
                 <div className="my-8">

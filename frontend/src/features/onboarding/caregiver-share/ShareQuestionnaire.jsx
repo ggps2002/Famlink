@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { fireToastMessage } from "@shared/ui/toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { X } from "lucide-react";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import Screen1 from "@features/onboarding/caregiver-share/Screen1";
 import Screen2 from "@features/onboarding/caregiver-share/Screen2";
 import Screen3 from "@features/onboarding/caregiver-share/Screen3";
@@ -16,6 +16,7 @@ import { ALLOWED_ZIPCODES, resolveZip } from "@shared/lib/serviceArea";
 import { sendWaitlistConfirmation } from "@features/waitlist/waitlistEmail";
 import { buildDetails, submitWaitlistEntry, WAITLIST_SOURCE } from "@features/waitlist/waitlistSubmit";
 
+import { fetchOnboardingRecord, saveOnboardingRecord } from "@features/onboarding/onboardingRecord";
 export const ShareQuestionnaire = () => {
     const { id } = useParams();
     const [isLoading, setIsLoading] = useState(false);
@@ -33,15 +34,18 @@ export const ShareQuestionnaire = () => {
     useEffect(() => {
         const retrieveSheetRecord = async () => {
             if (!id) return;
-            const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
-            if (!scriptUrl) {
-                fireToastMessage({ type: "error", message: "Google Script URL is missing." });
-                return;
-            }
+            // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+            // const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
+            // if (!scriptUrl) {
+            //     fireToastMessage({ type: "error", message: "Google Script URL is missing." });
+            //     return;
+            // }
             try {
                 setSheetLoading(true);
-                const response = await fetch(`${scriptUrl}?recordId=${encodeURIComponent(id)}`);
-                const result = await response.json();
+                // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+                // const response = await fetch(`${scriptUrl}?recordId=${encodeURIComponent(id)}`);
+                // const result = await response.json();
+                const result = await fetchOnboardingRecord(id);
                 if (result.status === "success" && result.record) {
                     setSheetUserData(result.record);
                 } else {
@@ -112,20 +116,23 @@ export const ShareQuestionnaire = () => {
                         Email: values.email,
                         Type: formValues.currentSchedule,
                     };
-                    const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
-                    if (!scriptUrl) {
-                        console.warn("VITE_GOOGLE_SCRIPT_URL is not set. Data:", payload);
-                        await new Promise((r) => setTimeout(r, 1400));
-                        return;
-                    }
-                    const formData = new URLSearchParams(payload).toString();
+                    // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+                    // const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
+                    // if (!scriptUrl) {
+                    //     console.warn("VITE_GOOGLE_SCRIPT_URL is not set. Data:", payload);
+                    //     await new Promise((r) => setTimeout(r, 1400));
+                    //     return;
+                    // }
+                    // const formData = new URLSearchParams(payload).toString();
                     setIsLoading(true);
                     try {
-                        await fetch(scriptUrl, {
-                            method: "POST",
-                            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                            body: formData,
-                        });
+                        // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+                        // await fetch(scriptUrl, {
+                        //     method: "POST",
+                        //     headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        //     body: formData,
+                        // });
+                        await saveOnboardingRecord(payload);
                         await dispatch(nannyshareProfileThunk({ careType: formValues.currentSchedule }));
                         await Register(values.email, values.password);
                         setIsLoading(false);
@@ -238,7 +245,7 @@ export const ShareQuestionnaire = () => {
                     <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-50">
                         <div className="flex justify-center py-4 space-x-4">
                             {currentStep > 0 && currentStep !== 1 && (
-                                <Button
+                                <CustomButton
                                     action={() => { if (currentStep > 0) setCurrentStep((prev) => prev - 1); }}
                                     btnText={"Back"}
                                     className="border border-[#FFFFFF] text-[#555555]"
@@ -248,7 +255,7 @@ export const ShareQuestionnaire = () => {
                                 {currentStep === 1 && (
                                     <p className="Livvic-Bold text-primary text-lg mb-1">Create an account to connect</p>
                                 )}
-                                <Button
+                                <CustomButton
                                     btnText={currentStep === 0 ? "See Matches Near You" : currentStep === 1 ? "Create Account" : "Continue"}
                                     action={() => HandleNext()}
                                     isLoading={isLoading}
@@ -381,11 +388,11 @@ const WaitlistModal = ({ onClose, name, location, forWho, numChildren, ages, cur
                 </div>
 
                 {/* CTA */}
-                <button
+                <CustomButton
                     type="button"
                     onClick={handleJoinWaitlist}
                     disabled={submitState === "loading"}
-                    className="w-full flex items-center justify-center gap-2 text-center bg-[#AEC4FF] disabled:opacity-70 disabled:cursor-not-allowed hover:bg-[#9db3f0] transition-colors rounded-full py-3 text-base Livvic-Bold text-black mb-3"
+                    className="w-full flex items-center justify-center gap-2 text-center bg-[#AEC4FF] disabled:opacity-70 disabled:cursor-not-allowed hover:bg-[#9db3f0] transition-colors rounded-full py-3 text-base Livvic-Bold text-black mb-3 px-0"
                 >
                     {submitState === "loading" ? (
                         <>
@@ -398,15 +405,15 @@ const WaitlistModal = ({ onClose, name, location, forWho, numChildren, ages, cur
                     ) : (
                         "Join Waitlist"
                     )}
-                </button>
+                </CustomButton>
 
-                <button
+                <CustomButton
                     type="button"
                     onClick={onClose}
-                    className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
+                    className="text-sm text-gray-400 hover:text-gray-600 transition-colors px-0 py-0 rounded-none Livvic"
                 >
                     Maybe later
-                </button>
+                </CustomButton>
             </div>
 
             <style>{`
@@ -484,13 +491,13 @@ const WaitlistSuccessModal = ({ onClose }) => (
                 We'll reach out as soon as Famlink becomes available near you.
             </p>
 
-            <button
+            <CustomButton
                 type="button"
                 onClick={onClose}
-                className="w-full text-center bg-[#AEC4FF] hover:bg-[#9db3f0] transition-colors rounded-full py-3 text-base Livvic-Bold text-black"
+                className="w-full text-center bg-[#AEC4FF] hover:bg-[#9db3f0] transition-colors rounded-full py-3 text-base Livvic-Bold text-black px-0"
             >
                 Back to Homepage
-            </button>
+            </CustomButton>
         </div>
 
         <style>{`

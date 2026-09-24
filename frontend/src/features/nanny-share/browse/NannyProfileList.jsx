@@ -21,6 +21,7 @@ import { getMatchGate, MATCH_GATE } from "@features/matching/matchGate";
 import { getMyReferralThunk } from "@features/referral/store/referralSlice";
 import { Share2, SlidersHorizontal } from "lucide-react";
 
+import CustomButton from "@shared/ui/Button";
 // How many times to re-fetch "Your Profile" while it's still coming back empty.
 // Right after signup the nanny-share profile document can land on the server a
 // beat after the first request, so we retry before settling on the empty state.
@@ -449,13 +450,13 @@ export default function ProfileList({
                 until a profile exists, since there'd be nothing behind the link;
                 the "complete your profile" prompt on the card covers that case. */}
             {currentProfile && (
-              <button
+              <CustomButton
                 onClick={() => setIsShareModal(true)}
                 className="flex items-center gap-2 bg-white border border-[#AEC4FF] text-primary Livvic-SemiBold text-sm rounded-full px-4 py-2 shadow-sm transition-colors hover:bg-[#AEC4FF]/20"
               >
                 <Share2 size={16} />
                 Share Profile
-              </button>
+              </CustomButton>
             )}
           </div>
           {renderCurrentProfile()}
@@ -470,14 +471,14 @@ export default function ProfileList({
             next to the heading it acts on, and styled as the sibling of the
             "Share Profile" button above, so the two headers read as a pair. */}
         {onOpenFilters && (
-          <button
+          <CustomButton
             onClick={onOpenFilters}
             aria-label="Open filters"
             className="lg:hidden flex items-center gap-2 bg-white border border-[#AEC4FF] text-primary Livvic-SemiBold text-sm rounded-full px-4 py-2 shadow-sm transition-colors hover:bg-[#AEC4FF]/20"
           >
             <SlidersHorizontal size={16} />
             Filters
-          </button>
+          </CustomButton>
         )}
       </div>
       <div className="flex flex-col gap-4 mt-6">

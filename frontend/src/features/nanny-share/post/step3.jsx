@@ -4,13 +4,8 @@ import SelectChildrenAge from "@features/nanny-share/post/SelectChildrenAge";
 import Input from "antd/es/input/Input";
 import OnboardingOptionSelector from "@features/onboarding/components/OnboardingOptionSelector";
 
-const step3Data = [
-  "Food allergies",
-  "Environmental allergies",
-  "Asthma",
-  "Medication needs",
-  "None",
-];
+import { ALLERGIES_HEALTH } from "@shared/lib/profileOptions";
+const step3Data = ALLERGIES_HEALTH;
 
 function Step3({ formRef, selectedValue, setSelectedValue, numberOfChildren=null, childrenAges=[] , initialValues}) {
   const updateSelectedValue = (updatedSelectedValue) => {

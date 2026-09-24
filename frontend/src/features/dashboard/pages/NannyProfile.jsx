@@ -21,6 +21,7 @@ import { addOrRemoveFavouriteThunk } from "@features/dashboard/store/favouriteSl
 import { refreshTokenThunk } from "@features/auth/store/authSlice";
 import { createChatThunk } from "@features/chat/store/chatSlice";
 
+import CustomButton from "@shared/ui/Button";
 /* ── formatting ──────────────────────────────────────────────────────────── */
 
 /**
@@ -332,13 +333,13 @@ export default function ProfileNanny() {
               )}
 
               {!isOwnProfile && (
-                <button
+                <CustomButton
                   type="button"
                   onClick={handleMessage}
-                  className="mt-[15px] w-full h-[50px] rounded-[35px] bg-[#AEC4FF] hover:bg-[#C1D6FF] transition-colors border-none cursor-pointer Livvic-SemiBold text-[14px] leading-[14px] text-[#000F36]"
+                  className="mt-[15px] w-full h-[50px] rounded-[35px] bg-[#AEC4FF] hover:bg-[#C1D6FF] transition-colors border-none cursor-pointer Livvic-SemiBold text-[14px] leading-[14px] text-[#000F36] px-0 py-0"
                 >
                   {firstName ? `Message ${firstName}` : "Message"}
-                </button>
+                </CustomButton>
               )}
             </div>
           </ProfileCard>

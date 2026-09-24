@@ -4,10 +4,15 @@ import Form from "antd/es/form/Form";
 import FormItem from "antd/es/form/FormItem";
 import { Input, Select } from "antd";
 import { Plus, X } from "lucide-react";
-import Autocomplete from "react-google-autocomplete";
+import AutocompleteModule from "react-google-autocomplete";
+
+// The package is CommonJS: depending on the bundler's interop the default
+// import is the component or `{ default: component }`. Rendering the object is
+// React error #130, which is what crashed this page.
+const Autocomplete = AutocompleteModule.default ?? AutocompleteModule;
 import { Spin } from "antd";
 import OnboardingOptionSelector from "@features/onboarding/components/OnboardingOptionSelector";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import { InputDa } from "@shared/ui/Input";
 import { useSearchParams } from "react-router-dom";
 import { sendWaitlistConfirmation } from "@features/waitlist/waitlistEmail";
@@ -116,13 +121,13 @@ const WaitlistSuccessModal = ({ onClose }) => (
                 Keep an eye on your inbox — we'll reach out as soon as we're live near you.
             </p>
 
-            <button
+            <CustomButton
                 type="button"
                 onClick={onClose}
-                className="w-full block text-center bg-[#aec4ff] hover:bg-[#aec4ff] transition-colors rounded-full py-3 text-base Livvic-Bold text-black mb-3"
+                className="w-full block text-center bg-[#aec4ff] hover:bg-[#aec4ff] transition-colors rounded-full py-3 text-base Livvic-Bold text-black mb-3 px-0"
             >
                 Done
-            </button>
+            </CustomButton>
         </div>
         <style>{`
       @keyframes popIn       { 0% { opacity:0; transform:scale(0.85); } 100% { opacity:1; transform:scale(1); } }
@@ -289,7 +294,6 @@ const WaitlistForm = () => {
                       onChange={(e) => updateChild(child.id, "age", e.target.value)}
                       status={childrenError && !child.age ? "error" : ""}
                       style={{ width: 80 }}
-                      className="border text-primary border-[#EEEEEE] rounded-[10px] px-4 py-1 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                     <Select
                       value={child.unit}
@@ -315,14 +319,14 @@ const WaitlistForm = () => {
               {childrenError && (
                 <p className="text-red-400 text-xs mt-2">Please enter an age for each child.</p>
               )}
-              <button
+              <CustomButton
                 type="button"
                 onClick={addChild}
-                className="mt-4 flex items-center gap-2 text-primary Livvic-SemiBold hover:opacity-70 transition-opacity"
+                className="mt-4 flex items-center gap-2 text-primary Livvic-SemiBold hover:opacity-70 transition-opacity px-0 py-0 rounded-none"
               >
                 <span className="text-2xl leading-none"><Plus size={18} /></span>
                 <span className="text-sm">Add another child</span>
-              </button>
+              </CustomButton>
             </div> */}
 
                         {/* Already have a nanny */}
@@ -366,12 +370,7 @@ const WaitlistForm = () => {
                   <Spin spinning={locationLoading} size="small">
                     <Autocomplete
                       apiKey={import.meta.env.VITE_GOOGLE_KEY}
-                      style={{
-                        width: "55%",
-                        borderRadius: "10px",
-                        padding: "0.75rem",
-                        border: "1px solid #D6DDEB",
-                      }}
+                      className="fl-field w-full md:w-[55%]"
                       value={location}
                       onPlaceSelected={(place) => {
                         const address = place.formatted_address;
@@ -453,16 +452,16 @@ const WaitlistForm = () => {
                             {childrenError && (
                                 <p className="text-red-400 text-xs mt-2">Please enter an age for each child.</p>
                             )}
-                            <button
+                            <CustomButton
                                 type="button"
                                 onClick={addChild}
-                                className="mt-4 flex items-center gap-2 text-primary Livvic-SemiBold text-sm hover:opacity-70 transition-opacity group"
+                                className="mt-4 flex items-center gap-2 text-primary Livvic-SemiBold text-sm hover:opacity-70 transition-opacity group px-0 py-0 rounded-none"
                             >
                                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 transition-colors">
                                     <Plus className="w-3.5 h-3.5 text-[#AEC4FF]" />
                                 </span>
                                 Add another child
-                            </button>
+                            </CustomButton>
                         </div>
                         {/* Location */}
                         <div>
@@ -473,7 +472,7 @@ const WaitlistForm = () => {
                                 <Spin spinning={locationLoading} size="small">
                                     <Autocomplete
                                         apiKey={import.meta.env.VITE_GOOGLE_KEY}
-                                        className="w-full sm:w-3/4 md:w-2/3 rounded-xl px-4 py-3 border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-gray-400"
+                                        className="fl-field w-full sm:w-3/4 md:w-2/3"
                                         value={location}
                                         onPlaceSelected={async (place) => {
                                             const address = place.formatted_address;
@@ -503,7 +502,7 @@ const WaitlistForm = () => {
                         {/* Submit */}
                         <div className="flex justify-center pt-6 w-full max-w-lg mx-auto">
                             <FormItem className="mb-0 w-full sm:w-auto">
-                                <Button
+                                <CustomButton
                                     btnText="Join Waitlist"
                                     htmlType="submit"
                                     disabled={modalState === "loading"}

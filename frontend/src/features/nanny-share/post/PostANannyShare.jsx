@@ -11,9 +11,10 @@ import HireStep2 from "@shared/ui/questionnaire/step2";
 import { step2Data, step3Data, step4Data, step5Data, step6Data, step7Data, step8Data, step9Data, step10Data, step11Data, step12Data, step13Data } from "@features/nanny-share/questionnaire/options";
 import { parseHourlyRate } from "@shared/lib/rates";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchWithTimeout } from "@shared/api/fetchWithTimeout";
+// [Google Sheet — only the sheet post used this; kept for reference]
+// import { fetchWithTimeout } from "@shared/api/fetchWithTimeout";
 import { nannyshareProfileThunk, postNannyShare } from "@features/nanny-share/store/nannyShareSlice";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import Step1 from "@features/nanny-share/post/step1";
 import { addOrUpdateAdditionalInfo } from "@shared/store/formValueSlice";
 import OpenText from "@features/nanny-share/post/OpenText";
@@ -23,6 +24,7 @@ import Step8 from "@features/nanny-share/post/step8";
 import { setNannyProfileCompleted } from "@features/auth/store/authSlice";
 import { normalizeShareSchedule } from "@shared/lib/scheduleFormat";
 
+import { fetchOnboardingRecord, saveOnboardingRecord } from "@features/onboarding/onboardingRecord";
 export const PostANannyShare = ({ login = true, recordId }) => {
   const [searchParams] = useSearchParams();
   // Prefer an explicit recordId (e.g. the signed-in user's sheetId, passed when
@@ -47,22 +49,25 @@ export const PostANannyShare = ({ login = true, recordId }) => {
     const retrieveSheetRecord = async () => {
       if (!id) return;
 
-      const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
-      if (!scriptUrl) {
-        fireToastMessage({
-          type: "error",
-          message: "Google Script URL is missing.",
-        });
-        return;
-      }
+      // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+      // const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
+      // if (!scriptUrl) {
+      //   fireToastMessage({
+      //     type: "error",
+      //     message: "Google Script URL is missing.",
+      //   });
+      //   return;
+      // }
 
       try {
         setSheetLoading(true);
 
-        const response = await fetch(
-          `${scriptUrl}?recordId=${encodeURIComponent(id)}`
-        );
-        const result = await response.json();
+        // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+        // const response = await fetch(
+        //   `${scriptUrl}?recordId=${encodeURIComponent(id)}`
+        // );
+        // const result = await response.json();
+        const result = await fetchOnboardingRecord(id);
         if (result.status === "success" && result.record) {
           setSheetUserData(result.record);
         } else {
@@ -422,29 +427,31 @@ export const PostANannyShare = ({ login = true, recordId }) => {
                 ...flattenValues
               };
 
-              const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
+              // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+              // const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
 
-              if (!scriptUrl) {
-                console.warn(
-                  "VITE_GOOGLE_SCRIPT_URL is not set. Data:",
-                  payload,
-                );
-                await new Promise((r) => setTimeout(r, 1400));
-                setIsLoading(false);
-                return;
-              }
+              // if (!scriptUrl) {
+              //   console.warn(
+              //     "VITE_GOOGLE_SCRIPT_URL is not set. Data:",
+              //     payload,
+              //   );
+              //   await new Promise((r) => setTimeout(r, 1400));
+              //   setIsLoading(false);
+              //   return;
+              // }
 
-              const formData = new URLSearchParams(payload).toString();
+              // const formData = new URLSearchParams(payload).toString();
 
-              const response = await fetchWithTimeout(scriptUrl, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/x-www-form-urlencoded",
-                },
-                body: formData,
-              });
-
-              await response.text();
+              // [Google Sheet — replaced by the onboarding-records API; kept for reference]
+              // const response = await fetchWithTimeout(scriptUrl, {
+              //   method: "POST",
+              //   headers: {
+              //     "Content-Type": "application/x-www-form-urlencoded",
+              //   },
+              //   body: formData,
+              // });
+              await saveOnboardingRecord(payload);
+              // await response.text();
 
               setIsLoading(false);
 
@@ -549,7 +556,7 @@ export const PostANannyShare = ({ login = true, recordId }) => {
           <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-50">
             <div className="flex justify-center py-4 space-x-4">
               {currentStep > 0 && (
-                <Button
+                <CustomButton
                   action={() => {
                     if (currentStep > 0) {
                       setCurrentStep((prev) => prev - 1);
@@ -560,7 +567,7 @@ export const PostANannyShare = ({ login = true, recordId }) => {
                 />
               )}
 
-              <Button
+              <CustomButton
                 btnText={totalStep === currentStep ? login ? "Post a Job" : "Submit Responses" : "Continue"}
                 action={() => HandleNext()}
                 isLoading={isLoading}
@@ -629,28 +636,28 @@ const FinalSuccessModal = ({ onClose, recordId }) => {
           within 24 hours.
         </p>
 
-        <button
+        <CustomButton
           type="button"
           onClick={() =>
             navigate(`/hire?recordId=${recordId || ""}`)
           }
-          className="w-full block text-center bg-[#FFADE1] hover:bg-[#f99dd5] transition-colors rounded-full py-3 text-base Livvic-Bold text-black"
+          className="w-full block text-center bg-[#FFADE1] hover:bg-[#f99dd5] transition-colors rounded-full py-3 text-base Livvic-Bold text-black px-0"
         >
           Set up my FamLink profile now
-        </button>
+        </CustomButton>
 
         <p className="text-xs text-gray-500 mt-3 mb-4 leading-relaxed max-w-[280px]">
           Save and update your info, and view your nanny-share matches in one
           place.
         </p>
 
-        <button
+        <CustomButton
           type="button"
           onClick={onClose}
-          className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+          className="text-sm text-gray-500 hover:text-gray-700 transition-colors px-0 py-0 rounded-none Livvic"
         >
           Close for now
-        </button>
+        </CustomButton>
       </div>
 
       <style>{`

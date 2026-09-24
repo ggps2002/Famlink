@@ -6,6 +6,7 @@ import { api } from "@shared/api/client";
 import { Loader2 } from "lucide-react";
 import { clearConsent } from "@shared/consent/consentStore";
 
+import CustomButton from "@shared/ui/Button";
 function Footer() {
   const { pathname } = useLocation();
   const [email, setEmail] = useState("");
@@ -260,7 +261,7 @@ function Footer() {
                   placeholder="Enter your Email"
                   className="bg-[#1C2C5B] text-white border border-[#2D407A] rounded-full flex-1 px-5 py-2.5 text-[13px] Livvic focus:outline-none focus:border-[#AEC4FF] placeholder-[#FFFFFF88] min-w-0"
                 />
-                <button
+                <CustomButton
                   onClick={async () => {
                     if (!email) return;
                     setIsLoading(true);
@@ -274,14 +275,14 @@ function Footer() {
                       setIsLoading(false);
                     }
                   }}
-                  className="bg-[#C1D4FF] text-[#001243] w-10 h-10 rounded-full flex justify-center items-center hover:bg-[#A6BEFF] transition-colors flex-shrink-0"
+                  className="bg-[#C1D4FF] text-[#001243] w-10 h-10 rounded-full flex justify-center items-center hover:bg-[#A6BEFF] transition-colors flex-shrink-0 px-0 py-0 Livvic"
                 >
                   {isLoading ? (
                     <Loader2 className="w-4 h-4 animate-spin text-[#001243]" />
                   ) : (
                     <span className="text-lg leading-none mb-0.5">→</span>
                   )}
-                </button>
+                </CustomButton>
               </div>
 
               <h3 className="uppercase tracking-wider font-[800] text-[13px] text-white mb-4">
@@ -319,13 +320,13 @@ function Footer() {
                   accepted has no way back to the choice. `clearConsent` forgets
                   the stored answer and fires the event CookieConsentGate
                   listens for, on whatever page they happen to be on. */}
-              <button
+              <CustomButton
                 type="button"
                 onClick={clearConsent}
-                className="Livvic-Medium text-[#FFFFFFCC] underline decoration-[#FFFFFF44] hover:text-white hover:decoration-white transition-all"
+                className="Livvic-Medium text-[#FFFFFFCC] underline decoration-[#FFFFFF44] hover:text-white hover:decoration-white transition-all px-0 py-0 rounded-none"
               >
                 Cookie Preferences
-              </button>
+              </CustomButton>
             </div>
           </div>
         </div>

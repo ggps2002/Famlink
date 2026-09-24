@@ -6,6 +6,7 @@ import { getShareProfileCopy, shareMessageFor } from "@features/share-link/share
 import SharedProfileCard from "@features/share-link/SharedProfileCard";
 import { fireToastMessage } from "@shared/ui/toast";
 
+import CustomButton from "@shared/ui/Button";
 // The share sheet behind the "Share Profile" button.
 //
 // Members are already posting in Facebook groups, Nextdoor and neighborhood
@@ -207,7 +208,7 @@ export const ShareProfileModal = ({ onClose }) => {
               >
                 {link || "Link unavailable"}
               </span>
-              <button
+              <CustomButton
                 type="button"
                 onClick={handleCopy}
                 disabled={!link}
@@ -215,7 +216,7 @@ export const ShareProfileModal = ({ onClose }) => {
               >
                 {copied ? <Check size={13} /> : <Copy size={13} />}
                 {copied ? "Copied!" : "Copy"}
-              </button>
+              </CustomButton>
             </div>
 
             {targets && (
@@ -261,14 +262,14 @@ export const ShareProfileModal = ({ onClose }) => {
             )}
 
             {canShare && link && (
-              <button
+              <CustomButton
                 type="button"
                 onClick={handleNativeShare}
-                className="w-full flex items-center justify-center gap-2 bg-[#AEC4FF] text-[#0D134C] transition-colors rounded-full py-3 text-base Livvic-Bold hover:brightness-95"
+                className="w-full flex items-center justify-center gap-2 bg-[#AEC4FF] text-[#0D134C] transition-colors rounded-full py-3 text-base Livvic-Bold hover:brightness-95 px-0"
               >
                 <Share2 size={16} />
                 More sharing options
-              </button>
+              </CustomButton>
             )}
           </>
         )}

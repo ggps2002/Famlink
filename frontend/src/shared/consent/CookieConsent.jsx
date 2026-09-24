@@ -7,6 +7,7 @@ import { Switch } from "@shared/ui/switch";
 import { COOKIE_CATEGORIES, allAccepted, essentialOnly } from "@shared/consent/categories";
 import { writeConsent } from "@shared/consent/consentStore";
 
+import CustomButton from "@shared/ui/Button";
 /**
  * The cookie consent panel, as a set of composable parts.
  *
@@ -181,7 +182,7 @@ function CookieConsentManage({ className, children = "Manage", ...props }) {
   if (expanded) return null;
 
   return (
-    <button
+    <CustomButton
       type="button"
       data-slot="cookie-consent-manage"
       aria-expanded={expanded}
@@ -195,7 +196,7 @@ function CookieConsentManage({ className, children = "Manage", ...props }) {
       {...props}
     >
       {children}
-    </button>
+    </CustomButton>
   );
 }
 
@@ -283,7 +284,7 @@ const OUTLINE = "border border-line bg-white text-ink hover:bg-canvas";
 function CookieConsentAcceptAll({ className, children = "Accept all", ...props }) {
   const { acceptAll } = useCookieConsent();
   return (
-    <button
+    <CustomButton
       type="button"
       data-slot="cookie-consent-accept-all"
       onClick={acceptAll}
@@ -291,14 +292,14 @@ function CookieConsentAcceptAll({ className, children = "Accept all", ...props }
       {...props}
     >
       {children}
-    </button>
+    </CustomButton>
   );
 }
 
 function CookieConsentRejectAll({ className, children = "Reject all", ...props }) {
   const { rejectAll } = useCookieConsent();
   return (
-    <button
+    <CustomButton
       type="button"
       data-slot="cookie-consent-reject-all"
       onClick={rejectAll}
@@ -306,7 +307,7 @@ function CookieConsentRejectAll({ className, children = "Reject all", ...props }
       {...props}
     >
       {children}
-    </button>
+    </CustomButton>
   );
 }
 
@@ -316,7 +317,7 @@ function CookieConsentSave({ className, children = "Save choices", ...props }) {
   if (!expanded) return null;
 
   return (
-    <button
+    <CustomButton
       type="button"
       data-slot="cookie-consent-save"
       onClick={save}
@@ -324,7 +325,7 @@ function CookieConsentSave({ className, children = "Save choices", ...props }) {
       {...props}
     >
       {children}
-    </button>
+    </CustomButton>
   );
 }
 

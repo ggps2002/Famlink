@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "@shared/ui/Button";
+import CustomButton from "@shared/ui/Button";
 import { NavLink } from "react-router-dom";
 
 const benefits = [
@@ -30,7 +30,7 @@ function NannyShare() {
           system.
         </p>
         <NavLink to="/joinNow">
-          <Button
+          <CustomButton
             btnText="Learn more about Nanny Share"
             className="bg-[#D6FB9A] text-ink mt-8 w-full sm:w-auto"
           />
