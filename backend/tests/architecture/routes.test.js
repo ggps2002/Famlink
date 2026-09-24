@@ -82,6 +82,19 @@ import baseline from "./route-baseline.json" with { type: "json" };
  *                                are that missing verb. See
  *                                shared/email/emailQueue.model.js.
  *
+ *   POST /onboarding-records     added 2026-09-25. The onboarding forms (family
+ *   GET  /onboarding-records/:recordId  match form, caregiver questionnaires,
+ *                                family nanny-share questionnaire) wrote every
+ *                                answer to a Google Sheet through an Apps
+ *                                Script, and read it back by record id to
+ *                                pre-fill later steps and sign the visitor in.
+ *                                They now write to our own database instead —
+ *                                same { action, Id, ...columns } protocol, same
+ *                                { status, record } reply — so the answers are
+ *                                queryable and no longer depend on a script
+ *                                whose source isn't in this repository. See
+ *                                modules/onboardingRecord/.
+ *
  *   POST /auth/logout            added 2026-09-12. Ending a session became something only the
  *                                server can do. The refresh token now lives in
  *                                an httpOnly cookie, so signing out can no

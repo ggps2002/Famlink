@@ -43,6 +43,7 @@ import { StripeWebhookModule } from "./billing/webhook.module.js";
 import { MessageModule } from "./messaging/message.module.js";
 import { NannyShareModule } from "./nannyShare/nannyShare.module.js";
 import { OnboardingModule } from "./onboarding/onboarding.module.js";
+import { OnboardingRecordModule } from "./onboardingRecord/onboardingRecord.module.js";
 import { ProfileModule } from "./profile/profile.module.js";
 import { ReferralModule } from "./referral/referral.module.js";
 import { ReportModule } from "./report/report.module.js";
@@ -122,6 +123,7 @@ export const MIGRATED_MODULES = [
   NannyShareModule,
   NewsletterModule,
   OnboardingModule,
+  OnboardingRecordModule,
   PaymentModule,
   RevenueModule,
   StripeWebhookModule,

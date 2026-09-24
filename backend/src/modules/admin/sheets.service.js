@@ -143,6 +143,11 @@ export class SheetsService extends BaseService {
     return this.sheetsConfigured();
   }
 
+  /** Per sheet: "forms" is database-backed and always readable. */
+  isConfigured(key) {
+    return this.sheetsConfigured(key);
+  }
+
   /**
    * The "not set up yet" response.
    *
@@ -197,7 +202,7 @@ export class SheetsService extends BaseService {
    * who filtered to one city and clicked export meant that city.
    */
   async export({ key, query = {} }) {
-    if (!this.configured) {
+    if (!this.isConfigured(key)) {
       throw new ValidationError("Google Sheets reading isn't set up yet.");
     }
 

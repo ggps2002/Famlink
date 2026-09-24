@@ -954,5 +954,13 @@
   {
     "method": "POST",
     "path": "/waitlist/confirmation"
+  },
+  {
+    "method": "POST",
+    "path": "/onboarding-records"
+  },
+  {
+    "method": "GET",
+    "path": "/onboarding-records/:recordId"
   }
 ]

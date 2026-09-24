@@ -5,6 +5,30 @@ import { logAdminAction } from "./adminAudit.js";
 import { SheetsService, SHEET_META } from "./sheets.service.js";
 import { fetchSheet, sheetsConfigured } from "../../shared/integrations/sheetReader.js";
 import { userRepository } from "../user/user.repository.js";
+import { onboardingRecordService } from "../onboardingRecord/onboardingRecord.module.js";
+import { mergeWithSheet } from "../onboardingRecord/onboardingRecord.service.js";
+
+/**
+ * "forms" — the onboarding answers — is read from the database now that the
+ * forms write there instead of the Google Sheet. The rows written before the
+ * move are still only in the sheet, so while the sheet reader is configured
+ * they are merged in; if the sheet can't be read, the database rows still show.
+ * "waitlist" is unchanged: it is still a Google Sheet.
+ */
+const readSheet = async (key, options) => {
+  if (key !== "forms") return fetchSheet(key, options);
+
+  const db = await onboardingRecordService.asSheet();
+  if (!sheetsConfigured()) return db;
+  try {
+    return mergeWithSheet(db, await fetchSheet(key, options));
+  } catch (error) {
+    console.warn("Form responses: showing database rows only; sheet read failed:", error.message);
+    return db;
+  }
+};
+
+const isConfigured = (key) => key === "forms" || sheetsConfigured();
 import { UpstreamServiceError } from "../../core/errors/index.js";
 
 /**
@@ -29,7 +53,7 @@ class SheetsController extends BaseController {
   async list(req, res) {
     const key = this.sheetsService.resolveKey(req.params.key);
 
-    if (!this.sheetsService.configured) {
+    if (!this.sheetsService.isConfigured(key)) {
       return this.ok(res, this.sheetsService.notConfigured(key));
     }
 
@@ -90,8 +114,8 @@ export class AdminSheetsModule extends RouteModule {
         userRepository,
         // Both reach the Google Apps Script deployment, so they are injected
         // rather than imported into the service.
-        fetchSheet,
-        sheetsConfigured,
+        fetchSheet: readSheet,
+        sheetsConfigured: isConfigured,
       }),
     });
 
