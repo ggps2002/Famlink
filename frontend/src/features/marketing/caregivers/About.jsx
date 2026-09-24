@@ -1,6 +1,7 @@
 import React from "react";
 import CustomButton from "@shared/ui/Button";
 import { NavLink } from "react-router-dom";
+import NannyShareCarousel from "@features/marketing/components/NannyShareCarousel";
 
 /* "What is a nanny share" explainer for caregivers, as a two-column split.
  * The page's <Section> supplies the band and padding — this brought its own
@@ -68,13 +69,8 @@ function About() {
         </NavLink>
       </div>
 
-      <div className="w-full flex justify-center items-center">
-        <img
-          src="nanny_share.webp"
-          alt="A nanny caring for children from two families"
-          className="w-full max-w-md object-cover rounded-2xl shadow-[0_0_30px_rgba(0,0,0,0.1)]"
-        />
-      </div>
+      {/* Same arrangement carousel as "What is Nanny Share?" on / */}
+      <NannyShareCarousel />
     </div>
   );
 }
