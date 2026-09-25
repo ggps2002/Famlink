@@ -1,4 +1,4 @@
-import { useLocation, useNavigate, matchPath } from "react-router-dom";
+import { useLocation, useNavigate, useMatches, matchPath } from "react-router-dom";
 import RouteOutlet from "@app/RouteOutlet";
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -220,6 +220,7 @@ function UserLayout({ pathname }) {
  * one at a time is a component that will be missing from the seventh. */
 function PageChrome() {
   const { pathname, search } = useLocation();
+  const matches = useMatches();
 
   useTokenRefresh();
 
@@ -235,6 +236,14 @@ function PageChrome() {
     captureReferralFromUrl(search);
     captureSharedProfileFromUrl(search);
   }, [search]);
+
+  // The 404 page (the "*" route in App.jsx) is its own page: no site header,
+  // footer or dashboard shell, whatever the path looked like. Checked before
+  // the path lists because an unknown /dashboard/... URL would otherwise get
+  // the member navbar.
+  if (matches[matches.length - 1]?.handle?.standalone) {
+    return <RouteOutlet />;
+  }
 
   if (matchesAnyRoute(pathname, ROUTES.withNothing)) {
     return <RouteOutlet />;

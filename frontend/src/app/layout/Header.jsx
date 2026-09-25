@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import CustomButton from "@shared/ui/Button";
+import MenuToggle from "@shared/ui/MenuToggle";
 import { useBodyScrollLock } from "@shared/lib/bodyScrollLock";
 import { useLocation } from "react-router-dom";
 
@@ -42,7 +43,7 @@ function Header() {
     <>
       {/* ── HEADER SHELL ── */}
       <header
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ease-in-out bg-white ${scrolled ? "shadow-sm py-3" : "py-4 sm:py-5"}`}
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ease-in-out bg-white ${scrolled ? "shadow-sm py-3" : "py-3 sm:py-4 lg:py-5"}`}
       >
         <div className="px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl">
 
@@ -156,15 +157,15 @@ function Header() {
           </div>
 
           {/* ── MOBILE (below lg) ── */}
-          <div className="lg:hidden flex items-center justify-between w-full">
+          <div className="lg:hidden flex items-center justify-between gap-3 w-full">
 
             {/* Logo — always visible */}
-            <NavLink to="/" onClick={closeMenu}>
+            <NavLink to="/" onClick={closeMenu} className="min-w-0">
               <div className="flex items-center gap-1.5">
                 <img
                   src="/logo3.png"
                   alt="logo"
-                  className={`transition-all duration-300 ${scrolled ? "w-6 h-6" : "w-7 h-7"}`}
+                  className={`flex-shrink-0 transition-all duration-300 ${scrolled ? "w-6 h-6" : "w-7 h-7"}`}
                 />
                 <p className={`Livvic-Bold text-[#001243] transition-all duration-300 ${scrolled ? "text-lg" : "text-xl"}`}>
                   Famlink
@@ -172,22 +173,28 @@ function Header() {
               </div>
             </NavLink>
 
-            {/* Hamburger — always dark since bg is always white */}
-            <button
-              onClick={toggleMenu}
-              className="flex-shrink-0 flex flex-col justify-center items-center w-8 h-8 focus:outline-none z-[70]"
-              aria-label="Toggle menu"
-            >
-              <span
-                className={`block w-5 h-0.5 transform transition-all duration-300 ease-in-out bg-[#001243] ${isMenuOpen ? "rotate-45 translate-y-[6px]" : ""}`}
+            {/* Log in / Dashboard + menu toggle. The header sits above the
+                menu panel (z-50 over z-40), so this toggle is never covered:
+                it turns into the X in place, and the button beside it stays
+                reachable while the menu is open. */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {!pathname.startsWith("/business") && (
+                <NavLink to={isAuthed ? "/dashboard" : "/login"} onClick={closeMenu}>
+                  <CustomButton
+                    size="sm"
+                    className="h-10 px-4 bg-[#AEC4FF] hover:bg-[#9BB8FF] text-[#001243] Livvic-SemiBold text-sm"
+                  >
+                    {isAuthed ? "Dashboard" : "Log in"}
+                  </CustomButton>
+                </NavLink>
+              )}
+              <MenuToggle
+                open={isMenuOpen}
+                onToggle={toggleMenu}
+                controls="site-mobile-menu"
+                className="border-line bg-white text-[#001243] hover:bg-[#F8F9FF] hover:text-[#001243]"
               />
-              <span
-                className={`block w-5 h-0.5 mt-1.5 transform transition-all duration-300 ease-in-out bg-[#001243] ${isMenuOpen ? "opacity-0" : ""}`}
-              />
-              <span
-                className={`block w-5 h-0.5 mt-1.5 transform transition-all duration-300 ease-in-out bg-[#001243] ${isMenuOpen ? " -rotate-45 -translate-y-[9px]" : ""}`}
-              />
-            </button>
+            </div>
           </div>
 
         </div>
@@ -196,31 +203,21 @@ function Header() {
       {/* Page content spacer */}
       <div className="h-14 sm:h-16 lg:h-20" />
 
-      {/* ── MOBILE FULL-SCREEN MENU ── */}
+      {/* ── MOBILE MENU PANEL ──
+          Fills the screen UNDER the header rather than over it, so the logo,
+          Log in button and toggle stay exactly where they were. `inset-0` on a
+          fixed element tracks the visible viewport; the old
+          h-[calc(100vh-130px)] used the large viewport, which on phones
+          includes the area behind the browser toolbar — that is what clipped
+          the buttons at the bottom. */}
       <div
-        className={`lg:hidden fixed inset-0 z-[60] bg-white shadow-2xl transition-all duration-300 ease-in-out ${isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-          }`}
+        id="site-mobile-menu"
+        aria-hidden={!isMenuOpen}
+        className={`lg:hidden fixed inset-0 z-40 bg-white transition-all duration-300 ease-in-out ${isMenuOpen ? "opacity-100 visible pointer-events-auto" : "opacity-0 invisible pointer-events-none"}`}
       >
-        {/* Menu header row */}
-        <div className="flex justify-between items-center px-6 pt-10 pb-4">
-          <div className="flex items-center gap-2">
-            <img src="/logo3.png" alt="logo" className="w-9 h-9" />
-            <p className="Livvic-Bold text-2xl text-primary">Famlink</p>
-          </div>
-          <button
-            onClick={closeMenu}
-            className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-700 transition-colors duration-200"
-            aria-label="Close menu"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Menu body */}
-        <div className="px-6 pt-2 pb-8 flex flex-col h-[calc(100vh-130px)]">
-          <nav className="space-y-1">
+        <div className="flex flex-col h-full pt-20">
+          {/* Links scroll on their own if a short screen can't fit them. */}
+          <nav className="flex-1 min-h-0 overflow-y-auto px-4 sm:px-6 space-y-1">
             <NavLink
               to="/"
               onClick={closeMenu}
@@ -277,10 +274,8 @@ function Header() {
             </NavLink>
           </nav>
 
-          <div className="flex-grow" />
-
           {!pathname.startsWith("/business") && (
-            <div className="space-y-3 border-t border-gray-100 pt-6">
+            <div className="flex-shrink-0 space-y-3 border-t border-gray-100 px-4 sm:px-6 pt-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
               {isAuthed ? (
                 <NavLink to="/dashboard" onClick={closeMenu} className="block">
                   <CustomButton

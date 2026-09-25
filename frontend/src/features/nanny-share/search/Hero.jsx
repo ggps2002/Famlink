@@ -3,8 +3,18 @@ import Header from "@app/layout/Header";
 import { Spin, Input } from "antd";
 import { fireToastMessage } from "@shared/ui/toast";
 import CustomButton from "@shared/ui/Button";
+import TrustRotator from "@shared/ui/TrustRotator";
+import locationIcon from "@/assets/images/Location-text.webp";
+import savingsIcon from "@/assets/images/Savings-text.webp";
+import browseIcon from "@/assets/images/Browse-text.webp";
 import { useNavigate } from "react-router-dom";
 import SFImg from "../../../assets/images/SFImage.webp";
+
+const TRUST_ITEMS = [
+  { icon: locationIcon, text: "Location-based matching" },
+  { icon: savingsIcon, text: "Save up to 40%" },
+  { icon: browseIcon, text: "Free to browse" },
+];
 
 // The hero photo is location-appropriate: the San Francisco bridge on the SF
 // page, and a generic nanny-share match photo on every other neighborhood.
@@ -119,39 +129,36 @@ function Hero({ city }) {
             Join the waitlist to be among the first notified when nanny share matches become available near you.
           </p>
 
-          <div className="mt-8 flex flex-col sm:flex-row items-center gap-4">
-            <div
-              ref={buttonRef}
-              className={`w-full sm:w-auto inline-block ${isGlowing ? "glow-once rounded-full" : ""}`}
-            >
+          {/* CTAs + trust rotator. One flex column so the rotator can
+              change sides with `order` instead of being rendered twice. */}
+          <div className="mt-8 flex flex-col gap-8 lg:gap-10">
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <div
+                ref={buttonRef}
+                className={`w-full sm:w-auto inline-block ${isGlowing ? "glow-once rounded-full" : ""}`}
+              >
+                <CustomButton
+                  btnText={isLoading ? <Spin size="small" /> : "Join Waitlist"}
+                  className="bg-[#AEC4FF] hover:bg-[#92b0ff] text-[#001243] Livvic-Bold w-full sm:w-auto px-8 py-3.5 text-[15px] flex items-center justify-center rounded-full transition-colors"
+                  action={() => navigate(`/waitlist`)}
+                  disabled={isLoading}
+                />
+              </div>
               <CustomButton
-                btnText={isLoading ? <Spin size="small" /> : "Join Waitlist"}
-                className="bg-[#AEC4FF] hover:bg-[#92b0ff] text-[#001243] Livvic-Bold w-full sm:w-auto px-8 py-3.5 text-[15px] flex items-center justify-center rounded-full transition-colors"
-                action={() => navigate(`/waitlist`)}
-                disabled={isLoading}
+                btnText="Learn More ➔"
+                className="bg-white hover:bg-gray-50 border border-gray-200 text-[#001243] Livvic-Bold w-full sm:w-auto px-8 py-3.5 text-[15px] flex items-center justify-center rounded-full transition-colors"
+                action={() => navigate("/")}
               />
             </div>
-            <CustomButton
-              btnText="Learn More ➔"
-              className="bg-white hover:bg-gray-50 border border-gray-200 text-[#001243] Livvic-Bold w-full sm:w-auto px-8 py-3.5 text-[15px] flex items-center justify-center rounded-full transition-colors"
-              action={() => navigate("/")}
-            />
-          </div>
 
-          {/* Features */}
-          <div className="mt-10 flex flex-wrap items-center gap-4 sm:gap-6">
-            <div className="flex items-center gap-2">
-              <span className="bg-[#F8F9FF] w-6 h-6 rounded-full flex items-center justify-center text-[12px]">📍</span>
-              <span className="text-[13px] text-[#666] font-semibold">Location-based matching</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="bg-[#FDF2F8] w-6 h-6 rounded-full flex items-center justify-center text-[12px]">💰</span>
-              <span className="text-[13px] text-[#666] font-semibold">Save up to 40%</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="bg-[#F0FDF4] w-6 h-6 rounded-full flex items-center justify-center text-[12px]">✔️</span>
-              <span className="text-[13px] text-[#666] font-semibold">Free to browse</span>
-            </div>
+            {/* Features — one slot that cycles through the three, same
+                rotator and styling as the nanny-share landing hero. Above the
+                buttons below lg (as on the landing hero), below them on desktop. */}
+            <TrustRotator
+              items={TRUST_ITEMS}
+              className="order-first lg:order-last"
+              itemClassName="text-lg sm:text-xl lg:text-2xl leading-tight Livvic-SemiBold text-[#011243]"
+            />
           </div>
         </div>
 

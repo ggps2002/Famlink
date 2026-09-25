@@ -210,7 +210,10 @@ function App() {
           ))}
         {/* The member area. One dashboard for both types — see PageLayout. */}
         {(user?.type === "Parents" || user?.type === "Nanny") && (
-          <Route path="/dashboard/*" element={<Nanny />}>
+          // No splat and no "*" child: an unknown /dashboard/... path must not
+          // match here, so it falls through to the site-wide 404 below instead
+          // of rendering inside the dashboard shell.
+          <Route path="/dashboard" element={<Nanny />}>
             <Route path="nanny-profile-view/:id" element={<NannyProfileView />} />
             <Route path="family-profile-view/:id" element={<FamilyProfileView />} />
             <Route path="profileNanny/:id" element={<ProfileNanny />} />
@@ -240,13 +243,13 @@ function App() {
             <Route path="description/:id" element={<JobDescription />} />
             <Route path="jobListing" element={<JobListing />} />
             <Route path="jobListingView/:id" element={<JobListingView />} />
-            <Route path="*" element={<NotFound />} />
           </Route>
         )}
 
         {/* Fallback: the 404 page, except for the two redirects in AuthFallback. */}
         <Route
           path="*"
+          handle={{ standalone: true }}
           element={
             <AuthFallback
               isAuthed={user?.type === "Parents" || user?.type === "Nanny"}

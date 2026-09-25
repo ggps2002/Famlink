@@ -9,8 +9,9 @@ import NotFoundIllustration from "@shared/ui/NotFoundIllustration";
  * step: back to where this visitor can actually do something (the dashboard
  * for a member, the homepage for everyone else).
  *
- * Rendered by the "*" route (and by the dashboard's own "*" for unknown member
- * pages), so it sits inside whatever header and footer that path gets. */
+ * Rendered by the site-wide "*" route, which PageLayout gives no chrome, so
+ * the page carries its own minimal top bar. Unknown /dashboard/... paths land
+ * here too rather than inside the dashboard shell. */
 export default function NotFound() {
   const { pathname } = useLocation();
   const { user } = useSelector((s) => s.auth);
@@ -21,14 +22,21 @@ export default function NotFound() {
     : { to: "/", label: "Back to homepage" };
 
   return (
-    <div className="bg-white">
+    <div className="min-h-screen flex flex-col bg-white">
       <SEOMetaData
         title="Page not found | FamLink"
         description="The page you were looking for doesn't exist or has moved."
         noIndex
       />
 
-      <section className="fl-container fl-section-y flex flex-col items-center text-center">
+      <header className="fl-container flex h-20 items-center justify-center sm:justify-start">
+        <Link to="/" className="flex items-center gap-1" aria-label="FamLink home">
+          <img src="/logo3.png" alt="" className="w-6 h-6 sm:w-8 sm:h-8" />
+          <span className="font-livvic-bold text-lg sm:text-xl text-ink">Famlink</span>
+        </Link>
+      </header>
+
+      <section className="fl-container fl-section-y flex flex-1 flex-col items-center justify-center text-center">
         <NotFoundIllustration className="w-full max-w-[420px] sm:max-w-[480px] text-accent" />
 
         <h1 className="fl-h1 text-ink mt-10">We couldn&rsquo;t find that page</h1>

@@ -31,7 +31,7 @@ const formatDate = (iso) =>
 function ArticleMeta({ time, date }) {
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <span className="fl-eyebrow rounded-full bg-accent text-ink px-3 py-1">
+      <span className="fl-eyebrow rounded-full bg-aqua text-ink px-3 py-1">
         Guide
       </span>
       <span className="fl-small flex items-center gap-2 text-ink/70">
@@ -149,7 +149,7 @@ function Community() {
             <CustomButton
               btnText="View all Resources"
               size="lg"
-              className="bg-blossom hover:bg-blossom-strong text-black w-full sm:w-auto"
+              className="bg-aqua hover:bg-aqua-strong text-ink w-full sm:w-auto"
             />
           </NavLink>
         }

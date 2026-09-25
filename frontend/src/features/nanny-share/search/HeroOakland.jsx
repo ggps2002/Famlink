@@ -1,11 +1,24 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import Header from "@app/layout/Header";
 import { Spin, Input } from "antd";
 import { fireToastMessage } from "@shared/ui/toast";
 import CustomButton from "@shared/ui/Button";
+import TrustRotator from "@shared/ui/TrustRotator";
+import locationIcon from "@/assets/images/Location-text.webp";
+import savingsIcon from "@/assets/images/Savings-text.webp";
+import matchesIcon from "@/assets/images/Matches-text.webp";
 import { useNavigate } from "react-router-dom";
 
+// A function, not a constant, because one item names the city.
+const trustItems = (city) => [
+    { icon: locationIcon, text: "Location-based matches" },
+    { icon: matchesIcon, text: `120+ ${city} families` },
+    { icon: savingsIcon, text: "Save 30–40%" },
+];
+
 function HeroOakland({ city }) {
+    // Memoised: TrustRotator re-measures whenever the items array changes.
+    const TRUST_ITEMS = useMemo(() => trustItems(city), [city]);
     const [zipCode, setZipCode] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [isGlowing, setIsGlowing] = useState(false);
@@ -109,48 +122,45 @@ function HeroOakland({ city }) {
                         FamLink helps families connect with compatible nanny share matches across the East Bay.
                     </p>
 
-                    <div className="mt-8 flex flex-col sm:flex-row items-center gap-4">
-                        <div
-                            ref={buttonRef}
-                            className={`w-full sm:w-auto inline-block ${isGlowing ? "glow-once rounded-full" : ""}`}
-                        >
-                            {/* "Learn more", not a waitlist ask — San Francisco
-                                is the one page that still pitches the waitlist
-                                (./Hero.jsx). Destination is still sign-up. */}
+                    {/* CTAs + trust rotator. One flex column so the rotator can
+                        change sides with `order` instead of being rendered twice. */}
+                    <div className="mt-8 flex flex-col gap-8 lg:gap-10">
+                        <div className="flex flex-col sm:flex-row items-center gap-4">
+                            <div
+                                ref={buttonRef}
+                                className={`w-full sm:w-auto inline-block ${isGlowing ? "glow-once rounded-full" : ""}`}
+                            >
+                                {/* "Learn more", not a waitlist ask — San Francisco
+                                    is the one page that still pitches the waitlist
+                                    (./Hero.jsx). Destination is still sign-up. */}
+                                <CustomButton
+                                    btnText={isLoading ? <Spin size="small" /> : "Learn more"}
+                                    className="bg-[#AEC4FF] hover:bg-[#92b0ff] text-[#001243] Livvic-Bold w-full sm:w-auto px-8 py-3.5 text-[15px] flex items-center justify-center rounded-full transition-colors"
+                                    action={() => navigate(`/joinNow`)}
+                                    disabled={isLoading}
+                                />
+                            </div>
+                            {/* Was a second "Learn More" — now that the primary
+                                carries that label, this one points at the map. */}
                             <CustomButton
-                                btnText={isLoading ? <Spin size="small" /> : "Learn more"}
-                                className="bg-[#AEC4FF] hover:bg-[#92b0ff] text-[#001243] Livvic-Bold w-full sm:w-auto px-8 py-3.5 text-[15px] flex items-center justify-center rounded-full transition-colors"
-                                action={() => navigate(`/joinNow`)}
-                                disabled={isLoading}
+                                btnText="See who's nearby"
+                                className="bg-white hover:bg-gray-50 border border-gray-200 text-[#001243] Livvic-Bold w-full sm:w-auto px-8 py-3.5 text-[15px] flex items-center justify-center rounded-full transition-colors"
+                                action={() =>
+                                    document
+                                        .getElementById("coverage-map")
+                                        ?.scrollIntoView({ behavior: "smooth" })
+                                }
                             />
                         </div>
-                        {/* Was a second "Learn More" — now that the primary
-                            carries that label, this one points at the map. */}
-                        <CustomButton
-                            btnText="See who's nearby"
-                            className="bg-white hover:bg-gray-50 border border-gray-200 text-[#001243] Livvic-Bold w-full sm:w-auto px-8 py-3.5 text-[15px] flex items-center justify-center rounded-full transition-colors"
-                            action={() =>
-                                document
-                                    .getElementById("coverage-map")
-                                    ?.scrollIntoView({ behavior: "smooth" })
-                            }
-                        />
-                    </div>
 
-                    {/* Features */}
-                    <div className="mt-10 flex flex-wrap items-center gap-4 sm:gap-6">
-                        <div className="flex items-center gap-2">
-                            <span className="bg-[#F8F9FF] w-6 h-6 rounded-full flex items-center justify-center text-[12px]">📍</span>
-                            <span className="text-[13px] text-[#001243] font-bold">Location-based matches</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <span className="bg-[#F8F9FF] w-6 h-6 rounded-full flex items-center justify-center text-[12px]">🏢</span>
-                            <span className="text-[13px] text-[#001243] font-bold">120+ {city} families</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <span className="bg-[#F8F9FF] w-6 h-6 rounded-full flex items-center justify-center text-[12px]">✔️</span>
-                            <span className="text-[13px] text-[#001243] font-bold">Save 30–40%</span>
-                        </div>
+                        {/* Features — one slot that cycles through the three, same
+                            rotator and styling as the nanny-share landing hero. Above the
+                            buttons below lg (as on the landing hero), below them on desktop. */}
+                        <TrustRotator
+                            items={TRUST_ITEMS}
+                            className="order-first lg:order-last"
+                            itemClassName="text-lg sm:text-xl lg:text-2xl leading-tight Livvic-SemiBold text-[#011243]"
+                        />
                     </div>
                 </div>
 
